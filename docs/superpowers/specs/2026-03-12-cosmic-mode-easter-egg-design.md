@@ -12,7 +12,7 @@ A hidden easter egg that transforms the site's atmosphere from its default purpl
 - **Feedback during hold:** The line gradually brightens (opacity increases) and thickens (1px → 2px) over the 3-second hold, signaling something is building
 - **Activation:** At 3 seconds, the line flashes briefly, then the cosmic transition begins
 - **Deactivation:** Hold again for 3 seconds to toggle back to normal mode
-- **Cancel:** Releasing before 3 seconds resets the line to its default state (quick 0.3s transition back). Scrolling (`touchmove`) also cancels the hold timer and resets the line.
+- **Cancel:** Releasing, `mouseleave`, or scrolling (`touchmove`) before 3 seconds cancels the hold timer and resets the line to its default state (quick 0.3s transition back).
 - **Cursor:** Remains `default` — the line should not appear clickable. Only the hold feedback reveals the interaction.
 - **Touch support:** `touchstart`/`touchend` mirror `mousedown`/`mouseup` behavior. `touchmove` cancels the hold (prevents conflict with scroll).
 - **Disabled during transition:** While the `uCosmic` uniform is animating (mid-transition), the hold interaction is disabled to prevent conflicting state changes.
@@ -125,7 +125,7 @@ timer completes at 3s:
 
 ## Accessibility
 
-- **`prefers-reduced-motion`:** The existing site hides the WebGL canvas entirely (`display: none !important`) under this media query. In cosmic mode with reduced motion: only CSS color changes apply (class swap, no transitions). The shader transformation is irrelevant since the canvas is hidden. This is acceptable — the color palette shift alone provides the "cosmic" feel.
+- **`prefers-reduced-motion`:** The existing site hides the WebGL canvas entirely (`display: none !important`) under this media query. In cosmic mode with reduced motion: only CSS color changes apply (class swap, no transitions). The shader transformation is irrelevant since the canvas is hidden. Scroll parallax is also disabled under reduced motion. The hold feedback animation (line brightening/thickening) is kept since it is brief, user-initiated, and provides necessary interaction feedback. The color palette shift alone provides the "cosmic" feel.
 - **Color contrast:** Blue-white cosmic palette maintains WCAG AA contrast ratios against dark background (same or better than purple palette since blue-white values are similar lightness)
 - **Screen readers:** No content or layout changes — completely invisible to assistive technology
 - **Keyboard:** Not triggered by keyboard (hold interaction is pointer-only). This is intentional — easter eggs don't need full keyboard accessibility, and the content is identical in both modes.

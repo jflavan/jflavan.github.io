@@ -1328,7 +1328,7 @@
         float angle = 2.65;
         vec2 dir = vec2(cos(angle), sin(angle));
         float gradPos = dot(uv - 0.5, dir) + 0.5;
-        float animOffset = sin(t * 0.012) * 0.06;
+        float animOffset = sin(t * 0.03) * 0.06 + sin(t * 0.07) * 0.025;
         gradPos = clamp(gradPos + animOffset, 0.0, 1.0);
         vec3 color = purpleGradient(gradPos);
 
@@ -1336,15 +1336,16 @@
         color += (rand(gl_FragCoord.xy) - 0.5) * 0.005;
 
         // ---- Layer 2: Noise-warped UV for organic flowing distortion ----
-        // Use noise to create flowing aurora-band shapes via UV warp
-        // Key insight: warp UVs ONLY for the glow layers, not the base gradient
-        float n1 = snoise(vec3(uv * 1.8, t * 0.012)) * 0.6
-                 + snoise(vec3(uv * 3.5, t * 0.018 + 10.0)) * 0.3
-                 + snoise(vec3(uv * 7.0, t * 0.022 + 20.0)) * 0.1;
-        float n2 = snoise(vec3(uv.yx * 1.8, t * 0.014 + 50.0)) * 0.6
-                 + snoise(vec3(uv.yx * 3.5, t * 0.020 + 60.0)) * 0.3
-                 + snoise(vec3(uv.yx * 7.0, t * 0.024 + 70.0)) * 0.1;
-        vec2 warpedAuv = auv + vec2(n1, n2) * 0.09;
+        // Breathing warp intensity — the whole field pulses gently
+        float breathe = 0.09 + 0.035 * sin(t * 0.08) + 0.02 * sin(t * 0.13 + 1.0);
+
+        float n1 = snoise(vec3(uv * 1.8, t * 0.025)) * 0.6
+                 + snoise(vec3(uv * 3.5, t * 0.035 + 10.0)) * 0.3
+                 + snoise(vec3(uv * 7.0, t * 0.045 + 20.0)) * 0.1;
+        float n2 = snoise(vec3(uv.yx * 1.8, t * 0.028 + 50.0)) * 0.6
+                 + snoise(vec3(uv.yx * 3.5, t * 0.038 + 60.0)) * 0.3
+                 + snoise(vec3(uv.yx * 7.0, t * 0.048 + 70.0)) * 0.1;
+        vec2 warpedAuv = auv + vec2(n1, n2) * breathe;
 
         // Mouse offsets
         float tiltX = (uMouse.y - 0.5) * 0.12;
@@ -1354,44 +1355,54 @@
 
         // ---- Light shape 1: Large primary aurora band ----
         vec2 center1 = vec2(0.5 * aspect, 0.5) + vec2(tiltY * aspect, -tiltX) + mouseFollow;
-        float glow1 = elongatedGlow(warpedAuv, center1, vec2(1.3, 0.8), 0.55);
+        center1 += vec2(sin(t * 0.04) * 0.06 * aspect, cos(t * 0.03) * 0.04);
+        vec2 stretch1 = vec2(1.3 + 0.3 * sin(t * 0.06), 0.8 + 0.2 * cos(t * 0.07 + 0.5));
+        float rad1 = 0.55 + 0.08 * sin(t * 0.09);
+        float glow1 = elongatedGlow(warpedAuv, center1, stretch1, rad1);
         vec3 col1 = mixOklab(vec3(0.353, 0.094, 0.604), vec3(0.616, 0.306, 0.867), glow1);
-        color = mix(color, col1, glow1 * 0.85);
+        color = mix(color, col1, glow1 * (0.85 + 0.1 * sin(t * 0.05)));
 
         // ---- Light shape 2: Secondary band — opposite parallax ----
-        float orbit = t * 0.035;
+        float orbit = t * 0.06;
         vec2 center2 = vec2(0.55 * aspect, 0.4) + mouseOppose;
-        center2 += vec2(cos(orbit) * 0.06 * aspect, sin(orbit) * 0.05);
-        float glow2 = elongatedGlow(warpedAuv, center2, vec2(0.9, 1.4), 0.5);
+        center2 += vec2(cos(orbit) * 0.10 * aspect, sin(orbit) * 0.08);
+        vec2 stretch2 = vec2(0.9 + 0.25 * sin(t * 0.07 + 2.0), 1.4 + 0.3 * cos(t * 0.05 + 1.0));
+        float rad2 = 0.5 + 0.07 * sin(t * 0.08 + 3.0);
+        float glow2 = elongatedGlow(warpedAuv, center2, stretch2, rad2);
         vec3 col2 = mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.482, 0.173, 0.749), glow2);
         color = mix(color, col2, glow2 * 0.75);
 
         // ---- Light shape 3: Bright accent streak ----
         vec2 center3 = vec2(0.4 * aspect, 0.6);
-        center3 += vec2(sin(t * 0.025) * 0.12 * aspect, cos(t * 0.035) * 0.08);
+        center3 += vec2(sin(t * 0.05) * 0.15 * aspect, cos(t * 0.06) * 0.10);
         center3 += (uMouse - 0.5) * vec2(0.12 * aspect, 0.12);
-        float glow3 = elongatedGlow(warpedAuv, center3, vec2(1.5, 0.7), 0.4);
+        vec2 stretch3 = vec2(1.5 + 0.4 * cos(t * 0.055 + 1.5), 0.7 + 0.25 * sin(t * 0.065 + 0.8));
+        float rad3 = 0.4 + 0.06 * sin(t * 0.1 + 2.0);
+        float glow3 = elongatedGlow(warpedAuv, center3, stretch3, rad3);
         vec3 col3 = mixOklab(vec3(0.616, 0.306, 0.867), vec3(0.878, 0.667, 1.0), glow3);
-        color = mix(color, col3, glow3 * 0.6);
+        color = mix(color, col3, glow3 * (0.6 + 0.12 * sin(t * 0.07 + 1.0)));
 
         // ---- Light shape 4: Large deep ambient ----
         vec2 center4 = vec2(0.3 * aspect, 0.75);
-        center4 += vec2(sin(t * 0.018 + 2.0) * 0.08 * aspect, cos(t * 0.015) * 0.06);
-        float glow4 = softGlow(warpedAuv, center4, 0.8);
-        color = mix(color, mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.353, 0.094, 0.604), glow4), glow4 * 0.4);
+        center4 += vec2(sin(t * 0.04 + 2.0) * 0.12 * aspect, cos(t * 0.035) * 0.09);
+        float rad4 = 0.8 + 0.12 * sin(t * 0.06 + 4.0);
+        float glow4 = softGlow(warpedAuv, center4, rad4);
+        color = mix(color, mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.353, 0.094, 0.604), glow4), glow4 * (0.4 + 0.1 * sin(t * 0.08)));
 
         // ---- Light shape 5: Hot bright spot ----
         vec2 center5 = vec2(0.65 * aspect, 0.3);
-        center5 += vec2(cos(t * 0.03 + 1.0) * 0.08 * aspect, sin(t * 0.04 + 3.0) * 0.06);
+        center5 += vec2(cos(t * 0.055 + 1.0) * 0.12 * aspect, sin(t * 0.065 + 3.0) * 0.09);
         center5 += mouseOppose * 0.5;
-        float glow5 = softGlow(warpedAuv, center5, 0.35);
-        color = mix(color, mixOklab(vec3(0.780, 0.490, 1.0), vec3(0.878, 0.667, 1.0), glow5), glow5 * 0.55);
+        float rad5 = 0.35 + 0.08 * sin(t * 0.075 + 5.0);
+        float glow5 = softGlow(warpedAuv, center5, rad5);
+        color = mix(color, mixOklab(vec3(0.780, 0.490, 1.0), vec3(0.878, 0.667, 1.0), glow5), glow5 * (0.55 + 0.1 * cos(t * 0.06)));
 
         // ---- Dark void — soft concentrated dark area for contrast ----
         vec2 voidCenter = vec2(0.38 * aspect, 0.42);
-        voidCenter += vec2(sin(t * 0.018 + 4.0) * 0.08 * aspect, cos(t * 0.022 + 1.0) * 0.06);
+        voidCenter += vec2(sin(t * 0.035 + 4.0) * 0.12 * aspect, cos(t * 0.04 + 1.0) * 0.09);
         voidCenter += mouseFollow * 0.25;
-        float voidDist = length(warpedAuv - voidCenter) / 0.45;
+        float voidRad = 0.45 + 0.06 * sin(t * 0.07 + 2.0);
+        float voidDist = length(warpedAuv - voidCenter) / voidRad;
         float voidMask = 1.0 - exp(-voidDist * voidDist * 1.2);
         color = mix(vec3(0.008, 0.0, 0.02), color, clamp(voidMask + 0.4, 0.0, 1.0));
 

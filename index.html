@@ -1264,6 +1264,7 @@
   });
 
   // ===== COSMIC MODE STATE =====
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Cosmic mode state
   let cosmicMode = false;
   let cosmicTransitioning = false;
@@ -1722,6 +1723,28 @@
   function onScroll() {
     const scrollY = window.scrollY;
     navEl.classList.toggle('scrolled', scrollY > 100);
+
+    // Cosmic mode: subtle parallax on revealed elements
+    if (cosmicMode && !prefersReducedMotion.matches) {
+      const viewportCenter = window.innerHeight / 2;
+      const revealEls = document.querySelectorAll('.reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible');
+
+      revealEls.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const elCenter = rect.top + rect.height / 2;
+        const offset = (elCenter - viewportCenter) / window.innerHeight;
+        const parallax = offset * 12;
+        el.style.transform = `translateY(${parallax}px)`;
+      });
+    } else {
+      const revealEls = document.querySelectorAll('.reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible');
+      revealEls.forEach(el => {
+        if (el.style.transform.includes('translateY')) {
+          el.style.transform = '';
+        }
+      });
+    }
+
     ticking = false;
   }
 

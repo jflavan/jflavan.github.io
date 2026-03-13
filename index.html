@@ -130,7 +130,7 @@
     --accent-mid: #6fa8dc;
     --accent-bright: #a0c4ff;
     --accent-light: #d0e8ff;
-    --bg-base: #060810;
+    --bg-base: #04060c;
     --glow-color-r: 111;
     --glow-color-g: 168;
     --glow-color-b: 220;
@@ -1458,10 +1458,10 @@
         vec3 p6 = vec3(0.878, 0.667, 1.0);
 
         // Cosmic (blue) stops
-        vec3 b0 = vec3(0.024, 0.03, 0.06);
-        vec3 b1 = vec3(0.04, 0.06, 0.14);
-        vec3 b2 = vec3(0.06, 0.15, 0.35);
-        vec3 b3 = vec3(0.10, 0.23, 0.36);
+        vec3 b0 = vec3(0.015, 0.02, 0.045);
+        vec3 b1 = vec3(0.025, 0.04, 0.10);
+        vec3 b2 = vec3(0.04, 0.10, 0.25);
+        vec3 b3 = vec3(0.07, 0.16, 0.28);
         vec3 b4 = vec3(0.44, 0.66, 0.86);
         vec3 b5 = vec3(0.63, 0.77, 1.0);
         vec3 b6 = vec3(0.82, 0.91, 1.0);
@@ -1625,7 +1625,7 @@
         float voidRad = 0.45 + 0.06 * sin(t * 0.07 + 2.0);
         float voidDist = length(warpedAuv - voidCenter) / voidRad;
         float voidMask = 1.0 - exp(-voidDist * voidDist * 1.2);
-        vec3 voidColor = mix(vec3(0.008, 0.0, 0.02), vec3(0.01, 0.01, 0.03), uCosmic);
+        vec3 voidColor = mix(vec3(0.008, 0.0, 0.02), vec3(0.006, 0.008, 0.02), uCosmic);
         float voidAddend = mix(0.4, 0.55, uCosmic);
         color = mix(voidColor, color, clamp(voidMask + voidAddend, 0.0, 1.0));
 

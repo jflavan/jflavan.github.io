@@ -1263,6 +1263,62 @@
     });
   });
 
+  // ===== COSMIC MODE STATE =====
+  // Cosmic mode state
+  let cosmicMode = false;
+  let cosmicTransitioning = false;
+  let cosmicValue = 0.0;
+  let cosmicTarget = 0.0;
+  let cosmicAnimStart = null;
+  let cosmicAnimStartValue = 0.0;
+  const COSMIC_ANIM_DURATION = 2000;
+
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  // Restore cosmic mode from localStorage
+  try {
+    if (localStorage.getItem('cosmicMode') === 'true') {
+      cosmicMode = true;
+      cosmicValue = 1.0;
+      cosmicTarget = 1.0;
+      document.body.classList.add('cosmic');
+    }
+  } catch (e) {
+    // localStorage unavailable (private browsing, quota exceeded)
+  }
+
+  function toggleCosmic() {
+    cosmicMode = !cosmicMode;
+    cosmicTransitioning = true;
+    cosmicTarget = cosmicMode ? 1.0 : 0.0;
+    cosmicAnimStartValue = cosmicValue;
+    cosmicAnimStart = performance.now();
+
+    document.body.classList.toggle('cosmic', cosmicMode);
+
+    // Persist state
+    try {
+      localStorage.setItem('cosmicMode', cosmicMode ? 'true' : 'false');
+    } catch (e) {}
+
+    // Console message
+    if (cosmicMode) {
+      console.log(
+        '%cYou found the cosmos. ✦\n%chttps://github.com/jflavan',
+        'color:#a0c4ff;font-size:14px;font-weight:bold;',
+        'color:#6fa8dc;font-size:12px;'
+      );
+    } else {
+      console.log(
+        '%cCurious? Check out my GitHub.\n%chttps://github.com/jflavan',
+        'color:#e0aaff;font-size:14px;font-weight:bold;',
+        'color:#9d4edd;font-size:12px;'
+      );
+    }
+  }
+
   // ===== WEBGL AURORA BACKGROUND =====
   (function() {
     const canvas = document.getElementById('aurora-bg');
@@ -1271,7 +1327,6 @@
 
     let mouseX = 0.5, mouseY = 0.5;
     let smoothMouseX = 0.5, smoothMouseY = 0.5;
-    let cosmicValue = 0.0;
     const mouseMomentum = 0.03;
 
     document.addEventListener('mousemove', (e) => {
@@ -1638,6 +1693,21 @@
       gl.uniform1f(uTime, t);
       gl.uniform2f(uResolution, canvas.width, canvas.height);
       gl.uniform2f(uMouse, smoothMouseX, smoothMouseY);
+
+      // Animate uCosmic toward target
+      if (cosmicAnimStart !== null) {
+        const elapsed = performance.now() - cosmicAnimStart;
+        const progress = Math.min(elapsed / COSMIC_ANIM_DURATION, 1.0);
+        const eased = easeInOutCubic(progress);
+        cosmicValue = cosmicAnimStartValue + (cosmicTarget - cosmicAnimStartValue) * eased;
+
+        if (progress >= 1.0) {
+          cosmicValue = cosmicTarget;
+          cosmicAnimStart = null;
+          cosmicTransitioning = false;
+        }
+      }
+
       gl.uniform1f(uCosmicLoc, cosmicValue);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);

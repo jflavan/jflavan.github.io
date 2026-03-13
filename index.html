@@ -453,17 +453,18 @@
     to { opacity: 1; transform: scaleX(1); }
   }
 
-  @keyframes heroLineWiggle {
-    0%   { transform: scaleX(1) translateY(0); }
-    20%  { transform: scaleX(1) translateY(-2px); }
-    40%  { transform: scaleX(1) translateY(1.5px); }
-    60%  { transform: scaleX(1) translateY(-1px); }
-    80%  { transform: scaleX(1) translateY(0.5px); }
-    100% { transform: scaleX(1) translateY(0); }
+  @keyframes heroLinePulse {
+    0%   { box-shadow: 0 1px 0 0 transparent; }
+    17%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    33%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
+    50%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    67%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
+    83%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    100% { box-shadow: 0 1px 0 0 transparent; }
   }
 
-  .hero-line.wiggle {
-    animation: heroLineWiggle 0.5s ease-in-out;
+  .hero-line.pulse {
+    animation: heroLinePulse 3.5s ease-in-out;
   }
 
   /* ===== SECTION SHARED ===== */
@@ -1826,27 +1827,26 @@
   const navEl = document.querySelector('nav');
   let ticking = false;
 
-  // Hero line wiggle on first scroll (only after lineReveal finishes)
+  // Hero line wiggle on first scroll
   (function() {
     const heroLine = document.querySelector('.hero-line');
     if (!heroLine || prefersReducedMotion.matches) return;
 
-    heroLine.addEventListener('animationend', function onReveal(e) {
-      if (e.animationName !== 'lineReveal') return;
-      heroLine.removeEventListener('animationend', onReveal);
-      // Lock in final state so we can safely run a new animation
+    window.addEventListener('scroll', function onFirstScroll() {
+      window.removeEventListener('scroll', onFirstScroll);
+      // Stop lineReveal and lock in its final state
       heroLine.style.opacity = '1';
       heroLine.style.transform = 'scaleX(1)';
       heroLine.style.animation = 'none';
-
-      window.addEventListener('scroll', function onFirstScroll() {
-        window.removeEventListener('scroll', onFirstScroll);
-        heroLine.classList.add('wiggle');
-        heroLine.addEventListener('animationend', () => {
-          heroLine.classList.remove('wiggle');
-        }, { once: true });
-      }, { passive: true });
-    });
+      // Force reflow so browser registers the cleared animation
+      void heroLine.offsetWidth;
+      // Remove inline animation so the .pulse class animation can take effect
+      heroLine.style.animation = '';
+      heroLine.classList.add('pulse');
+      heroLine.addEventListener('animationend', () => {
+        heroLine.classList.remove('pulse');
+      }, { once: true });
+    }, { passive: true });
   })();
 
   function onScroll() {

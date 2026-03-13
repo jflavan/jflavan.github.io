@@ -259,6 +259,13 @@
     }
   }
 
+  /* Hero enter from left */
+  .hero-enter-left {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: heroEnter 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
   /* Nav fade in */
   nav {
     opacity: 0;
@@ -888,7 +895,8 @@
       display: none !important;
     }
 
-    .hero-enter {
+    .hero-enter,
+    .hero-enter-left {
       animation: none;
       opacity: 1;
       transform: none;
@@ -940,7 +948,7 @@
 <noscript>
   <style>
     .reveal, .reveal-left, .reveal-right, .reveal-scale,
-    .hero-enter, .hero-line, nav {
+    .hero-enter, .hero-enter-left, .hero-line, nav {
       opacity: 1 !important;
       transform: none !important;
       animation: none !important;
@@ -975,7 +983,7 @@
   <div class="hero-tagline hero-enter hero-enter-delay-1">
     Engineering manager leading development and quality teams. Building AI-enabled workflows that transform how software gets made.
   </div>
-  <h1 class="hero-name hero-enter hero-enter-delay-2">
+  <h1 class="hero-name hero-enter-left hero-enter-delay-2">
     <span class="first">John</span><br>
     <span class="last">Flavan</span>
   </h1>

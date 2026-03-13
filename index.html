@@ -1360,32 +1360,10 @@
     }
   }
 
-  // Restore theme from localStorage (with migration from old cosmicMode key)
+  // Always start on purple (default) theme
   try {
-    const oldCosmic = localStorage.getItem('cosmicMode');
-    if (oldCosmic === 'true' && !localStorage.getItem('colorTheme')) {
-      localStorage.setItem('colorTheme', 'cosmic');
-      localStorage.removeItem('cosmicMode');
-    }
-    const saved = localStorage.getItem('colorTheme');
-    if (saved && THEMES[saved]) {
-      currentTheme = saved;
-      cosmicValue = saved === 'default' ? 0.0 : 1.0;
-      cosmicTarget = cosmicValue;
-      currentShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
-      fromShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
-      targetShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
-      currentVoidColor = [...THEMES[saved].voidColor];
-      fromVoidColor = [...THEMES[saved].voidColor];
-      targetVoidColor = [...THEMES[saved].voidColor];
-      currentStarTint = [...THEMES[saved].starTint];
-      fromStarTint = [...THEMES[saved].starTint];
-      targetStarTint = [...THEMES[saved].starTint];
-      if (saved !== 'default') {
-        document.body.classList.add('themed');
-      }
-      applyThemeCssVars(saved);
-    }
+    localStorage.removeItem('cosmicMode');
+    localStorage.removeItem('colorTheme');
   } catch (e) {
     // localStorage unavailable
   }

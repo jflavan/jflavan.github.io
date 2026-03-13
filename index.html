@@ -1740,6 +1740,57 @@
     'color:#e0aaff;font-size:14px;font-weight:bold;',
     'color:#9d4edd;font-size:12px;'
   );
+
+  // ===== HERO LINE HOLD INTERACTION =====
+  (function() {
+    const heroLine = document.querySelector('.hero-line');
+    if (!heroLine) return;
+
+    let holdTimer = null;
+
+    function startHold(e) {
+      if (cosmicTransitioning) return;
+      e.preventDefault();
+
+      heroLine.classList.remove('reset');
+      heroLine.classList.add('holding');
+
+      holdTimer = setTimeout(() => {
+        holdTimer = null;
+        // Flash
+        heroLine.classList.remove('holding');
+        heroLine.classList.add('flash');
+
+        // Toggle cosmic after brief flash
+        setTimeout(() => {
+          heroLine.classList.remove('flash');
+          heroLine.classList.add('reset');
+          toggleCosmic();
+        }, 150);
+      }, 3000);
+    }
+
+    function cancelHold() {
+      if (holdTimer !== null) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+        heroLine.classList.remove('holding');
+        heroLine.classList.add('reset');
+        // Remove reset class after transition completes
+        setTimeout(() => heroLine.classList.remove('reset'), 300);
+      }
+    }
+
+    // Mouse events
+    heroLine.addEventListener('mousedown', startHold);
+    heroLine.addEventListener('mouseup', cancelHold);
+    heroLine.addEventListener('mouseleave', cancelHold);
+
+    // Touch events
+    heroLine.addEventListener('touchstart', startHold, { passive: false });
+    heroLine.addEventListener('touchend', cancelHold);
+    heroLine.addEventListener('touchmove', cancelHold);
+  })();
 </script>
 
 </body>

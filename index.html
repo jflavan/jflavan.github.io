@@ -125,16 +125,7 @@
     --glow-color-b: 221;
   }
 
-  body.cosmic {
-    --accent-deep: #1a3a5c;
-    --accent-mid: #6fa8dc;
-    --accent-bright: #a0c4ff;
-    --accent-light: #d0e8ff;
-    --bg-base: #04060c;
-    --glow-color-r: 111;
-    --glow-color-g: 168;
-    --glow-color-b: 220;
-  }
+  /* Theme CSS vars are set dynamically via JS */
 
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -172,11 +163,15 @@
     transition: opacity 2s ease;
   }
 
-  body.cosmic::after {
+  body.themed::after {
     opacity: 0.015;
   }
 
-  body.cosmic .hero-name .last {
+  body.themed .section-label {
+    color: var(--accent-light);
+  }
+
+  body.themed .hero-name .last {
     background: linear-gradient(135deg,
       var(--accent-mid), var(--accent-bright), var(--accent-light),
       var(--accent-bright), var(--accent-mid));
@@ -185,7 +180,7 @@
     background-clip: text;
   }
 
-  body.cosmic .contact-btn.primary {
+  body.themed .contact-btn.primary {
     background: linear-gradient(135deg, var(--accent-deep), var(--accent-mid));
   }
 
@@ -907,15 +902,15 @@
       transition: none;
     }
 
-    body.cosmic .hero-line,
-    body.cosmic nav a,
-    body.cosmic .nav-contact,
-    body.cosmic .section-label,
-    body.cosmic .focus-card,
-    body.cosmic .skill-tag,
-    body.cosmic .contact-btn,
-    body.cosmic footer a,
-    body.cosmic::after {
+    body.themed .hero-line,
+    body.themed nav a,
+    body.themed .nav-contact,
+    body.themed .section-label,
+    body.themed .focus-card,
+    body.themed .skill-tag,
+    body.themed .contact-btn,
+    body.themed footer a,
+    body.themed::after {
       transition: none !important;
     }
   }
@@ -1266,58 +1261,157 @@
   // ===== COSMIC MODE STATE =====
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   // Cosmic mode state
-  let cosmicMode = false;
+  // ===== THEME DEFINITIONS =====
+  const THEMES = {
+    default: {
+      label: 'default',
+      cssVars: { '--accent-deep': '#5a189a', '--accent-mid': '#9d4edd', '--accent-bright': '#c77dff', '--accent-light': '#e0aaff', '--bg-base': '#0a0014', '--glow-color-r': '157', '--glow-color-g': '78', '--glow-color-b': '221' },
+      shaderStops: [[0.012,0,0.028],[0.06,0,0.14],[0.22,0.06,0.42],[0.30,0.08,0.50],[0.45,0.20,0.65],[0.55,0.30,0.75],[0.65,0.42,0.82]],
+      voidColor: [0.008, 0.0, 0.02],
+      starTint: [0.9, 0.8, 1.0],
+      console: ['Curious? Check out my GitHub.', '#e0aaff', '#9d4edd']
+    },
+    cosmic: {
+      label: 'cosmic',
+      cssVars: { '--accent-deep': '#1a3a5c', '--accent-mid': '#6fa8dc', '--accent-bright': '#a0c4ff', '--accent-light': '#d0e8ff', '--bg-base': '#04060c', '--glow-color-r': '111', '--glow-color-g': '168', '--glow-color-b': '220' },
+      shaderStops: [[0.015,0.02,0.045],[0.025,0.04,0.10],[0.04,0.10,0.25],[0.06,0.14,0.26],[0.20,0.38,0.55],[0.30,0.48,0.65],[0.42,0.58,0.72]],
+      voidColor: [0.006, 0.008, 0.02],
+      starTint: [0.7, 0.85, 1.0],
+      console: ['You found the cosmos. \u2726', '#a0c4ff', '#6fa8dc']
+    },
+    ember: {
+      label: 'ember',
+      cssVars: { '--accent-deep': '#7a2000', '--accent-mid': '#d95b20', '--accent-bright': '#ff8c42', '--accent-light': '#ffc07a', '--bg-base': '#0c0402', '--glow-color-r': '217', '--glow-color-g': '91', '--glow-color-b': '32' },
+      shaderStops: [[0.03,0.005,0.0],[0.10,0.02,0.0],[0.22,0.05,0.01],[0.38,0.10,0.03],[0.55,0.22,0.06],[0.65,0.32,0.10],[0.72,0.42,0.16]],
+      voidColor: [0.02, 0.005, 0.0],
+      starTint: [1.0, 0.8, 0.5],
+      console: ['The embers glow. \u2737', '#ff8c42', '#d95b20']
+    },
+    aurora: {
+      label: 'aurora',
+      cssVars: { '--accent-deep': '#0a4a40', '--accent-mid': '#1aaa88', '--accent-bright': '#40d9b0', '--accent-light': '#88f0d8', '--bg-base': '#020a08', '--glow-color-r': '26', '--glow-color-g': '170', '--glow-color-b': '136' },
+      shaderStops: [[0.0,0.015,0.02],[0.0,0.04,0.06],[0.02,0.10,0.12],[0.03,0.18,0.16],[0.10,0.38,0.32],[0.18,0.48,0.40],[0.28,0.55,0.48]],
+      voidColor: [0.0, 0.008, 0.01],
+      starTint: [0.5, 1.0, 0.8],
+      console: ['The aurora dances. \u2728', '#40d9b0', '#1aaa88']
+    },
+    solar: {
+      label: 'solar',
+      cssVars: { '--accent-deep': '#5a4000', '--accent-mid': '#c49930', '--accent-bright': '#e8c050', '--accent-light': '#f5e090', '--bg-base': '#080600', '--glow-color-r': '196', '--glow-color-g': '153', '--glow-color-b': '48' },
+      shaderStops: [[0.025,0.015,0.0],[0.06,0.04,0.0],[0.15,0.10,0.02],[0.28,0.20,0.04],[0.48,0.38,0.10],[0.58,0.48,0.16],[0.65,0.55,0.25]],
+      voidColor: [0.015, 0.01, 0.0],
+      starTint: [1.0, 0.9, 0.6],
+      console: ['Solar winds blow. \u2600', '#e8c050', '#c49930']
+    },
+    rose: {
+      label: 'rose',
+      cssVars: { '--accent-deep': '#7a1050', '--accent-mid': '#d94088', '--accent-bright': '#ff6aaa', '--accent-light': '#ffaad0', '--bg-base': '#0a0208', '--glow-color-r': '217', '--glow-color-g': '64', '--glow-color-b': '136' },
+      shaderStops: [[0.02,0.0,0.015],[0.08,0.0,0.05],[0.22,0.03,0.12],[0.35,0.06,0.22],[0.55,0.16,0.35],[0.62,0.25,0.42],[0.68,0.35,0.50]],
+      voidColor: [0.015, 0.0, 0.01],
+      starTint: [1.0, 0.7, 0.85],
+      console: ['A rose in the void. \u273F', '#ff6aaa', '#d94088']
+    }
+  };
+
+  const THEME_KEYS = Object.keys(THEMES);
+
+  let currentTheme = 'default';
   let cosmicTransitioning = false;
-  let cosmicValue = 0.0;
+  let cosmicValue = 0.0;        // 0 = default, 1 = non-default (controls stars/aurora)
   let cosmicTarget = 0.0;
   let cosmicAnimStart = null;
   let cosmicAnimStartValue = 0.0;
   const COSMIC_ANIM_DURATION = 2000;
 
+  // Current shader color values (interpolated during transitions)
+  let currentShaderStops = THEMES.default.shaderStops.map(s => [...s]);
+  let fromShaderStops = THEMES.default.shaderStops.map(s => [...s]);
+  let targetShaderStops = THEMES.default.shaderStops.map(s => [...s]);
+  let currentVoidColor = [...THEMES.default.voidColor];
+  let fromVoidColor = [...THEMES.default.voidColor];
+  let targetVoidColor = [...THEMES.default.voidColor];
+  let currentStarTint = [...THEMES.default.starTint];
+  let fromStarTint = [...THEMES.default.starTint];
+  let targetStarTint = [...THEMES.default.starTint];
+
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
-  // Restore cosmic mode from localStorage
-  try {
-    if (localStorage.getItem('cosmicMode') === 'true') {
-      cosmicMode = true;
-      cosmicValue = 1.0;
-      cosmicTarget = 1.0;
-      document.body.classList.add('cosmic');
+  function applyThemeCssVars(theme) {
+    const vars = THEMES[theme].cssVars;
+    const root = document.documentElement;
+    for (const [prop, val] of Object.entries(vars)) {
+      root.style.setProperty(prop, val);
     }
-  } catch (e) {
-    // localStorage unavailable (private browsing, quota exceeded)
   }
 
-  function toggleCosmic() {
-    cosmicMode = !cosmicMode;
+  // Restore theme from localStorage (with migration from old cosmicMode key)
+  try {
+    const oldCosmic = localStorage.getItem('cosmicMode');
+    if (oldCosmic === 'true' && !localStorage.getItem('colorTheme')) {
+      localStorage.setItem('colorTheme', 'cosmic');
+      localStorage.removeItem('cosmicMode');
+    }
+    const saved = localStorage.getItem('colorTheme');
+    if (saved && THEMES[saved]) {
+      currentTheme = saved;
+      cosmicValue = saved === 'default' ? 0.0 : 1.0;
+      cosmicTarget = cosmicValue;
+      currentShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
+      fromShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
+      targetShaderStops = THEMES[saved].shaderStops.map(s => [...s]);
+      currentVoidColor = [...THEMES[saved].voidColor];
+      fromVoidColor = [...THEMES[saved].voidColor];
+      targetVoidColor = [...THEMES[saved].voidColor];
+      currentStarTint = [...THEMES[saved].starTint];
+      fromStarTint = [...THEMES[saved].starTint];
+      targetStarTint = [...THEMES[saved].starTint];
+      if (saved !== 'default') {
+        document.body.classList.add('themed');
+      }
+      applyThemeCssVars(saved);
+    }
+  } catch (e) {
+    // localStorage unavailable
+  }
+
+  function cycleTheme() {
+    // Pick a random theme that isn't the current one
+    const available = THEME_KEYS.filter(k => k !== currentTheme);
+    const nextTheme = available[Math.floor(Math.random() * available.length)];
+
+    // Snapshot current colors as "from" values
+    fromShaderStops = currentShaderStops.map(s => [...s]);
+    fromVoidColor = [...currentVoidColor];
+    fromStarTint = [...currentStarTint];
+
+    // Set targets
+    targetShaderStops = THEMES[nextTheme].shaderStops.map(s => [...s]);
+    targetVoidColor = [...THEMES[nextTheme].voidColor];
+    targetStarTint = [...THEMES[nextTheme].starTint];
+
+    // Animate uCosmic for stars/aurora transition
     cosmicTransitioning = true;
-    cosmicTarget = cosmicMode ? 1.0 : 0.0;
+    cosmicTarget = nextTheme === 'default' ? 0.0 : 1.0;
     cosmicAnimStartValue = cosmicValue;
     cosmicAnimStart = performance.now();
 
-    document.body.classList.toggle('cosmic', cosmicMode);
+    currentTheme = nextTheme;
 
-    // Persist state
-    try {
-      localStorage.setItem('cosmicMode', cosmicMode ? 'true' : 'false');
-    } catch (e) {}
+    document.body.classList.toggle('themed', nextTheme !== 'default');
+    applyThemeCssVars(nextTheme);
+
+    // Persist
+    try { localStorage.setItem('colorTheme', nextTheme); } catch (e) {}
 
     // Console message
-    if (cosmicMode) {
-      console.log(
-        '%cYou found the cosmos. ✦\n%chttps://github.com/jflavan',
-        'color:#a0c4ff;font-size:14px;font-weight:bold;',
-        'color:#6fa8dc;font-size:12px;'
-      );
-    } else {
-      console.log(
-        '%cCurious? Check out my GitHub.\n%chttps://github.com/jflavan',
-        'color:#e0aaff;font-size:14px;font-weight:bold;',
-        'color:#9d4edd;font-size:12px;'
-      );
-    }
+    const [msg, c1, c2] = THEMES[nextTheme].console;
+    console.log(
+      '%c' + msg + '\n%chttps://github.com/jflavan',
+      'color:' + c1 + ';font-size:14px;font-weight:bold;',
+      'color:' + c2 + ';font-size:12px;'
+    );
   }
 
   // ===== WEBGL AURORA BACKGROUND =====
@@ -1361,6 +1455,9 @@
       uniform vec2 uResolution;
       uniform vec2 uMouse;
       uniform float uCosmic;
+      uniform vec3 uC0, uC1, uC2, uC3, uC4, uC5, uC6;
+      uniform vec3 uVoidColor;
+      uniform vec3 uStarTint;
 
       // ---- Simplex-style 3D noise ----
       vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -1446,43 +1543,15 @@
         return linearToSrgb(max(vec3(0.0), oklabToLinear(mix(aLab, bLab, t))));
       }
 
-      // ---- Full-range color gradient with cosmic interpolation ----
+      // ---- Full-range color gradient using dynamic theme uniforms ----
       vec3 colorGradient(float t) {
-        // Normal (purple) stops
-        vec3 p0 = vec3(0.012, 0.0, 0.028);
-        vec3 p1 = vec3(0.06, 0.0, 0.14);
-        vec3 p2 = vec3(0.22, 0.06, 0.42);
-        vec3 p3 = vec3(0.353, 0.094, 0.604);
-        vec3 p4 = vec3(0.616, 0.306, 0.867);
-        vec3 p5 = vec3(0.780, 0.490, 1.0);
-        vec3 p6 = vec3(0.878, 0.667, 1.0);
-
-        // Cosmic (blue) stops
-        vec3 b0 = vec3(0.015, 0.02, 0.045);
-        vec3 b1 = vec3(0.025, 0.04, 0.10);
-        vec3 b2 = vec3(0.04, 0.10, 0.25);
-        vec3 b3 = vec3(0.07, 0.16, 0.28);
-        vec3 b4 = vec3(0.44, 0.66, 0.86);
-        vec3 b5 = vec3(0.63, 0.77, 1.0);
-        vec3 b6 = vec3(0.82, 0.91, 1.0);
-
-        // Interpolate stops based on uCosmic
-        vec3 c0 = mix(p0, b0, uCosmic);
-        vec3 c1 = mix(p1, b1, uCosmic);
-        vec3 c2 = mix(p2, b2, uCosmic);
-        vec3 c3 = mix(p3, b3, uCosmic);
-        vec3 c4 = mix(p4, b4, uCosmic);
-        vec3 c5 = mix(p5, b5, uCosmic);
-        vec3 c6 = mix(p6, b6, uCosmic);
-
-        // Same segment-based interpolation as original purpleGradient
         t = clamp(t, 0.0, 1.0);
-        if (t < 0.12) return mixOklab(c0, c1, smoothstep(0.0, 0.12, t));
-        if (t < 0.28) return mixOklab(c1, c2, smoothstep(0.12, 0.28, t));
-        if (t < 0.45) return mixOklab(c2, c3, smoothstep(0.28, 0.45, t));
-        if (t < 0.62) return mixOklab(c3, c4, smoothstep(0.45, 0.62, t));
-        if (t < 0.80) return mixOklab(c4, c5, smoothstep(0.62, 0.80, t));
-        return mixOklab(c5, c6, smoothstep(0.80, 1.0, t));
+        if (t < 0.12) return mixOklab(uC0, uC1, smoothstep(0.0, 0.12, t));
+        if (t < 0.28) return mixOklab(uC1, uC2, smoothstep(0.12, 0.28, t));
+        if (t < 0.45) return mixOklab(uC2, uC3, smoothstep(0.28, 0.45, t));
+        if (t < 0.62) return mixOklab(uC3, uC4, smoothstep(0.45, 0.62, t));
+        if (t < 0.80) return mixOklab(uC4, uC5, smoothstep(0.62, 0.80, t));
+        return mixOklab(uC5, uC6, smoothstep(0.80, 1.0, t));
       }
 
       // ---- Hash for film grain ----
@@ -1529,7 +1598,7 @@
 
               float starGlow = exp(-dist * dist * 800.0);
 
-              vec3 starColor = mix(vec3(0.9, 0.95, 1.0), vec3(0.7, 0.85, 1.0), starHash(cellId + 0.5));
+              vec3 starColor = mix(vec3(0.9, 0.95, 1.0), uStarTint, starHash(cellId + 0.5));
 
               stars += starColor * starGlow * brightness * twinkle;
             }
@@ -1625,7 +1694,7 @@
         float voidRad = 0.45 + 0.06 * sin(t * 0.07 + 2.0);
         float voidDist = length(warpedAuv - voidCenter) / voidRad;
         float voidMask = 1.0 - exp(-voidDist * voidDist * 1.2);
-        vec3 voidColor = mix(vec3(0.008, 0.0, 0.02), vec3(0.006, 0.008, 0.02), uCosmic);
+        vec3 voidColor = uVoidColor;
         float voidAddend = mix(0.4, 0.55, uCosmic);
         color = mix(voidColor, color, clamp(voidMask + voidAddend, 0.0, 1.0));
 
@@ -1683,6 +1752,9 @@
     const uResolution = gl.getUniformLocation(program, 'uResolution');
     const uMouse = gl.getUniformLocation(program, 'uMouse');
     const uCosmicLoc = gl.getUniformLocation(program, 'uCosmic');
+    const uCLocs = [0,1,2,3,4,5,6].map(i => gl.getUniformLocation(program, 'uC' + i));
+    const uVoidColorLoc = gl.getUniformLocation(program, 'uVoidColor');
+    const uStarTintLoc = gl.getUniformLocation(program, 'uStarTint');
 
     const startTime = performance.now();
 
@@ -1696,21 +1768,41 @@
       gl.uniform2f(uResolution, canvas.width, canvas.height);
       gl.uniform2f(uMouse, smoothMouseX, smoothMouseY);
 
-      // Animate uCosmic toward target
+      // Animate uCosmic and color transitions toward target
       if (cosmicAnimStart !== null) {
         const elapsed = performance.now() - cosmicAnimStart;
         const progress = Math.min(elapsed / COSMIC_ANIM_DURATION, 1.0);
         const eased = easeInOutCubic(progress);
         cosmicValue = cosmicAnimStartValue + (cosmicTarget - cosmicAnimStartValue) * eased;
 
+        // Interpolate shader colors from snapshot
+        for (let i = 0; i < 7; i++) {
+          for (let j = 0; j < 3; j++) {
+            currentShaderStops[i][j] = fromShaderStops[i][j] + (targetShaderStops[i][j] - fromShaderStops[i][j]) * eased;
+          }
+        }
+        for (let j = 0; j < 3; j++) {
+          currentVoidColor[j] = fromVoidColor[j] + (targetVoidColor[j] - fromVoidColor[j]) * eased;
+          currentStarTint[j] = fromStarTint[j] + (targetStarTint[j] - fromStarTint[j]) * eased;
+        }
+
         if (progress >= 1.0) {
           cosmicValue = cosmicTarget;
+          // Snap to exact target values
+          for (let i = 0; i < 7; i++) currentShaderStops[i] = [...targetShaderStops[i]];
+          currentVoidColor = [...targetVoidColor];
+          currentStarTint = [...targetStarTint];
           cosmicAnimStart = null;
           cosmicTransitioning = false;
         }
       }
 
       gl.uniform1f(uCosmicLoc, cosmicValue);
+      for (let i = 0; i < 7; i++) {
+        gl.uniform3f(uCLocs[i], currentShaderStops[i][0], currentShaderStops[i][1], currentShaderStops[i][2]);
+      }
+      gl.uniform3f(uVoidColorLoc, currentVoidColor[0], currentVoidColor[1], currentVoidColor[2]);
+      gl.uniform3f(uStarTintLoc, currentStarTint[0], currentStarTint[1], currentStarTint[2]);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);
     }
@@ -1726,7 +1818,7 @@
     navEl.classList.toggle('scrolled', scrollY > 100);
 
     // Cosmic mode: subtle parallax on revealed elements
-    if (cosmicMode && !prefersReducedMotion.matches) {
+    if (currentTheme !== 'default' && !prefersReducedMotion.matches) {
       const viewportCenter = window.innerHeight / 2;
       const revealEls = document.querySelectorAll('.reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible');
 
@@ -1789,7 +1881,7 @@
         setTimeout(() => {
           heroLine.classList.remove('flash');
           heroLine.classList.add('reset');
-          toggleCosmic();
+          cycleTheme();
         }, 150);
       }, 3000);
     }

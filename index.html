@@ -453,6 +453,19 @@
     to { opacity: 1; transform: scaleX(1); }
   }
 
+  @keyframes heroLineWiggle {
+    0%   { transform: scaleX(1) translateY(0); }
+    20%  { transform: scaleX(1) translateY(-2px); }
+    40%  { transform: scaleX(1) translateY(1.5px); }
+    60%  { transform: scaleX(1) translateY(-1px); }
+    80%  { transform: scaleX(1) translateY(0.5px); }
+    100% { transform: scaleX(1) translateY(0); }
+  }
+
+  .hero-line.wiggle {
+    animation: heroLineWiggle 0.5s ease-in-out;
+  }
+
   /* ===== SECTION SHARED ===== */
   .section {
     padding: 160px 56px;
@@ -1812,6 +1825,29 @@
   // ===== SCROLL-DRIVEN EFFECTS =====
   const navEl = document.querySelector('nav');
   let ticking = false;
+
+  // Hero line wiggle on first scroll (only after lineReveal finishes)
+  (function() {
+    const heroLine = document.querySelector('.hero-line');
+    if (!heroLine || prefersReducedMotion.matches) return;
+
+    heroLine.addEventListener('animationend', function onReveal(e) {
+      if (e.animationName !== 'lineReveal') return;
+      heroLine.removeEventListener('animationend', onReveal);
+      // Lock in final state so we can safely run a new animation
+      heroLine.style.opacity = '1';
+      heroLine.style.transform = 'scaleX(1)';
+      heroLine.style.animation = 'none';
+
+      window.addEventListener('scroll', function onFirstScroll() {
+        window.removeEventListener('scroll', onFirstScroll);
+        heroLine.classList.add('wiggle');
+        heroLine.addEventListener('animationend', () => {
+          heroLine.classList.remove('wiggle');
+        }, { once: true });
+      }, { passive: true });
+    });
+  })();
 
   function onScroll() {
     const scrollY = window.scrollY;

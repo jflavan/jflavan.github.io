@@ -130,18 +130,22 @@
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     color: #fff;
+    background: #0a0014;
     background: var(--bg-base);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
   }
 
   /* Custom text selection */
   ::selection {
+    background: rgba(157, 78, 221, 0.4);
     background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4);
     color: #fff;
   }
 
   ::-moz-selection {
+    background: rgba(157, 78, 221, 0.4);
     background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4);
     color: #fff;
   }
@@ -187,74 +191,100 @@
   /* ===== SCROLL REVEAL ANIMATIONS ===== */
   .reveal {
     opacity: 0;
+    -webkit-transform: translateY(30px);
     transform: translateY(30px);
+    -webkit-transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
+                -webkit-transform 1s cubic-bezier(0.25, 1, 0.5, 1);
     transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
                 transform 1s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .reveal.visible {
     opacity: 1;
+    -webkit-transform: translateY(0);
     transform: translateY(0);
   }
 
-  .reveal-delay-1 { transition-delay: 0.15s; }
-  .reveal-delay-2 { transition-delay: 0.3s; }
-  .reveal-delay-3 { transition-delay: 0.45s; }
-  .reveal-delay-4 { transition-delay: 0.6s; }
+  .reveal-delay-1 { -webkit-transition-delay: 0.15s; transition-delay: 0.15s; }
+  .reveal-delay-2 { -webkit-transition-delay: 0.3s; transition-delay: 0.3s; }
+  .reveal-delay-3 { -webkit-transition-delay: 0.45s; transition-delay: 0.45s; }
+  .reveal-delay-4 { -webkit-transition-delay: 0.6s; transition-delay: 0.6s; }
 
   /* Slide from left */
   .reveal-left {
     opacity: 0;
+    -webkit-transform: translateX(-40px);
     transform: translateX(-40px);
+    -webkit-transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
+                -webkit-transform 1s cubic-bezier(0.25, 1, 0.5, 1);
     transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
                 transform 1s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .reveal-left.visible {
     opacity: 1;
+    -webkit-transform: translateX(0);
     transform: translateX(0);
   }
 
   /* Slide from right */
   .reveal-right {
     opacity: 0;
+    -webkit-transform: translateX(40px);
     transform: translateX(40px);
+    -webkit-transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
+                -webkit-transform 1s cubic-bezier(0.25, 1, 0.5, 1);
     transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
                 transform 1s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .reveal-right.visible {
     opacity: 1;
+    -webkit-transform: translateX(0);
     transform: translateX(0);
   }
 
   /* Scale up */
   .reveal-scale {
     opacity: 0;
+    -webkit-transform: scale(0.95);
     transform: scale(0.95);
+    -webkit-transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1),
+                -webkit-transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
     transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1),
                 transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   .reveal-scale.visible {
     opacity: 1;
+    -webkit-transform: scale(1);
     transform: scale(1);
   }
 
   /* Hero specific — fade in and up on load */
   .hero-enter {
     opacity: 0;
+    -webkit-transform: translateX(20px);
     transform: translateX(20px);
+    -webkit-animation: heroEnter 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     animation: heroEnter 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
-  .hero-enter-delay-1 { animation-delay: 0.3s; }
-  .hero-enter-delay-2 { animation-delay: 1.4s; }
-  .hero-enter-delay-3 { animation-delay: 1.2s; }
+  .hero-enter-delay-1 { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; }
+  .hero-enter-delay-2 { -webkit-animation-delay: 1.4s; animation-delay: 1.4s; }
+  .hero-enter-delay-3 { -webkit-animation-delay: 1.2s; animation-delay: 1.2s; }
 
+  @-webkit-keyframes heroEnter {
+    to {
+      opacity: 1;
+      -webkit-transform: translateX(0);
+      transform: translateX(0);
+    }
+  }
   @keyframes heroEnter {
     to {
       opacity: 1;
+      -webkit-transform: translateX(0);
       transform: translateX(0);
     }
   }
@@ -262,19 +292,28 @@
   /* Hero enter from left */
   .hero-enter-left {
     opacity: 0;
+    -webkit-transform: translateX(-20px);
     transform: translateX(-20px);
+    -webkit-animation-name: heroEnter;
     animation-name: heroEnter;
+    -webkit-animation-duration: 1.6s;
     animation-duration: 1.6s;
+    -webkit-animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
     animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-animation-fill-mode: forwards;
     animation-fill-mode: forwards;
   }
 
   /* Nav fade in */
   nav {
     opacity: 0;
+    -webkit-animation: navEnter 1.4s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
     animation: navEnter 1.4s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
   }
 
+  @-webkit-keyframes navEnter {
+    to { opacity: 1; }
+  }
   @keyframes navEnter {
     to { opacity: 1; }
   }
@@ -287,6 +326,7 @@
     width: 100vw;
     height: 100vh;
     z-index: -1;
+    background: #0a0014;
     background: var(--bg-base);
     overflow: hidden;
   }
@@ -317,7 +357,14 @@
   }
 
   nav.scrolled {
-    background: color-mix(in srgb, var(--bg-base) 15%, transparent);
+    background: rgba(10, 0, 20, 0.85);
+  }
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    nav.scrolled {
+      background: rgba(10, 0, 20, 0.15);
+      background: color-mix(in srgb, var(--bg-base) 15%, transparent);
+    }
   }
 
   .nav-links {
@@ -340,6 +387,7 @@
 
   .nav-links a:hover {
     color: #fff;
+    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
   }
 
@@ -393,6 +441,7 @@
   }
 
   .hero-name {
+    font-size: 14vw;
     font-size: clamp(80px, 14vw, 180px);
     font-weight: 900;
     letter-spacing: -6px;
@@ -402,13 +451,21 @@
 
   .hero-name .first { color: #fff; }
   .hero-name .last {
+    color: #c77dff;
+    background: linear-gradient(135deg, #9d4edd, #c77dff, #e0aaff, #c77dff, #9d4edd);
     background: linear-gradient(135deg, var(--accent-mid), var(--accent-bright), var(--accent-light), var(--accent-bright), var(--accent-mid));
     background-size: 300% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-animation: gradientShimmer 8s ease-in-out infinite;
     animation: gradientShimmer 8s ease-in-out infinite;
   }
 
+  @-webkit-keyframes gradientShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
   @keyframes gradientShimmer {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -418,9 +475,12 @@
     height: 1px;
     background: linear-gradient(90deg, rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4), rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15), transparent);
     margin-top: 32px;
+    -webkit-transform-origin: left;
     transform-origin: left;
     opacity: 0;
+    -webkit-transform: scaleX(0);
     transform: scaleX(0);
+    -webkit-animation: lineReveal 1.8s cubic-bezier(0.25, 1, 0.5, 1) 1.6s forwards;
     animation: lineReveal 1.8s cubic-bezier(0.25, 1, 0.5, 1) 1.6s forwards;
     position: relative;
   }
@@ -459,10 +519,22 @@
     transition: height 0.3s ease, opacity 0.3s ease, background 0.3s ease;
   }
 
+  @-webkit-keyframes lineReveal {
+    to { opacity: 1; -webkit-transform: scaleX(1); transform: scaleX(1); }
+  }
   @keyframes lineReveal {
-    to { opacity: 1; transform: scaleX(1); }
+    to { opacity: 1; -webkit-transform: scaleX(1); transform: scaleX(1); }
   }
 
+  @-webkit-keyframes heroLinePulse {
+    0%   { box-shadow: 0 1px 0 0 transparent; }
+    17%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    33%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
+    50%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    67%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
+    83%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
+    100% { box-shadow: 0 1px 0 0 transparent; }
+  }
   @keyframes heroLinePulse {
     0%   { box-shadow: 0 1px 0 0 transparent; }
     17%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
@@ -474,6 +546,7 @@
   }
 
   .hero-line.pulse {
+    -webkit-animation: heroLinePulse 3.5s ease-in-out;
     animation: heroLinePulse 3.5s ease-in-out;
   }
 
@@ -487,6 +560,7 @@
     font-size: 11px;
     letter-spacing: 4px;
     text-transform: uppercase;
+    color: #c77dff;
     color: var(--accent-bright);
     font-weight: 600;
     margin-bottom: 48px;
@@ -495,6 +569,7 @@
 
   /* ===== ABOUT ===== */
   .about .statement {
+    font-size: 4.5vw;
     font-size: clamp(32px, 4.5vw, 56px);
     font-weight: 300;
     line-height: 1.4;
@@ -526,6 +601,7 @@
 
   .focus-item:hover {
     background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06);
+    -webkit-transform: translateY(-4px);
     transform: translateY(-4px);
   }
 
@@ -569,6 +645,7 @@
 
   /* ===== EXPERIENCE ===== */
   .experience .statement {
+    font-size: 3.5vw;
     font-size: clamp(28px, 3.5vw, 44px);
     font-weight: 300;
     line-height: 1.4;
@@ -677,6 +754,7 @@
   }
 
   .contact-prompt {
+    font-size: 3vw;
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 400;
     color: rgba(255, 255, 255, 0.8);
@@ -746,6 +824,7 @@
   }
 
   .footer-name {
+    font-size: 10vw;
     font-size: clamp(60px, 10vw, 140px);
     font-weight: 900;
     letter-spacing: -4px;
@@ -774,6 +853,7 @@
 
   .footer-links a:hover {
     color: var(--accent-light);
+    -webkit-transform: translateY(-1px);
     transform: translateY(-1px);
   }
 
@@ -942,6 +1022,7 @@
 
   /* ===== MAGNETIC ELEMENTS ===== */
   .magnetic {
+    -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
   }
@@ -1210,22 +1291,24 @@
 </footer>
 
 <script>
-  // Intersection Observer for scroll-triggered animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+  // Intersection Observer for scroll-triggered animations (with fallback)
+  var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
     });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  // Observe all reveal elements
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-    observer.observe(el);
-  });
+    revealEls.forEach(function(el) { observer.observe(el); });
+  } else {
+    // Fallback: make all elements visible immediately
+    revealEls.forEach(function(el) { el.classList.add('visible'); });
+  }
 
   // Custom smooth scroll with eased animation
   function smoothScrollTo(targetY, duration = 1200) {
@@ -1420,7 +1503,12 @@
   // ===== WEBGL AURORA BACKGROUND =====
   (function() {
     const canvas = document.getElementById('aurora-bg');
-    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
+    var gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
+    var isWebGL2 = !!gl;
+    if (!gl) {
+      gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false })
+        || canvas.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: true, antialias: false });
+    }
     if (!gl) return;
 
     let mouseX = 0.5, mouseY = 0.5;
@@ -1441,18 +1529,31 @@
     resize();
     window.addEventListener('resize', resize);
 
-    const vsSource = `#version 300 es
+    var vsSource = isWebGL2
+      ? `#version 300 es
       in vec2 a_position;
       out vec2 vUv;
       void main() {
         vUv = a_position * 0.5 + 0.5;
         gl_Position = vec4(a_position, 0.0, 1.0);
+      }`
+      : `attribute vec2 a_position;
+      varying vec2 vUv;
+      void main() {
+        vUv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
       }`;
 
-    const fsSource = `#version 300 es
+    var fsHeader = isWebGL2
+      ? `#version 300 es
       precision highp float;
       in vec2 vUv;
       out vec4 fragColor;
+      #define FRAG_COLOR fragColor`
+      : `precision highp float;
+      varying vec2 vUv;
+      #define FRAG_COLOR gl_FragColor`;
+    var fsSource = fsHeader + `
 
       uniform float uTime;
       uniform vec2 uResolution;
@@ -1714,7 +1815,7 @@
         float grainFactor = mix(0.04, 0.01, uCosmic);
         color = mix(color, grainBlend, grainFactor);
 
-        fragColor = vec4(color, 1.0);
+        FRAG_COLOR = vec4(color, 1.0);
       }`;
 
     function createShader(type, source) {
@@ -1825,16 +1926,21 @@
       window.removeEventListener('scroll', onFirstScroll);
       // Stop lineReveal and lock in its final state
       heroLine.style.opacity = '1';
+      heroLine.style.webkitTransform = 'scaleX(1)';
       heroLine.style.transform = 'scaleX(1)';
+      heroLine.style.webkitAnimation = 'none';
       heroLine.style.animation = 'none';
       // Force reflow so browser registers the cleared animation
       void heroLine.offsetWidth;
       // Remove inline animation so the .pulse class animation can take effect
+      heroLine.style.webkitAnimation = '';
       heroLine.style.animation = '';
       heroLine.classList.add('pulse');
-      heroLine.addEventListener('animationend', () => {
+      function onPulseEnd() {
+        heroLine.removeEventListener('animationend', onPulseEnd);
         heroLine.classList.remove('pulse');
-      }, { once: true });
+      }
+      heroLine.addEventListener('animationend', onPulseEnd);
     }, { passive: true });
   })();
 

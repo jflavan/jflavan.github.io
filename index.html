@@ -169,6 +169,24 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 256px 256px;
+    transition: opacity 2s ease;
+  }
+
+  body.cosmic::after {
+    opacity: 0.015;
+  }
+
+  body.cosmic .hero-name .last {
+    background: linear-gradient(135deg,
+      var(--accent-mid), var(--accent-bright), var(--accent-light),
+      var(--accent-bright), var(--accent-mid));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  body.cosmic .contact-btn.primary {
+    background: linear-gradient(135deg, var(--accent-deep), var(--accent-mid));
   }
 
   /* ===== SCROLL REVEAL ANIMATIONS ===== */
@@ -320,6 +338,9 @@
     transform: translateY(-1px);
   }
 
+  nav a { transition: color 2s ease; }
+  .nav-contact { transition: border-color 2s ease, box-shadow 2s ease; }
+
   .nav-contact a {
     color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.8);
     text-decoration: none;
@@ -396,6 +417,41 @@
     opacity: 0;
     transform: scaleX(0);
     animation: lineReveal 1.8s cubic-bezier(0.25, 1, 0.5, 1) 1.6s forwards;
+    position: relative;
+  }
+
+  .hero-line::before {
+    content: '';
+    position: absolute;
+    top: -22px;
+    left: 0;
+    right: 0;
+    height: 45px;
+    cursor: default;
+  }
+
+  .hero-line.holding {
+    height: 2px;
+    opacity: 1;
+    background: linear-gradient(90deg,
+      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.8),
+      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4),
+      transparent);
+    transition: height 3s ease, opacity 3s ease, background 3s ease;
+  }
+
+  .hero-line.flash {
+    opacity: 1;
+    height: 3px;
+    background: linear-gradient(90deg,
+      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 1.0),
+      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.7),
+      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.3));
+    transition: none;
+  }
+
+  .hero-line.reset {
+    transition: height 0.3s ease, opacity 0.3s ease, background 0.3s ease;
   }
 
   @keyframes lineReveal {
@@ -415,6 +471,7 @@
     color: var(--accent-bright);
     font-weight: 600;
     margin-bottom: 48px;
+    transition: color 2s ease;
   }
 
   /* ===== ABOUT ===== */
@@ -488,6 +545,9 @@
     color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.9);
   }
 
+  .focus-card { transition: border-color 2s ease, box-shadow 2s ease; }
+  .focus-card svg, .focus-card .card-icon { transition: color 2s ease; }
+
   /* ===== EXPERIENCE ===== */
   .experience .statement {
     font-size: clamp(28px, 3.5vw, 44px);
@@ -545,6 +605,8 @@
     max-width: 600px;
   }
 
+  .timeline-line, .timeline-dot { transition: background-color 2s ease, border-color 2s ease; }
+
   /* ===== SKILLS ===== */
   .skills-grid {
     display: grid;
@@ -572,7 +634,7 @@
     font-size: 13px;
     color: rgba(255, 255, 255, 0.7);
     padding: 6px 0;
-    transition: color 0.3s;
+    transition: border-color 2s ease, color 2s ease;
   }
 
   .skill-tag:hover { color: #fff; }
@@ -619,7 +681,7 @@
     font-weight: 600;
     text-decoration: none;
     letter-spacing: 0.5px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 2s ease;
   }
 
   .contact-btn.primary {
@@ -695,6 +757,8 @@
     color: var(--accent-light);
     transform: translateY(-1px);
   }
+
+  footer a { transition: color 2s ease; }
 
   .footer-meta {
     display: flex;
@@ -841,6 +905,18 @@
       opacity: 1;
       transform: none;
       transition: none;
+    }
+
+    body.cosmic .hero-line,
+    body.cosmic nav a,
+    body.cosmic .nav-contact,
+    body.cosmic .section-label,
+    body.cosmic .focus-card,
+    body.cosmic .skill-tag,
+    body.cosmic .contact-btn,
+    body.cosmic footer a,
+    body.cosmic::after {
+      transition: none !important;
     }
   }
 

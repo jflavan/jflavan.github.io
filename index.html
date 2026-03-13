@@ -1446,6 +1446,41 @@
         return exp(-d * d * 2.0);
       }
 
+      float starHash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      vec3 starLayer(vec2 uv, float time) {
+        vec3 stars = vec3(0.0);
+        vec2 gridUv = uv * 120.0;
+        vec2 cell = floor(gridUv);
+        vec2 localUv = fract(gridUv);
+
+        for (int x = -1; x <= 1; x++) {
+          for (int y = -1; y <= 1; y++) {
+            vec2 neighbor = vec2(float(x), float(y));
+            vec2 cellId = cell + neighbor;
+            float h = starHash(cellId);
+
+            if (h > 0.98) {
+              vec2 starPos = vec2(starHash(cellId + 0.1), starHash(cellId + 0.2));
+              float dist = length(localUv - neighbor - starPos);
+
+              float brightness = starHash(cellId + 0.3) * 0.6 + 0.4;
+              float twinkleSpeed = starHash(cellId + 0.4) * 2.0 + 0.5;
+              float twinkle = sin(h * 1000.0 + time * twinkleSpeed) * 0.3 + 0.7;
+
+              float starGlow = exp(-dist * dist * 800.0);
+
+              vec3 starColor = mix(vec3(0.9, 0.95, 1.0), vec3(0.7, 0.85, 1.0), starHash(cellId + 0.5));
+
+              stars += starColor * starGlow * brightness * twinkle;
+            }
+          }
+        }
+        return stars;
+      }
+
       void main() {
         vec2 uv = vUv;
         float aspect = uResolution.x / uResolution.y;
@@ -1465,7 +1500,8 @@
 
         // ---- Layer 2: Noise-warped UV for organic flowing distortion ----
         // Breathing warp intensity — the whole field pulses gently
-        float breathe = 0.09 + 0.035 * sin(t * 0.08) + 0.02 * sin(t * 0.13 + 1.0);
+        float breatheBase = 0.09 + 0.035 * sin(t * 0.08) + 0.02 * sin(t * 0.13 + 1.0);
+        float breathe = mix(breatheBase, 0.01, uCosmic);
 
         float n1 = snoise(vec3(uv * 1.8, t * 0.025)) * 0.6
                  + snoise(vec3(uv * 3.5, t * 0.035 + 10.0)) * 0.3
@@ -1488,7 +1524,7 @@
         float rad1 = 0.55 + 0.08 * sin(t * 0.09);
         float glow1 = elongatedGlow(warpedAuv, center1, stretch1, rad1);
         vec3 col1 = mixOklab(vec3(0.353, 0.094, 0.604), vec3(0.616, 0.306, 0.867), glow1);
-        color = mix(color, col1, glow1 * (0.85 + 0.1 * sin(t * 0.05)));
+        color = mix(color, col1, glow1 * (0.85 + 0.1 * sin(t * 0.05)) * (1.0 - uCosmic));
 
         // ---- Light shape 2: Secondary band — opposite parallax ----
         float orbit = t * 0.06;
@@ -1498,7 +1534,7 @@
         float rad2 = 0.5 + 0.07 * sin(t * 0.08 + 3.0);
         float glow2 = elongatedGlow(warpedAuv, center2, stretch2, rad2);
         vec3 col2 = mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.482, 0.173, 0.749), glow2);
-        color = mix(color, col2, glow2 * 0.75);
+        color = mix(color, col2, glow2 * 0.75 * (1.0 - uCosmic));
 
         // ---- Light shape 3: Bright accent streak ----
         vec2 center3 = vec2(0.4 * aspect, 0.6);
@@ -1508,14 +1544,14 @@
         float rad3 = 0.4 + 0.06 * sin(t * 0.1 + 2.0);
         float glow3 = elongatedGlow(warpedAuv, center3, stretch3, rad3);
         vec3 col3 = mixOklab(vec3(0.616, 0.306, 0.867), vec3(0.878, 0.667, 1.0), glow3);
-        color = mix(color, col3, glow3 * (0.6 + 0.12 * sin(t * 0.07 + 1.0)));
+        color = mix(color, col3, glow3 * (0.6 + 0.12 * sin(t * 0.07 + 1.0)) * (1.0 - uCosmic));
 
         // ---- Light shape 4: Large deep ambient ----
         vec2 center4 = vec2(0.3 * aspect, 0.75);
         center4 += vec2(sin(t * 0.04 + 2.0) * 0.12 * aspect, cos(t * 0.035) * 0.09);
         float rad4 = 0.8 + 0.12 * sin(t * 0.06 + 4.0);
         float glow4 = softGlow(warpedAuv, center4, rad4);
-        color = mix(color, mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.353, 0.094, 0.604), glow4), glow4 * (0.4 + 0.1 * sin(t * 0.08)));
+        color = mix(color, mixOklab(vec3(0.22, 0.06, 0.42), vec3(0.353, 0.094, 0.604), glow4), glow4 * (0.4 + 0.1 * sin(t * 0.08)) * (1.0 - uCosmic));
 
         // ---- Light shape 5: Hot bright spot ----
         vec2 center5 = vec2(0.65 * aspect, 0.3);
@@ -1523,7 +1559,7 @@
         center5 += mouseOppose * 0.5;
         float rad5 = 0.35 + 0.08 * sin(t * 0.075 + 5.0);
         float glow5 = softGlow(warpedAuv, center5, rad5);
-        color = mix(color, mixOklab(vec3(0.780, 0.490, 1.0), vec3(0.878, 0.667, 1.0), glow5), glow5 * (0.55 + 0.1 * cos(t * 0.06)));
+        color = mix(color, mixOklab(vec3(0.780, 0.490, 1.0), vec3(0.878, 0.667, 1.0), glow5), glow5 * (0.55 + 0.1 * cos(t * 0.06)) * (1.0 - uCosmic));
 
         // ---- Dark void — soft concentrated dark area for contrast ----
         vec2 voidCenter = vec2(0.38 * aspect, 0.42);
@@ -1532,7 +1568,13 @@
         float voidRad = 0.45 + 0.06 * sin(t * 0.07 + 2.0);
         float voidDist = length(warpedAuv - voidCenter) / voidRad;
         float voidMask = 1.0 - exp(-voidDist * voidDist * 1.2);
-        color = mix(vec3(0.008, 0.0, 0.02), color, clamp(voidMask + 0.4, 0.0, 1.0));
+        vec3 voidColor = mix(vec3(0.008, 0.0, 0.02), vec3(0.01, 0.01, 0.03), uCosmic);
+        float voidAddend = mix(0.4, 0.55, uCosmic);
+        color = mix(voidColor, color, clamp(voidMask + voidAddend, 0.0, 1.0));
+
+        // Star layer — fades in with cosmic mode
+        vec3 stars = starLayer(warpedAuv, t) * uCosmic;
+        color += stars;
 
         // ---- Layer 3: Film grain ----
         float grainR = rand(gl_FragCoord.xy);
@@ -1540,7 +1582,8 @@
         float grainB = rand(gl_FragCoord.xy + 2000.0);
         vec3 grain = vec3(grainR, grainG, grainB);
         vec3 grainBlend = mix(2.0 * color * grain, 1.0 - 2.0 * (1.0 - color) * (1.0 - grain), step(0.5, color));
-        color = mix(color, grainBlend, 0.04);
+        float grainFactor = mix(0.04, 0.01, uCosmic);
+        color = mix(color, grainBlend, grainFactor);
 
         fragColor = vec4(color, 1.0);
       }`;

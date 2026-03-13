@@ -263,7 +263,10 @@
   .hero-enter-left {
     opacity: 0;
     transform: translateX(-20px);
-    animation: heroEnter 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation-name: heroEnter;
+    animation-duration: 1.6s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    animation-fill-mode: forwards;
   }
 
   /* Nav fade in */

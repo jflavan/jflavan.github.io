@@ -1475,13 +1475,14 @@
         vec3 c5 = mix(p5, b5, uCosmic);
         vec3 c6 = mix(p6, b6, uCosmic);
 
-        // Same segment-based interpolation as before
-        if (t < 0.15) return mix(c0, c1, smoothstep(0.0, 0.15, t));
-        if (t < 0.3)  return mix(c1, c2, smoothstep(0.15, 0.3, t));
-        if (t < 0.45) return mix(c2, c3, smoothstep(0.3, 0.45, t));
-        if (t < 0.6)  return mix(c3, c4, smoothstep(0.45, 0.6, t));
-        if (t < 0.8)  return mix(c4, c5, smoothstep(0.6, 0.8, t));
-        return mix(c5, c6, smoothstep(0.8, 1.0, t));
+        // Same segment-based interpolation as original purpleGradient
+        t = clamp(t, 0.0, 1.0);
+        if (t < 0.12) return mixOklab(c0, c1, smoothstep(0.0, 0.12, t));
+        if (t < 0.28) return mixOklab(c1, c2, smoothstep(0.12, 0.28, t));
+        if (t < 0.45) return mixOklab(c2, c3, smoothstep(0.28, 0.45, t));
+        if (t < 0.62) return mixOklab(c3, c4, smoothstep(0.45, 0.62, t));
+        if (t < 0.80) return mixOklab(c4, c5, smoothstep(0.62, 0.80, t));
+        return mixOklab(c5, c6, smoothstep(0.80, 1.0, t));
       }
 
       // ---- Hash for film grain ----

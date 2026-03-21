@@ -154,3 +154,37 @@ body.themed .glass-card {
     transition: none;
   }
 }
+
+/* ===== WORD-BY-WORD REVEAL ===== */
+.word-reveal-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.word-reveal {
+  display: inline-block;
+  opacity: 0.06;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  margin-right: 0.3em;
+}
+
+.word-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ensure strong words stay bold and white when revealed */
+.word-reveal strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

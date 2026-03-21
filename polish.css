@@ -188,3 +188,23 @@ body.themed .glass-card {
     transition: none;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card {
+    transition: none;
+  }
+}
+
+/* ===== OVERRIDES FOR EXISTING EMBEDDED STYLES ===== */
+/* Override old focus-item padding/margin (replaced by glass-card) */
+.focus-item.glass-card {
+  padding: 32px;
+  margin: 0;
+}
+
+/* Override old timeline-item grid layout (replaced by glass-card block layout) */
+.timeline-item.glass-card {
+  grid-template-columns: none;
+  gap: 0;
+}
+

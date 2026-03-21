@@ -148,18 +148,10 @@ body.themed .glass-card {
   transform: scaleX(1);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .section-divider {
-    transform: scaleX(1);
-    transition: none;
-  }
-}
-
 /* ===== WORD-BY-WORD REVEAL ===== */
 .word-reveal-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
 }
 
 .word-reveal {
@@ -181,16 +173,20 @@ body.themed .glass-card {
   font-weight: 600;
 }
 
+/* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
+  .glass-card {
+    transition: none;
+  }
+
+  .section-divider {
+    transform: scaleX(1);
+    transition: none;
+  }
+
   .word-reveal {
     opacity: 1;
     transform: none;
-    transition: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .glass-card {
     transition: none;
   }
 }
@@ -202,9 +198,4 @@ body.themed .glass-card {
   margin: 0;
 }
 
-/* Override old timeline-item grid layout (replaced by glass-card block layout) */
-.timeline-item.glass-card {
-  grid-template-columns: none;
-  gap: 0;
-}
 

@@ -119,3 +119,38 @@ body.themed .glass-card {
     padding-top: 0;
   }
 }
+
+/* ===== SECTION DIVIDERS ===== */
+.section-divider {
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.5),
+    rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15),
+    transparent);
+  transform: scaleX(0);
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+  margin-bottom: 0;
+}
+
+.section-divider-left {
+  transform-origin: left;
+}
+
+.section-divider-right {
+  transform-origin: right;
+  background: linear-gradient(270deg,
+    rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.5),
+    rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15),
+    transparent);
+}
+
+.section-divider.visible {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-divider {
+    transform: scaleX(1);
+    transition: none;
+  }
+}

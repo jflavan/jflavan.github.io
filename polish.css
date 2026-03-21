@@ -91,3 +91,8 @@ body.themed .glass-card {
     gap: 4px;
   }
 }
+
+/* ===== SKILL GROUP GLASS CARDS ===== */
+.skill-group.glass-card {
+  padding: 24px;
+}

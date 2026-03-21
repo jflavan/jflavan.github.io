@@ -96,3 +96,26 @@ body.themed .glass-card {
 .skill-group.glass-card {
   padding: 24px;
 }
+
+/* ===== ASYMMETRIC SECTION LABELS ===== */
+.section-asymmetric {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 48px;
+}
+
+.section-asymmetric .section-label {
+  margin-bottom: 0;
+  padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .section-asymmetric {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .section-asymmetric .section-label {
+    padding-top: 0;
+  }
+}

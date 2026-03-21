@@ -58,3 +58,36 @@ body.themed .glass-card {
 
 .focus-icon-circle { border-radius: 50%; }
 .focus-icon-rounded { border-radius: 10px; }
+
+/* ===== TIMELINE GLASS CARDS ===== */
+.timeline-item.glass-card {
+  display: block;
+  margin: 0;
+  padding: 24px;
+  border-top: none;
+  border-radius: var(--glass-radius);
+}
+
+.timeline-item.glass-card:last-child {
+  border-bottom: none;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .timeline-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

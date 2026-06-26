@@ -282,6 +282,13 @@ footer {
   color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.08);
 }
 
+/* ===== ACCESSIBLE FOCUS STATES ===== */
+a:focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 /* ===== OVERRIDES FOR EXISTING EMBEDDED STYLES ===== */
 /* Override old focus-item padding/margin (replaced by glass-card) */
 .focus-item.glass-card {

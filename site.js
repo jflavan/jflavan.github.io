@@ -84,24 +84,65 @@
 (function () {
   'use strict';
 
-  var sections = document.querySelectorAll('.section');
-  var navLinks = document.querySelectorAll('.nav-links a, .nav-contact a');
+  var sections = Array.prototype.filter.call(
+    document.querySelectorAll('.section'),
+    function (section) { return !!section.id; }
+  );
+  var navLinks = Array.prototype.slice.call(
+    document.querySelectorAll('.nav-links a, .nav-contact a')
+  );
   if (!sections.length || !navLinks.length) return;
 
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      var id = entry.target.id;
-      navLinks.forEach(function (link) {
-        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
-      });
-    });
-  }, {
-    threshold: 0.3,
-    rootMargin: '-80px 0px -40% 0px'
-  });
+  var current;
 
-  sections.forEach(function (section) {
-    if (section.id) observer.observe(section);
-  });
+  function setActive(id) {
+    if (id === current) return;
+    current = id;
+    navLinks.forEach(function (link) {
+      link.classList.toggle('active', !!id && link.getAttribute('href') === '#' + id);
+    });
+  }
+
+  function navHeight() {
+    var raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-h');
+    var value = parseFloat(raw);
+    return isNaN(value) ? 72 : value;
+  }
+
+  // The active section is the last one whose top has crossed a reference line
+  // just below the nav. Position-based rather than ratio-based so that tall
+  // sections (which can never have a large share of themselves in view) still
+  // register as the viewer scrolls through them.
+  var ticking = false;
+  function update() {
+    ticking = false;
+
+    var doc = document.documentElement;
+    var atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 2;
+    if (atBottom) {
+      setActive(sections[sections.length - 1].id);
+      return;
+    }
+
+    var line = navHeight() + window.innerHeight * 0.3;
+    var active = null;
+    for (var i = 0; i < sections.length; i++) {
+      var rect = sections[i].getBoundingClientRect();
+      if (rect.top > line) break;
+      active = rect.bottom > navHeight() ? sections[i].id : null;
+    }
+    setActive(active);
+  }
+
+  function schedule() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  window.addEventListener('load', schedule);
+  update();
 })();

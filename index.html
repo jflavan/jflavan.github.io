@@ -603,6 +603,8 @@
   let currentTheme = 'default';
   let cosmicTransitioning = false;
   let auroraResume = null;      // set by the aurora module
+  let auroraGlitch = null;      // (strength 0..1, duration ms) → trigger a glitch burst
+  let auroraHold = null;        // (bool) → build-up while the hero line is held
   let cosmicValue = 0.0;        // 0 = default, 1 = non-default (controls stars/aurora)
   let cosmicTarget = 0.0;
   let cosmicAnimStart = null;
@@ -668,6 +670,7 @@
     document.body.classList.toggle('themed', nextTheme !== 'default');
     applyThemeCssVars(nextTheme);
     if (auroraResume) auroraResume();
+    if (auroraGlitch) auroraGlitch(1, 480);
 
     // Persist
     try { localStorage.setItem('colorTheme', nextTheme); } catch (e) {}
@@ -719,6 +722,9 @@
       uniform float uCosmic;
       uniform float uScroll;   // viewport heights scrolled
       uniform float uCalm;     // 0 in the hero and contact, 1 over the content sections
+      uniform float uGlitch;   // burst envelope 0..1
+      uniform float uGlitchSeed;
+      uniform float uTear;     // scroll-velocity tearing 0..1
       uniform vec3 uC0, uC1, uC2, uC3, uC4, uC5, uC6;
       uniform vec3 uVoidColor;
       uniform vec3 uStarTint;
@@ -871,8 +877,7 @@
         return stars;
       }
 
-      void main() {
-        vec2 uv = vUv;
+      vec3 scene(vec2 uv) {
         float aspect = uResolution.x / uResolution.y;
         vec2 auv = vec2(uv.x * aspect, uv.y);
         float t = uTime;
@@ -997,6 +1002,53 @@
         float vig = smoothstep(0.95, 0.35, length((uv - 0.5) * vec2(1.0, 1.15)));
         color *= mix(0.72, 1.0, vig);
 
+        return color;
+      }
+
+      float hash1(float n) { return fract(sin(n) * 43758.5453); }
+
+      void main() {
+        vec2 uv = vUv;
+        float g = uGlitch;
+        float tear = uTear;
+        float amt = max(g, tear * 0.7);
+        // Re-roll the slice pattern ~18 times a second so bursts flicker
+        float tick = floor(uTime * 18.0);
+
+        // ---- Slice displacement, vertical smear (scroll tear) and block quantisation ----
+        if (amt > 0.002) {
+          float bands = mix(14.0, 46.0, hash1(uGlitchSeed * 7.1));
+          float band = floor(uv.y * bands + uGlitchSeed * 91.0);
+          float h = hash1(band * 13.7 + uGlitchSeed * 3.3 + tick * 0.37);
+          float sliceOn = step(1.0 - 0.45 * amt, h);
+          float shift = (hash1(band * 5.1 + uGlitchSeed * 17.0 + tick) - 0.5) * 0.18 * amt * sliceOn;
+          uv.x += shift;
+          uv.y += (hash1(band * 2.3 + uGlitchSeed) - 0.5) * 0.08 * tear * sliceOn;
+          float blocky = step(0.72, hash1(band * 3.9 + uGlitchSeed * 5.0)) * sliceOn * step(0.3, g);
+          if (blocky > 0.5) {
+            float q = mix(28.0, 90.0, hash1(band + uGlitchSeed));
+            uv = floor(uv * q) / q;
+          }
+        }
+
+        vec3 color = scene(uv);
+
+        // ---- Chromatic split, scanlines and a brightness pop during bursts ----
+        if (g > 0.002) {
+          float d = (0.005 + 0.014 * g) * (0.5 + hash1(tick * 0.91 + uGlitchSeed));
+          vec3 cr = scene(uv + vec2(d, 0.0));
+          vec3 cb = scene(uv - vec2(d, 0.0));
+          color = mix(color, vec3(cr.r, color.g, cb.b), min(1.0, g * 1.6));
+          float scan = step(0.5, fract(gl_FragCoord.y * 0.5));
+          color *= 1.0 - 0.2 * g * scan;
+          color += uC6 * 0.14 * g * g;
+        }
+
+        // ---- Idle signal: a faint bar rolling down the screen ----
+        float roll = fract(uv.y + uTime * 0.02);
+        float bar = smoothstep(0.0, 0.012, roll) * smoothstep(0.045, 0.012, roll);
+        color += vec3(bar * 0.03 * (1.0 - 0.5 * uCalm));
+
         fragColor = vec4(color, 1.0);
       }`;
 
@@ -1040,6 +1092,7 @@
       U = {
         time: u('uTime'), resolution: u('uResolution'), mouse: u('uMouse'),
         cosmic: u('uCosmic'), scroll: u('uScroll'), calm: u('uCalm'),
+        glitch: u('uGlitch'), glitchSeed: u('uGlitchSeed'), tear: u('uTear'),
         stops: [0,1,2,3,4,5,6].map(i => u('uC' + i)),
         voidColor: u('uVoidColor'), starTint: u('uStarTint')
       };
@@ -1106,6 +1159,25 @@
     let smoothMouseX = 0.5, smoothMouseY = 0.5;
     let smoothScroll = 0, smoothCalm = 0;
 
+    // ---- Glitch scheduler: rare random bursts, scroll-velocity tearing,
+    //      a build-up while the hero line is held, a pop on theme change ----
+    let glitchEnv = 0, glitchSeed = Math.random(), burstStrength = 0, burstUntil = 0;
+    let nextBurst = startTime + 3000 + Math.random() * 6000;
+    let holding = false, holdRamp = 0;
+    let lastScrollY = window.scrollY, tear = 0;
+
+    function triggerGlitch(strength, duration) {
+      if (reduceMotion.matches) return;
+      const now = performance.now();
+      burstStrength = Math.max(burstStrength, strength);
+      burstUntil = Math.max(burstUntil, now + duration);
+      glitchSeed = Math.random();
+      document.body.classList.add('glitching');
+      requestFrame();
+    }
+    auroraGlitch = triggerGlitch;
+    auroraHold = (on) => { holding = on; };
+
     function render(now) {
       if (!running) return;
       requestAnimationFrame(render);
@@ -1125,6 +1197,37 @@
       smoothScroll += (window.scrollY / window.innerHeight - smoothScroll) * kScroll;
       smoothCalm += (targetCalm() - smoothCalm) * kScroll;
 
+      // Glitch envelope
+      let g = 0;
+      if (still) {
+        glitchEnv = 0; tear = 0; holdRamp = 0;
+        document.body.classList.remove('glitching');
+      } else {
+        if (now >= nextBurst) {
+          triggerGlitch(0.45 + Math.random() * 0.55, 120 + Math.random() * 300);
+          nextBurst = now + 5000 + Math.random() * 9000;
+        }
+        if (now < burstUntil) {
+          glitchEnv = burstStrength * (Math.random() < 0.7 ? 1 : 0.25);
+          if (Math.random() < 0.15) glitchSeed = Math.random();
+        } else if (glitchEnv > 0) {
+          glitchEnv *= Math.exp(-dt * 25);
+          if (glitchEnv < 0.01) {
+            glitchEnv = 0; burstStrength = 0;
+            document.body.classList.remove('glitching');
+          }
+        }
+        // Hold: ramps up over ~3 s, releases quickly
+        const holdTarget = holding ? 0.4 : 0;
+        holdRamp += (holdTarget - holdRamp) * (1 - Math.exp(-dt * (holding ? 0.6 : 8)));
+        // Tear: viewport heights per second of scroll, decaying
+        const dy = Math.abs(window.scrollY - lastScrollY);
+        lastScrollY = window.scrollY;
+        const vel = dy / Math.max(dt, 1e-3) / window.innerHeight;
+        tear = Math.max(tear * Math.exp(-dt * 6), Math.min(1, vel * 0.22));
+        g = Math.min(1, glitchEnv + holdRamp) * (1 - 0.6 * smoothCalm);
+      }
+
       // Under reduced motion draw a fixed moment in the animation
       const t = still ? 20.0 : (now - startTime) / 1000.0;
       gl.uniform1f(U.time, t);
@@ -1132,6 +1235,9 @@
       gl.uniform2f(U.mouse, smoothMouseX, smoothMouseY);
       gl.uniform1f(U.scroll, Math.min(6, smoothScroll));
       gl.uniform1f(U.calm, smoothCalm);
+      gl.uniform1f(U.glitch, g);
+      gl.uniform1f(U.glitchSeed, glitchSeed);
+      gl.uniform1f(U.tear, tear * (1 - 0.5 * smoothCalm));
 
       // Theme transition (colors + cosmic amount)
       if (cosmicAnimStart !== null) {
@@ -1292,12 +1398,14 @@
 
       heroLine.classList.remove('reset');
       heroLine.classList.add('holding');
+      if (auroraHold) auroraHold(true);
 
       holdTimer = setTimeout(() => {
         holdTimer = null;
         // Flash
         heroLine.classList.remove('holding');
         heroLine.classList.add('flash');
+        if (auroraHold) auroraHold(false);
 
         // Toggle cosmic after brief flash
         setTimeout(() => {
@@ -1312,6 +1420,7 @@
       if (holdTimer !== null) {
         clearTimeout(holdTimer);
         holdTimer = null;
+        if (auroraHold) auroraHold(false);
         heroLine.classList.remove('holding');
         heroLine.classList.add('reset');
         // Remove reset class after transition completes

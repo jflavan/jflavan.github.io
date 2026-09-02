@@ -328,6 +328,9 @@ nav.scrolled {
   text-transform: uppercase;
 }
 
+.hero-name .first,
+.hero-name .last { display: inline-block; }
+
 .hero-name .first { color: #fff; }
 
 .hero-name .last {
@@ -342,6 +345,30 @@ nav.scrolled {
 @keyframes gradientShimmer {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+/* Glitch bursts: the aurora script toggles body.glitching in sync with the shader */
+body.glitching .hero-name .first {
+  animation: glitchSplit 0.26s steps(1) infinite;
+}
+
+body.glitching .hero-name .last {
+  animation: gradientShimmer 8s ease-in-out infinite, glitchShift 0.21s steps(1) infinite;
+}
+
+@keyframes glitchSplit {
+  0%   { transform: translateX(-2px); text-shadow: -4px 0 rgba(255, 70, 140, 0.7), 4px 0 rgba(90, 230, 255, 0.7); }
+  25%  { transform: translateX(3px) skewX(-2deg); text-shadow: 3px 0 rgba(255, 70, 140, 0.7), -3px 0 rgba(90, 230, 255, 0.7); }
+  50%  { transform: none; text-shadow: none; }
+  75%  { transform: translateX(-1px); text-shadow: -7px 0 rgba(255, 70, 140, 0.5), 7px 0 rgba(90, 230, 255, 0.5); }
+  100% { transform: none; text-shadow: none; }
+}
+
+@keyframes glitchShift {
+  0%   { transform: translateX(3px); }
+  30%  { transform: translateX(-4px) skewX(3deg); }
+  60%  { transform: translateX(2px); }
+  100% { transform: none; }
 }
 
 .hero-tagline {
@@ -1037,7 +1064,9 @@ a:focus-visible {
   .hero-line { transform: scaleX(1); }
   .scroll-cue::after { animation: none; }
 
-  .hero-name .last {
+  .hero-name .last,
+  body.glitching .hero-name .first,
+  body.glitching .hero-name .last {
     animation: none;
     background-position: 0% 50%;
   }

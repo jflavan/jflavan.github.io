@@ -45,10 +45,8 @@
 <meta name="theme-color" content="#0a0014">
 <meta name="color-scheme" content="dark">
 
-<!-- Font Preload -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+<!-- Fonts (self-hosted) & styles -->
+<link rel="preload" href="/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
 
 <!-- Structured Data -->
@@ -121,1156 +119,320 @@
   }
 ]
 </script>
-<style>
-  *, h1, h2, h3 { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --accent-deep: #5a189a;
-    --accent-mid: #9d4edd;
-    --accent-bright: #c77dff;
-    --accent-light: #e0aaff;
-    --bg-base: #0a0014;
-    --glow-color-r: 157;
-    --glow-color-g: 78;
-    --glow-color-b: 221;
-  }
-
-  /* Theme CSS vars are set dynamically via JS */
-
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #fff;
-    background: var(--bg-base);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-
-  /* Custom text selection */
-  ::selection {
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4);
-    color: #fff;
-  }
-
-  ::-moz-selection {
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4);
-    color: #fff;
-  }
-
-  /* Film grain overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 500;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-    transition: opacity 2s ease;
-  }
-
-  body.themed::after {
-    opacity: 0.015;
-  }
-
-  body.themed .section-label {
-    color: var(--accent-light);
-  }
-
-  body.themed .hero-name .last {
-    background: linear-gradient(135deg,
-      var(--accent-mid), var(--accent-bright), var(--accent-light),
-      var(--accent-bright), var(--accent-mid));
-    background-size: 300% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  body.themed .contact-btn.primary {
-    background: linear-gradient(135deg, var(--accent-deep), var(--accent-mid));
-  }
-
-  /* ===== SCROLL REVEAL ANIMATIONS ===== */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .reveal-delay-1 { transition-delay: 0.15s; }
-  .reveal-delay-2 { transition-delay: 0.3s; }
-  .reveal-delay-3 { transition-delay: 0.45s; }
-  .reveal-delay-4 { transition-delay: 0.6s; }
-
-  /* Slide from left */
-  .reveal-left {
-    opacity: 0;
-    transform: translateX(-40px);
-    transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .reveal-left.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Slide from right */
-  .reveal-right {
-    opacity: 0;
-    transform: translateX(40px);
-    transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .reveal-right.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Scale up */
-  .reveal-scale {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .reveal-scale.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* Hero specific — fade in and up on load */
-  .hero-enter {
-    opacity: 0;
-    transform: translateX(20px);
-    animation: heroEnter 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  }
-
-  .hero-enter-delay-1 { animation-delay: 0.3s; }
-  .hero-enter-delay-2 { animation-delay: 1.4s; }
-  .hero-enter-delay-3 { animation-delay: 1.2s; }
-
-  @keyframes heroEnter {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  /* Hero enter from left */
-  .hero-enter-left {
-    opacity: 0;
-    transform: translateX(-20px);
-    animation-name: heroEnter;
-    animation-duration: 1.6s;
-    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
-    animation-fill-mode: forwards;
-  }
-
-  /* Nav fade in */
-  nav {
-    opacity: 0;
-    animation: navEnter 1.4s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
-  }
-
-  @keyframes navEnter {
-    to { opacity: 1; }
-  }
-
-  /* ===== WEBGL AURORA BACKGROUND ===== */
-  .gradient-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    background: var(--bg-base);
-    overflow: hidden;
-  }
-
-  .gradient-bg canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  /* ===== NAV ===== */
-  nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    padding: 24px 56px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    backdrop-filter: blur(12px) saturate(1.2);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
-    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-    padding-bottom: 40px;
-    background: transparent;
-    transition: background 0.6s ease;
-  }
-
-  nav.scrolled {
-    background: color-mix(in srgb, var(--bg-base) 15%, transparent);
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 36px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--accent-light);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 14px rgba(0, 0, 0, 0.45);
-    transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    display: inline-block;
-  }
-
-  .nav-links a:hover {
-    color: #fff;
-    transform: translateY(-1px);
-  }
-
-  nav a { transition: color 2s ease; }
-  .nav-contact { transition: border-color 2s ease, box-shadow 2s ease; }
-
-  .nav-contact a {
-    color: var(--accent-light);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 14px rgba(0, 0, 0, 0.45);
-    padding: 10px 24px;
-    border: 1px solid rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4);
-    border-radius: 24px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .nav-contact a:hover {
-    border-color: var(--accent-bright);
-    color: #fff;
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15);
-    box-shadow: 0 0 24px rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15);
-  }
-
-  .nav-contact a:active {
-    transform: scale(0.96);
-    transition-duration: 0.1s;
-  }
-
-  /* ===== HERO ===== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 56px 80px;
-    position: relative;
-  }
-
-  .hero-tagline {
-    position: absolute;
-    top: 40%;
-    right: 56px;
-    max-width: 340px;
-    font-size: 17px;
-    font-weight: 400;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 0, 0, 0.4);
-  }
-
-  .hero-name {
-    font-size: clamp(80px, 14vw, 180px);
-    font-weight: 900;
-    letter-spacing: -6px;
-    line-height: 0.9;
-    text-transform: uppercase;
-  }
-
-  .hero-name .first { color: #fff; }
-  .hero-name .last {
-    background: linear-gradient(135deg, var(--accent-mid), var(--accent-bright), var(--accent-light), var(--accent-bright), var(--accent-mid));
-    background-size: 300% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientShimmer 8s ease-in-out infinite;
-  }
-
-  @keyframes gradientShimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  .hero-line {
-    height: 1px;
-    background: linear-gradient(90deg, rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4), rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15), transparent);
-    margin-top: 32px;
-    transform-origin: left;
-    opacity: 0;
-    transform: scaleX(0);
-    animation: lineReveal 1.8s cubic-bezier(0.25, 1, 0.5, 1) 1.6s forwards;
-    position: relative;
-  }
-
-  .hero-line::before {
-    content: '';
-    position: absolute;
-    top: -22px;
-    left: 0;
-    right: 0;
-    height: 45px;
-    cursor: default;
-  }
-
-  .hero-line.holding {
-    height: 2px;
-    opacity: 1;
-    background: linear-gradient(90deg,
-      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.8),
-      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.4),
-      transparent);
-    transition: height 3s ease, opacity 3s ease, background 3s ease;
-  }
-
-  .hero-line.flash {
-    opacity: 1;
-    height: 3px;
-    background: linear-gradient(90deg,
-      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 1.0),
-      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.7),
-      rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.3));
-    transition: none;
-  }
-
-  .hero-line.reset {
-    transition: height 0.3s ease, opacity 0.3s ease, background 0.3s ease;
-  }
-
-  @keyframes lineReveal {
-    to { opacity: 1; transform: scaleX(1); }
-  }
-
-  @keyframes heroLinePulse {
-    0%   { box-shadow: 0 1px 0 0 transparent; }
-    17%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
-    33%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
-    50%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
-    67%  { box-shadow: 0 1px 1px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06); }
-    83%  { box-shadow: 0 1px 6px 0 rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.55); }
-    100% { box-shadow: 0 1px 0 0 transparent; }
-  }
-
-  .hero-line.pulse {
-    animation: heroLinePulse 3.5s ease-in-out;
-  }
-
-  /* ===== SECTION SHARED ===== */
-  .section {
-    padding: 160px 56px;
-    position: relative;
-  }
-
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--accent-bright);
-    font-weight: 600;
-    margin-bottom: 48px;
-    transition: color 2s ease;
-  }
-
-  /* ===== ABOUT ===== */
-  .about .statement {
-    font-size: clamp(32px, 4.5vw, 56px);
-    font-weight: 300;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.85);
-    max-width: 900px;
-    margin-left: auto;
-  }
-
-  .about .statement strong {
-    color: #fff;
-    font-weight: 600;
-  }
-
-  /* ===== FOCUS ===== */
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 80px;
-    margin-top: 80px;
-  }
-
-  .focus-item {
-    padding: 32px;
-    margin: -32px;
-    border-radius: 16px;
-    transition: background 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .focus-item:hover {
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.06);
-    transform: translateY(-4px);
-  }
-
-  .focus-item h3 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: #fff;
-  }
-
-  .focus-item p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.82);
-    font-weight: 300;
-    margin-bottom: 24px;
-  }
-
-  .focus-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .focus-tag {
-    font-size: 11px;
-    padding: 5px 12px;
-    border: 1px solid rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.35);
-    border-radius: 20px;
-    color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.9);
-    transition: border-color 0.4s, color 0.4s;
-  }
-
-  .focus-item:hover .focus-tag {
-    border-color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.5);
-    color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 1);
-  }
-
-  .focus-card { transition: border-color 2s ease, box-shadow 2s ease; }
-  .focus-card svg, .focus-card .card-icon { transition: color 2s ease; }
-
-  /* ===== EXPERIENCE ===== */
-  .experience .statement {
-    font-size: clamp(28px, 3.5vw, 44px);
-    font-weight: 300;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.85);
-    max-width: 800px;
-    margin-bottom: 96px;
-  }
-
-  .timeline-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 48px;
-    padding: 48px 24px;
-    margin: 0 -24px;
-    border-top: 1px solid rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.18);
-    border-radius: 8px;
-    transition: background 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  }
-
-  .timeline-item:hover {
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.05);
-  }
-
-  .timeline-item:last-child {
-    border-bottom: 1px solid rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.18);
-  }
-
-  .timeline-date {
-    font-size: 13px;
-    color: var(--accent-bright);
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    padding-top: 4px;
-  }
-
-  .timeline-content h3 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: #fff;
-  }
-
-  .timeline-company {
-    font-size: 15px;
-    color: var(--accent-light);
-    margin-bottom: 14px;
-  }
-
-  .timeline-desc {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.75);
-    line-height: 1.7;
-    max-width: 600px;
-  }
-
-  .timeline-line, .timeline-dot { transition: background-color 2s ease, border-color 2s ease; }
-
-  /* ===== SKILLS ===== */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 64px;
-    margin-top: 64px;
-  }
-
-  .skill-group h3 {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--accent-light);
-    margin-bottom: 24px;
-  }
-
-  .skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .skill-tag {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.82);
-    padding: 6px 0;
-    transition: border-color 2s ease, color 2s ease;
-  }
-
-  .skill-tag:hover { color: #fff; }
-
-  .skill-tag::after {
-    content: ' /';
-    color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.25);
-    margin-left: 2px;
-  }
-
-  .skill-tag:last-child::after { content: ''; }
-
-  /* ===== CONTACT ===== */
-  .contact {
-    padding: 200px 56px 80px;
-    text-align: right;
-  }
-
-  .contact .section-label {
-    text-align: right;
-  }
-
-  .contact-prompt {
-    font-size: clamp(24px, 3vw, 36px);
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 0, 0, 0.4);
-    margin-bottom: 40px;
-    line-height: 1.5;
-  }
-
-  .contact-links {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-  }
-
-  .contact-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    border-radius: 28px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 2s ease;
-  }
-
-  .contact-btn.primary {
-    background: linear-gradient(135deg, var(--accent-deep), var(--accent-mid));
-    color: #fff;
-  }
-
-  .contact-btn.primary:hover {
-    background: linear-gradient(135deg, var(--accent-mid), var(--accent-bright));
-    box-shadow: 0 12px 48px rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.45);
-    transform: translateY(-2px);
-  }
-
-  .contact-btn.secondary {
-    border: 1px solid rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.35);
-    color: var(--accent-light);
-    background: transparent;
-  }
-
-  .contact-btn.secondary:hover {
-    border-color: var(--accent-light);
-    color: #fff;
-    transform: translateY(-2px);
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.05);
-  }
-
-  .contact-btn:active {
-    transform: scale(0.97) translateY(0);
-    transition-duration: 0.1s;
-  }
-
-  /* ===== FOOTER ===== */
-  footer {
-    padding: 0 56px 80px;
-    position: relative;
-  }
-
-  .footer-line {
-    width: 100%;
-    height: 1px;
-    background: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.15);
-    margin-bottom: 48px;
-  }
-
-  .footer-name {
-    font-size: clamp(60px, 10vw, 140px);
-    font-weight: 900;
-    letter-spacing: -4px;
-    line-height: 0.9;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.06);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .footer-links a {
-    color: var(--accent-light);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-                transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    display: inline-block;
-  }
-
-  .footer-links a:hover {
-    color: var(--accent-light);
-    transform: translateY(-1px);
-  }
-
-  footer a { transition: color 2s ease; }
-
-  .footer-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 24px;
-    font-size: 11px;
-    color: rgba(var(--glow-color-r), var(--glow-color-g), var(--glow-color-b), 0.78);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* ===== RESPONSIVE ===== */
-
-  /* Tablet */
-  @media (max-width: 1024px) {
-    .focus-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-    }
-
-    .skills-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-    }
-  }
-
-  /* Mobile */
-  @media (max-width: 768px) {
-    .section { padding: 100px 24px; }
-
-    nav {
-      padding: 16px 24px;
-      padding-bottom: 32px;
-    }
-
-    .nav-links { gap: 20px; }
-    .nav-links a { font-size: 11px; letter-spacing: 1px; }
-    .nav-contact a { font-size: 11px; padding: 8px 18px; }
-
-    .hero {
-      padding: 0 24px 48px;
-    }
-
-    .hero-tagline {
-      position: relative;
-      top: auto;
-      right: auto;
-      max-width: 100%;
-      font-size: 15px;
-      margin-bottom: 32px;
-      padding-top: 100px;
-    }
-
-    .hero-name {
-      letter-spacing: -3px;
-    }
-
-    .focus-grid {
-      grid-template-columns: 1fr;
-      gap: 48px;
-      margin-top: 48px;
-    }
-
-    .focus-item {
-      padding: 24px;
-      margin: -24px;
-    }
-
-    .timeline-item {
-      grid-template-columns: 1fr;
-      gap: 8px;
-      padding: 32px 16px;
-      margin: 0 -16px;
-    }
-
-    .timeline-date {
-      font-size: 12px;
-    }
-
-    .skills-grid {
-      grid-template-columns: 1fr;
-      gap: 40px;
-      margin-top: 40px;
-    }
-
-    .contact {
-      padding: 120px 24px 48px;
-      text-align: left;
-    }
-
-    .contact .section-label { text-align: left; }
-
-    .contact-links {
-      justify-content: flex-start;
-    }
-
-    footer { padding: 0 24px 48px; }
-
-    .footer-meta {
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
-
-  /* Small mobile — hide contact button in nav, stack nav */
-  @media (max-width: 480px) {
-    nav {
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .nav-contact { display: none; }
-  }
-
-  /* ===== REDUCED MOTION ===== */
-  @media (prefers-reduced-motion: reduce) {
-    .gradient-bg canvas {
-      display: none !important;
-    }
-
-    .hero-enter,
-    .hero-enter-left {
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
-
-    .hero-line {
-      animation: none;
-      opacity: 1;
-      transform: scaleX(1);
-    }
-
-    nav {
-      animation: none;
-      opacity: 1;
-    }
-
-    .hero-name .last {
-      animation: none;
-      background-position: 0% 50%;
-    }
-
-    .reveal, .reveal-left, .reveal-right, .reveal-scale {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-
-    body.themed .hero-line,
-    body.themed nav a,
-    body.themed .nav-contact,
-    body.themed .section-label,
-    body.themed .focus-card,
-    body.themed .skill-tag,
-    body.themed .contact-btn,
-    body.themed footer a,
-    body.themed::after {
-      transition: none !important;
-    }
-  }
-
-  /* ===== MAGNETIC ELEMENTS ===== */
-  .magnetic {
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    will-change: transform;
-  }
-  /* ===== NOSCRIPT FALLBACK ===== */
-  /* Handled by <noscript> block below */
-</style>
 <noscript>
   <style>
-    .reveal, .reveal-left, .reveal-right, .reveal-scale,
-    .hero-enter, .hero-enter-left, .hero-line, nav {
+    .reveal, .reveal-left, .reveal-right, .reveal-scale, .word-reveal, .section-divider,
+    .hero-enter, .hero-enter-left, .hero-line, .scroll-cue, nav {
       opacity: 1 !important;
       transform: none !important;
       animation: none !important;
       transition: none !important;
     }
+    .gradient-bg canvas { display: none; }
   </style>
 </noscript>
 </head>
 <body>
 
-<div class="gradient-bg">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="gradient-bg" aria-hidden="true">
   <canvas id="aurora-bg"></canvas>
 </div>
 
 <!-- NAV -->
 <nav aria-label="Main navigation">
-  <ul class="nav-links">
-    <li><a href="#about" class="magnetic">About</a></li>
-    <li><a href="#focus" class="magnetic">Focus</a></li>
-    <li><a href="#experience" class="magnetic">Experience</a></li>
-    <li><a href="#skills" class="magnetic">Skills</a></li>
-  </ul>
-  <div class="nav-contact">
-    <a href="#contact" class="magnetic">Contact</a>
+  <div class="nav-inner container">
+    <ul class="nav-links">
+      <li><a href="#about" class="magnetic">About</a></li>
+      <li><a href="#focus" class="magnetic">Focus</a></li>
+      <li><a href="#experience" class="magnetic">Experience</a></li>
+      <li><a href="#skills" class="magnetic">Skills</a></li>
+    </ul>
+    <div class="nav-contact">
+      <a href="#contact" class="magnetic" aria-label="Contact">
+        <svg class="nav-contact-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        <span class="nav-contact-label">Contact</span>
+      </a>
+    </div>
   </div>
 </nav>
 
-<main>
+<main id="main">
 
 <!-- HERO -->
 <section class="hero" aria-label="Introduction">
-  <div class="hero-tagline hero-enter hero-enter-delay-1">
-    Engineering manager leading development and quality teams. Building AI-enabled workflows that transform how software gets made.
+  <div class="hero-inner container">
+    <div class="hero-title">
+      <p class="hero-meta hero-enter-left hero-enter-delay-1">Engineering Manager &middot; St. Louis, MO</p>
+      <h1 class="hero-name hero-enter-left hero-enter-delay-2">
+        <span class="first">John</span><br>
+        <span class="last">Flavan</span>
+      </h1>
+    </div>
+    <p class="hero-tagline hero-enter hero-enter-delay-3">
+      Engineering manager leading development and quality teams. Building AI-enabled workflows that transform how software gets made.
+    </p>
   </div>
-  <h1 class="hero-name hero-enter-left hero-enter-delay-2">
-    <span class="first">John</span><br>
-    <span class="last">Flavan</span>
-  </h1>
-  <div class="hero-line"></div>
+  <div class="container">
+    <div class="hero-line"></div>
+  </div>
+  <a class="scroll-cue" href="#about">Scroll</a>
 </section>
 
 <!-- ABOUT -->
 <section class="section about" id="about">
-  <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-  <div class="section-asymmetric">
-    <h2 class="section-label reveal">About</h2>
-    <div class="statement word-reveal-container">
-  <span class="word-reveal">I</span>
-  <span class="word-reveal"><strong>build</strong></span>
-  <span class="word-reveal"><strong>products</strong></span>
-  <span class="word-reveal">that</span>
-  <span class="word-reveal">actually</span>
-  <span class="word-reveal">matter</span>
-  <span class="word-reveal">to</span>
-  <span class="word-reveal">people.</span>
-  <span class="word-reveal">I</span>
-  <span class="word-reveal">lead</span>
-  <span class="word-reveal">engineering</span>
-  <span class="word-reveal">teams</span>
-  <span class="word-reveal">and</span>
-  <span class="word-reveal">turn</span>
-  <span class="word-reveal">messy,</span>
-  <span class="word-reveal">complicated</span>
-  <span class="word-reveal">problems</span>
-  <span class="word-reveal">into</span>
-  <span class="word-reveal"><strong>clean</strong></span>
-  <span class="word-reveal"><strong>solutions</strong></span>
-  <span class="word-reveal">that</span>
-  <span class="word-reveal">scale.</span>
-</div>
+  <div class="container">
+    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
+    <div class="section-asymmetric">
+      <h2 class="section-label reveal">About</h2>
+      <p class="statement word-reveal-container">
+        <span class="word-reveal">I</span>
+        <span class="word-reveal"><strong>build</strong></span>
+        <span class="word-reveal"><strong>products</strong></span>
+        <span class="word-reveal">that</span>
+        <span class="word-reveal">actually</span>
+        <span class="word-reveal">matter</span>
+        <span class="word-reveal">to</span>
+        <span class="word-reveal">people.</span>
+        <span class="word-reveal">I</span>
+        <span class="word-reveal">lead</span>
+        <span class="word-reveal">engineering</span>
+        <span class="word-reveal">teams</span>
+        <span class="word-reveal">and</span>
+        <span class="word-reveal">turn</span>
+        <span class="word-reveal">messy,</span>
+        <span class="word-reveal">complicated</span>
+        <span class="word-reveal">problems</span>
+        <span class="word-reveal">into</span>
+        <span class="word-reveal"><strong>clean</strong></span>
+        <span class="word-reveal"><strong>solutions</strong></span>
+        <span class="word-reveal">that</span>
+        <span class="word-reveal">scale.</span>
+      </p>
+    </div>
   </div>
 </section>
 
 <!-- FOCUS -->
 <section class="section focus" id="focus">
-  <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
-  <div class="section-asymmetric">
-    <h2 class="section-label reveal">Current Focus</h2>
-    <div class="focus-grid">
-    <div class="focus-item glass-card glass-card-lift reveal reveal-delay-1">
-      <div class="focus-icon focus-icon-circle" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-          <circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        </svg>
+  <div class="container">
+    <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
+    <div class="section-asymmetric">
+      <h2 class="section-label reveal">Current Focus</h2>
+      <div class="focus-grid">
+        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-1">
+          <div class="focus-icon focus-icon-circle" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <h3>AI-Enabled Engineering</h3>
+          <p>Leading a transformation of our software development lifecycle with AI tooling. Integrating intelligent assistants into every stage, from planning and coding to review and testing.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Claude Code</span>
+            <span class="focus-tag">Codex</span>
+            <span class="focus-tag">Copilot</span>
+            <span class="focus-tag">Azure Foundry</span>
+          </div>
+        </article>
+        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-2">
+          <div class="focus-icon focus-icon-rounded" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Engineering Leadership</h3>
+          <p>Managing two development teams and a dedicated quality engineering team. Focused on building high-trust environments where people do their best work and ship with confidence.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">3 Teams</span>
+            <span class="focus-tag">Agile/Scrum</span>
+            <span class="focus-tag">Mentorship</span>
+          </div>
+        </article>
+        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-3">
+          <div class="focus-icon focus-icon-circle" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <h3>Quality Engineering &amp; AI Testing</h3>
+          <p>Building a quality-first culture powered by intelligent automation. Leading teams in developing AI-driven testing agents that explore, validate, and catch what humans miss.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Testing Agents</span>
+            <span class="focus-tag">Playwright</span>
+            <span class="focus-tag">AI Automation</span>
+          </div>
+        </article>
       </div>
-      <h3>AI-Enabled Engineering</h3>
-      <p>Leading a transformation of our software development lifecycle with AI tooling. Integrating intelligent assistants into every stage, from planning and coding to review and testing.</p>
-      <div class="focus-tags">
-        <span class="focus-tag">Claude Code</span>
-        <span class="focus-tag">Codex</span>
-        <span class="focus-tag">Copilot</span>
-        <span class="focus-tag">Azure Foundry</span>
-      </div>
-    </div>
-    <div class="focus-item glass-card glass-card-lift reveal reveal-delay-2">
-      <div class="focus-icon focus-icon-rounded" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-      </div>
-      <h3>Engineering Leadership</h3>
-      <p>Managing two development teams and a dedicated quality engineering team. Focused on building high-trust environments where people do their best work and ship with confidence.</p>
-      <div class="focus-tags">
-        <span class="focus-tag">3 Teams</span>
-        <span class="focus-tag">Agile/Scrum</span>
-        <span class="focus-tag">Mentorship</span>
-      </div>
-    </div>
-    <div class="focus-item glass-card glass-card-lift reveal reveal-delay-3">
-      <div class="focus-icon focus-icon-circle" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-        </svg>
-      </div>
-      <h3>Quality Engineering & AI Testing</h3>
-      <p>Building a quality-first culture powered by intelligent automation. Leading teams in developing AI-driven testing agents that explore, validate, and catch what humans miss.</p>
-      <div class="focus-tags">
-        <span class="focus-tag">Testing Agents</span>
-        <span class="focus-tag">Playwright</span>
-        <span class="focus-tag">AI Automation</span>
-      </div>
-    </div>
     </div>
   </div>
 </section>
 
 <!-- EXPERIENCE -->
 <section class="section experience" id="experience">
-  <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-  <div class="section-asymmetric">
-    <h2 class="section-label reveal">Experience</h2>
-    <div>
-      <div class="statement word-reveal-container">
-  <span class="word-reveal">15+</span>
-  <span class="word-reveal">years</span>
-  <span class="word-reveal">building</span>
-  <span class="word-reveal">software,</span>
-  <span class="word-reveal">leading</span>
-  <span class="word-reveal">teams,</span>
-  <span class="word-reveal">and</span>
-  <span class="word-reveal">shipping</span>
-  <span class="word-reveal">products</span>
-  <span class="word-reveal">across</span>
-  <span class="word-reveal">insurance,</span>
-  <span class="word-reveal">logistics,</span>
-  <span class="word-reveal">and</span>
-  <span class="word-reveal">enterprise</span>
-  <span class="word-reveal">SaaS.</span>
-</div>
+  <div class="container">
+    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
+    <div class="section-asymmetric">
+      <h2 class="section-label reveal">Experience</h2>
+      <div>
+        <p class="statement word-reveal-container">
+          <span class="word-reveal">15+</span>
+          <span class="word-reveal">years</span>
+          <span class="word-reveal">building</span>
+          <span class="word-reveal">software,</span>
+          <span class="word-reveal">leading</span>
+          <span class="word-reveal">teams,</span>
+          <span class="word-reveal">and</span>
+          <span class="word-reveal">shipping</span>
+          <span class="word-reveal">products</span>
+          <span class="word-reveal">across</span>
+          <span class="word-reveal">insurance,</span>
+          <span class="word-reveal">logistics,</span>
+          <span class="word-reveal">and</span>
+          <span class="word-reveal">enterprise</span>
+          <span class="word-reveal">SaaS.</span>
+        </p>
 
-      <div class="timeline-list">
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Manager, Software Engineering</h3>
-        <span class="timeline-date">2025 – Present</span>
-      </div>
-      <div class="timeline-company">Alliant Insurance Services</div>
-      <div class="timeline-desc">Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</div>
-    </div>
+        <div class="timeline-list">
+          <article class="timeline-item glass-card reveal">
+            <h3>Manager, Software Engineering</h3>
+            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2025 – Present</span></p>
+            <p class="timeline-desc">Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Full Stack Developer, Tech Lead</h3>
-        <span class="timeline-date">2017 – 2025</span>
-      </div>
-      <div class="timeline-company">Alliant Insurance Services</div>
-      <div class="timeline-desc">Lead teams in developing .NET and Angular projects with Azure infrastructure. Transformed testing practices and worked with vendors and teams to implement automated testing.</div>
-    </div>
+          <article class="timeline-item glass-card reveal">
+            <h3>Full Stack Developer, Tech Lead</h3>
+            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2017 – 2025</span></p>
+            <p class="timeline-desc">Lead teams in developing .NET and Angular projects with Azure infrastructure. Transformed testing practices and worked with vendors and teams to implement automated testing.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>UI Developer</h3>
-        <span class="timeline-date">2014 – 2017</span>
-      </div>
-      <div class="timeline-company">Alliant Insurance Services</div>
-      <div class="timeline-desc">Designed and developed UI on SharePoint 2013 and MVC 5 sites. Led responsive redesigns and rapid prototyping.</div>
-    </div>
+          <article class="timeline-item glass-card reveal">
+            <h3>UI Developer</h3>
+            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2014 – 2017</span></p>
+            <p class="timeline-desc">Designed and developed UI on SharePoint 2013 and MVC 5 sites. Led responsive redesigns and rapid prototyping.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Designer, Developer, PM</h3>
-        <span class="timeline-date">2015 – 2017</span>
-      </div>
-      <div class="timeline-company">bradgood.net</div>
-      <div class="timeline-desc">Custom Squarespace sites. End-to-end delivery: brand design, integrations, SEO, and project management.</div>
-    </div>
+          <article class="timeline-item glass-card reveal">
+            <h3>Designer, Developer, PM</h3>
+            <p class="timeline-meta"><span class="timeline-company">bradgood.net</span><span class="timeline-date">2015 – 2017</span></p>
+            <p class="timeline-desc">Custom Squarespace sites. End-to-end delivery: brand design, integrations, SEO, and project management.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Software Developer</h3>
-        <span class="timeline-date">2011 – 2015</span>
-      </div>
-      <div class="timeline-company">Royal Canin SAS</div>
-      <div class="timeline-desc">Built intranet applications, optimized SQL stored procedures, and developed scalable WCF Web Services for enterprise order processing.</div>
-    </div>
+          <article class="timeline-item glass-card reveal">
+            <h3>Software Developer</h3>
+            <p class="timeline-meta"><span class="timeline-company">Royal Canin SAS</span><span class="timeline-date">2011 – 2015</span></p>
+            <p class="timeline-desc">Built intranet applications, optimized SQL stored procedures, and developed scalable WCF Web Services for enterprise order processing.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Database Developer</h3>
-        <span class="timeline-date">2013 – 2014</span>
-      </div>
-      <div class="timeline-company">Cass Information Systems</div>
-      <div class="timeline-desc">B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</div>
-    </div>
+          <article class="timeline-item glass-card reveal">
+            <h3>Database Developer</h3>
+            <p class="timeline-meta"><span class="timeline-company">Cass Information Systems</span><span class="timeline-date">2013 – 2014</span></p>
+            <p class="timeline-desc">B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p>
+          </article>
 
-    <div class="timeline-item glass-card reveal">
-      <div class="timeline-header">
-        <h3>Web Developer</h3>
-        <span class="timeline-date">2010 – 2011</span>
+          <article class="timeline-item glass-card reveal">
+            <h3>Web Developer</h3>
+            <p class="timeline-meta"><span class="timeline-company">Smoky Jennings Chevrolet</span><span class="timeline-date">2010 – 2011</span></p>
+            <p class="timeline-desc">Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p>
+          </article>
+        </div>
       </div>
-      <div class="timeline-company">Smoky Jennings Chevrolet</div>
-      <div class="timeline-desc">Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</div>
     </div>
   </div>
-</div>
 </section>
 
 <!-- SKILLS -->
 <section class="section skills" id="skills">
-  <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
-  <div class="section-asymmetric">
-    <h2 class="section-label reveal">Skills</h2>
-    <div class="skills-grid">
-    <div class="skill-group glass-card reveal reveal-delay-1">
-      <h3>Languages & Frameworks</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">C#</span>
-        <span class="skill-tag">.NET Core</span>
-        <span class="skill-tag">Angular</span>
-        <span class="skill-tag">TypeScript</span>
-        <span class="skill-tag">JavaScript</span>
-        <span class="skill-tag">SQL</span>
+  <div class="container">
+    <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
+    <div class="section-asymmetric">
+      <h2 class="section-label reveal">Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-group glass-card reveal reveal-delay-1">
+          <h3>Languages &amp; Frameworks</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">C#</span>
+            <span class="skill-tag">.NET Core</span>
+            <span class="skill-tag">Angular</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">SQL</span>
+          </div>
+        </div>
+        <div class="skill-group glass-card reveal reveal-delay-2">
+          <h3>Cloud &amp; Infrastructure</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Azure</span>
+            <span class="skill-tag">Azure DevOps</span>
+            <span class="skill-tag">Redis</span>
+            <span class="skill-tag">SignalR</span>
+            <span class="skill-tag">Service Bus</span>
+            <span class="skill-tag">GitHub</span>
+            <span class="skill-tag">GitHub Actions</span>
+            <span class="skill-tag">CI/CD</span>
+            <span class="skill-tag">Azure IaC</span>
+          </div>
+        </div>
+        <div class="skill-group glass-card reveal reveal-delay-3">
+          <h3>AI &amp; Tooling</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Claude Code</span>
+            <span class="skill-tag">Codex</span>
+            <span class="skill-tag">Copilot</span>
+            <span class="skill-tag">Azure Foundry</span>
+            <span class="skill-tag">AI Integrations</span>
+          </div>
+        </div>
+        <div class="skill-group glass-card reveal reveal-delay-2">
+          <h3>Data &amp; Architecture</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">MS SQL</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">Clean Architecture</span>
+            <span class="skill-tag">CQRS</span>
+            <span class="skill-tag">REST/Web API</span>
+            <span class="skill-tag">Dapper</span>
+            <span class="skill-tag">EF Core</span>
+          </div>
+        </div>
+        <div class="skill-group glass-card reveal reveal-delay-3">
+          <h3>Testing &amp; Quality</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">XUnit</span>
+            <span class="skill-tag">Playwright</span>
+            <span class="skill-tag">Automated Testing</span>
+            <span class="skill-tag">Test Strategy</span>
+          </div>
+        </div>
+        <div class="skill-group glass-card reveal reveal-delay-4">
+          <h3>Integrations &amp; Design</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Salesforce</span>
+            <span class="skill-tag">Webflow</span>
+            <span class="skill-tag">Applied Epic</span>
+            <span class="skill-tag">Okta</span>
+            <span class="skill-tag">Photoshop</span>
+            <span class="skill-tag">Adobe Suite</span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="skill-group glass-card reveal reveal-delay-2">
-      <h3>Cloud & Infrastructure</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Azure</span>
-        <span class="skill-tag">Azure DevOps</span>
-        <span class="skill-tag">Redis</span>
-        <span class="skill-tag">SignalR</span>
-        <span class="skill-tag">Service Bus</span>
-        <span class="skill-tag">GitHub</span>
-        <span class="skill-tag">GitHub Actions</span>
-        <span class="skill-tag">CI/CD</span>
-        <span class="skill-tag">Azure IaC</span>
-      </div>
-    </div>
-    <div class="skill-group glass-card reveal reveal-delay-3">
-      <h3>AI & Tooling</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Claude Code</span>
-        <span class="skill-tag">Codex</span>
-        <span class="skill-tag">Copilot</span>
-        <span class="skill-tag">Azure Foundry</span>
-        <span class="skill-tag">AI Integrations</span>
-      </div>
-    </div>
-    <div class="skill-group glass-card reveal reveal-delay-2">
-      <h3>Data & Architecture</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">MS SQL</span>
-        <span class="skill-tag">PostgreSQL</span>
-        <span class="skill-tag">Clean Architecture</span>
-        <span class="skill-tag">CQRS</span>
-        <span class="skill-tag">REST/Web API</span>
-        <span class="skill-tag">Dapper</span>
-        <span class="skill-tag">EF Core</span>
-      </div>
-    </div>
-    <div class="skill-group glass-card reveal reveal-delay-3">
-      <h3>Testing & Quality</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">XUnit</span>
-        <span class="skill-tag">Playwright</span>
-        <span class="skill-tag">Automated Testing</span>
-        <span class="skill-tag">Test Strategy</span>
-      </div>
-    </div>
-    <div class="skill-group glass-card reveal reveal-delay-4">
-      <h3>Integrations & Design</h3>
-      <div class="skill-tags">
-        <span class="skill-tag">Salesforce</span>
-        <span class="skill-tag">Webflow</span>
-        <span class="skill-tag">Applied Epic</span>
-        <span class="skill-tag">Okta</span>
-        <span class="skill-tag">Photoshop</span>
-        <span class="skill-tag">Adobe Suite</span>
-      </div>
-    </div>
     </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-
 <section class="section contact" id="contact">
-  <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-  <h2 class="section-label reveal-right">Contact</h2>
-  <div class="contact-prompt reveal-right reveal-delay-1">
-    An idea, a project,<br>
-    or just want to connect?
-  </div>
-  <div class="contact-links reveal-right reveal-delay-2">
-    <a href="mailto:johnflavan@gmail.com" class="contact-btn primary magnetic">Let's talk <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+  <div class="container">
+    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
+    <h2 class="section-label reveal-right">Contact</h2>
+    <p class="contact-prompt reveal-right reveal-delay-1">
+      An idea, a project,<br>
+      or just want to connect?
+    </p>
+    <div class="contact-links reveal-right reveal-delay-2">
+      <a href="mailto:johnflavan@gmail.com" class="contact-btn primary magnetic">Let's talk <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+    </div>
   </div>
 </section>
 
@@ -1278,15 +440,17 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-line reveal"></div>
-  <div class="footer-name reveal-scale reveal-delay-1">John Flavan</div>
-  <div class="footer-links reveal reveal-delay-2">
-    <a href="https://github.com/jflavan" target="_blank" rel="noopener noreferrer">GitHub</a>
-    <a href="https://linkedin.com/in/johnflavan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-  </div>
-  <div class="footer-meta reveal reveal-delay-3">
-    <span>Engineering Leader &middot; St. Louis, MO</span>
-    <span>&copy; 2026</span>
+  <div class="container">
+    <div class="footer-line reveal"></div>
+    <div class="footer-name reveal-scale reveal-delay-1" aria-hidden="true">John Flavan</div>
+    <div class="footer-links reveal reveal-delay-2">
+      <a href="https://github.com/jflavan" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://linkedin.com/in/johnflavan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+    <div class="footer-meta reveal reveal-delay-3">
+      <span>Engineering Leader &middot; St. Louis, MO</span>
+      <span>&copy; 2026</span>
+    </div>
   </div>
 </footer>
 
@@ -1334,39 +498,54 @@
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
-        const offset = 80;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+        // Land with the section's divider just under the nav rather than at its padding edge
+        const pad = parseFloat(getComputedStyle(target).paddingTop) || 0;
+        const top = target.getBoundingClientRect().top + window.scrollY + Math.max(0, pad - 40) - navH;
         smoothScrollTo(top);
       }
     });
   });
 
-  // ===== MAGNETIC BUTTONS =====
+  // ===== POINTER (one listener feeds the aurora and the magnetic links) =====
+  const hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const pointer = { x: 0.5, y: 0.5, clientX: -1, clientY: -1 };
   const magneticEls = document.querySelectorAll('.magnetic');
   const magneticStrength = 0.12; // how far elements pull (ratio of distance)
   const magneticRadius = 60; // activation radius in px
+  let magneticQueued = false;
 
-  document.addEventListener('mousemove', (e) => {
+  function updateMagnetic() {
+    magneticQueued = false;
     magneticEls.forEach(el => {
       const rect = el.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distX = e.clientX - centerX;
-      const distY = e.clientY - centerY;
+      const distX = pointer.clientX - (rect.left + rect.width / 2);
+      const distY = pointer.clientY - (rect.top + rect.height / 2);
       const dist = Math.sqrt(distX * distX + distY * distY);
-
       if (dist < magneticRadius) {
         const pull = (1 - dist / magneticRadius) * magneticStrength;
         el.style.transform = `translate(${distX * pull}px, ${distY * pull}px)`;
-      } else {
+      } else if (el.style.transform) {
         el.style.transform = '';
       }
     });
-  });
+  }
+
+  if (hasHover) {
+    document.addEventListener('mousemove', (e) => {
+      pointer.clientX = e.clientX;
+      pointer.clientY = e.clientY;
+      pointer.x = e.clientX / window.innerWidth;
+      pointer.y = 1.0 - e.clientY / window.innerHeight;
+      if (!magneticQueued) {
+        magneticQueued = true;
+        requestAnimationFrame(updateMagnetic);
+      }
+    }, { passive: true });
+  }
 
   // ===== COSMIC MODE STATE =====
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  // Cosmic mode state
   // ===== THEME DEFINITIONS =====
   const THEMES = {
     default: {
@@ -1450,6 +629,8 @@
     for (const [prop, val] of Object.entries(vars)) {
       root.style.setProperty(prop, val);
     }
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.setAttribute('content', vars['--bg-base']);
   }
 
   // Always start on purple (default) theme
@@ -1504,17 +685,15 @@
     const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
     if (!gl) return;
 
-    let mouseX = 0.5, mouseY = 0.5;
     let smoothMouseX = 0.5, smoothMouseY = 0.5;
     const mouseMomentum = 0.03;
 
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX / window.innerWidth;
-      mouseY = 1.0 - e.clientY / window.innerHeight;
-    });
+    // Phones get 1x; the shader is per-pixel and the blur hides the difference.
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const maxDpr = coarsePointer ? 1 : 1.5;
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio, 1.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -1841,11 +1020,13 @@
     const uStarTintLoc = gl.getUniformLocation(program, 'uStarTint');
 
     const startTime = performance.now();
+    let running = true;
 
     function render() {
+      if (!running) return;
       // Smooth mouse with momentum
-      smoothMouseX += (mouseX - smoothMouseX) * mouseMomentum;
-      smoothMouseY += (mouseY - smoothMouseY) * mouseMomentum;
+      smoothMouseX += (pointer.x - smoothMouseX) * mouseMomentum;
+      smoothMouseY += (pointer.y - smoothMouseY) * mouseMomentum;
 
       const t = (performance.now() - startTime) / 1000.0;
       gl.uniform1f(uTime, t);
@@ -1890,6 +1071,17 @@
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       requestAnimationFrame(render);
     }
+
+    // Pause the render loop while the tab is hidden (battery on mobile)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        running = false;
+      } else if (!running) {
+        running = true;
+        requestAnimationFrame(render);
+      }
+    });
+
     render();
   })();
 

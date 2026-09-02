@@ -3,12 +3,21 @@
   'use strict';
 
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (prefersReducedMotion.matches) return;
-
-  var containers = document.querySelectorAll('.word-reveal-container');
+  var containers = Array.prototype.slice.call(document.querySelectorAll('.word-reveal-container'));
   if (!containers.length) return;
 
-  // Set per-word stagger delays for smooth cascading feel
+  function revealAll(container) {
+    var words = container.querySelectorAll('.word-reveal');
+    for (var i = 0; i < words.length; i++) words[i].classList.add('revealed');
+    container.setAttribute('data-revealed', '');
+  }
+
+  if (prefersReducedMotion.matches) {
+    containers.forEach(revealAll);
+    return;
+  }
+
+  // Per-word stagger for the cascading feel
   containers.forEach(function (container) {
     var words = container.querySelectorAll('.word-reveal');
     for (var i = 0; i < words.length; i++) {
@@ -16,66 +25,76 @@
     }
   });
 
-  // Build threshold array: 0.0, 0.02, 0.04, ... 1.0
-  var thresholds = [];
-  for (var i = 0; i <= 50; i++) {
-    thresholds.push(i / 50);
+  var pending = containers.slice();
+
+  function finish(container) {
+    revealAll(container);
+    observer.unobserve(container);
+    pending = pending.filter(function (c) { return c !== container; });
+    if (!pending.length) window.removeEventListener('scroll', onScroll);
   }
+
+  // Progressive reveal while the paragraph enters the viewport
+  var thresholds = [];
+  for (var t = 0; t <= 50; t++) thresholds.push(t / 50);
 
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       var container = entry.target;
-      var words = container.querySelectorAll('.word-reveal');
-      var wordCount = words.length;
-
       if (!entry.isIntersecting) return;
 
-      // Map intersection ratio to number of words to reveal
-      var ratio = entry.intersectionRatio;
-      var revealCount = Math.ceil(ratio * wordCount);
-
-      for (var j = 0; j < wordCount; j++) {
-        if (j < revealCount) {
-          words[j].classList.add('revealed');
-        }
+      // Fully reveal once most of it is visible, or once its top has scrolled past
+      if (entry.intersectionRatio >= 0.6 || entry.boundingClientRect.top < 0) {
+        finish(container);
+        return;
       }
 
-      // Once all words revealed, disconnect this container
-      if (revealCount >= wordCount) {
-        observer.unobserve(container);
-      }
+      var words = container.querySelectorAll('.word-reveal');
+      var revealCount = Math.ceil(entry.intersectionRatio * words.length);
+      for (var j = 0; j < revealCount; j++) words[j].classList.add('revealed');
     });
   }, {
     threshold: thresholds,
     rootMargin: '0px 0px -10% 0px'
   });
 
-  containers.forEach(function (container) {
-    observer.observe(container);
-  });
+  pending.forEach(function (container) { observer.observe(container); });
+
+  // Safety net for jumps (nav clicks, hash landings, fast flings): anything whose
+  // top has passed the middle of the viewport is fully revealed.
+  var ticking = false;
+  function checkPassed() {
+    ticking = false;
+    var limit = window.innerHeight * 0.5;
+    pending.slice().forEach(function (container) {
+      if (container.getBoundingClientRect().top < limit) finish(container);
+    });
+  }
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(checkPassed);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  checkPassed();
 })();
 
 // ===== NAV ACTIVE STATE =====
 (function () {
   'use strict';
 
-  var sections = document.querySelectorAll('.section, .contact');
-  var navLinks = document.querySelectorAll('.nav-links a');
-
+  var sections = document.querySelectorAll('.section');
+  var navLinks = document.querySelectorAll('.nav-links a, .nav-contact a');
   if (!sections.length || !navLinks.length) return;
 
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        var id = entry.target.id;
-        navLinks.forEach(function (link) {
-          if (link.getAttribute('href') === '#' + id) {
-            link.classList.add('active');
-          } else {
-            link.classList.remove('active');
-          }
-        });
-      }
+      if (!entry.isIntersecting) return;
+      var id = entry.target.id;
+      navLinks.forEach(function (link) {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
     });
   }, {
     threshold: 0.3,

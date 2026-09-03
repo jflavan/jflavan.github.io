@@ -6,14 +6,14 @@
 
 /* ===== TOKENS ===== */
 :root {
-  --accent-deep: #7a2000;
-  --accent-mid: #d95b20;
-  --accent-bright: #ff8c42;
-  --accent-light: #ffc07a;
-  --bg-base: #0c0402;
-  --glow-color-r: 217;
-  --glow-color-g: 91;
-  --glow-color-b: 32;
+  --accent-deep: #0b3d2c;
+  --accent-mid: #1e7a58;
+  --accent-bright: #3fb287;
+  --accent-light: #a9e5c8;
+  --bg-base: #04100b;
+  --glow-color-r: 30;
+  --glow-color-g: 122;
+  --glow-color-b: 88;
   --glow: var(--glow-color-r), var(--glow-color-g), var(--glow-color-b);
 
   --text: #fff;
@@ -102,7 +102,7 @@ body.themed::after { opacity: 0.015; }
   background:
     radial-gradient(ellipse 70% 60% at 30% 25%, rgba(var(--glow), 0.55), transparent 65%),
     radial-gradient(ellipse 60% 50% at 75% 65%, rgba(var(--glow), 0.35), transparent 65%),
-    linear-gradient(160deg, #3a1204 0%, var(--bg-base) 70%);
+    linear-gradient(160deg, #0b2e20 0%, var(--bg-base) 70%);
 }
 
 .gradient-bg canvas {

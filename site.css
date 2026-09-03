@@ -574,9 +574,33 @@ body.themed .glass-card {
 }
 
 /* ===== ABOUT ===== */
+.about-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
 .about .statement {
   font-size: clamp(28px, 4.2vw, 54px);
   max-width: 20ch;
+}
+
+.about-portrait {
+  width: clamp(180px, 20vw, 280px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0 0 10px rgba(var(--glow), 0.08), 0 24px 60px rgba(0, 0, 0, 0.35);
+  transition: border-color 2s ease, box-shadow 2s ease;
+}
+
+.about-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ===== FOCUS ===== */
@@ -1001,6 +1025,16 @@ a:focus-visible {
   .focus-grid,
   .skills-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .about-portrait {
+    width: clamp(140px, 40vw, 200px);
+    order: -1;
   }
 
   .contact { text-align: left; }

@@ -16,7 +16,6 @@
   --dim: rgba(241, 239, 232, 0.32);
   --line: rgba(241, 239, 232, 0.18);
   --accent: #F1EFE8;               /* themed modes recolour this */
-  --ink-r: 241; --ink-g: 239; --ink-b: 232;
 
   --mar: 20px;                      /* page margin */
   --gut: 20px;                      /* grid gutter */
@@ -32,7 +31,6 @@
   --t-label: clamp(11px, 0.8vw, 13px);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-io: cubic-bezier(0.77, 0, 0.175, 1);
 }
 @media (min-width: 1440px) { :root { --mar: 1.4vw; --gut: 1.4vw; } }
 
@@ -71,6 +69,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .skip-link { position: absolute; left: var(--mar); top: -60px; z-index: 100; padding: 8px 12px; background: var(--blanc); color: var(--noir); font-size: 14px; }
 .skip-link:focus { top: 12px; }
+main:focus { outline: none; }
 
 .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gut); padding-inline: var(--mar); }
 .section { position: relative; background: var(--noir); transition: background 1s ease; }
@@ -94,7 +93,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .line-in { display: block; }
 
 /* ===== INK CANVAS ===== */
-.ink { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
+.ink { position: fixed; inset: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
 html.no-ink .ink { display: none; }
 .ink.on { opacity: 1; }
 .ink.storm { z-index: 40; mix-blend-mode: screen; opacity: 1 !important; }
@@ -126,6 +125,7 @@ main, footer { position: relative; z-index: 1; }
 html.js .statement .w { opacity: 0; }
 .hero-fine { align-items: end; row-gap: 24px; padding-inline: 0; border-top: 2px solid var(--blanc); padding-top: 16px; }
 html.js .hero-fine { opacity: 0; }
+html.reveal-fallback .statement .w, html.reveal-fallback .hero-fine { opacity: 1; }
 .fine-lead { grid-column: 1 / span 4; font-size: var(--t-body); max-width: 30ch; text-wrap: pretty; }
 .fine { font-size: var(--t-small); line-height: 1.35; }
 .fine:nth-of-type(1) { grid-column: 6 / span 3; }
@@ -152,6 +152,7 @@ html.js .hero-fine { opacity: 0; }
 .portrait figcaption { display: flex; justify-content: space-between; margin-top: 10px; font-size: var(--t-label); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
 html.js .portrait .curtain { transform: translateY(-100%); }
 html.js .portrait img { transform: translateY(100%); }
+html.reveal-fallback .portrait .curtain, html.reveal-fallback .portrait img { transform: none; }
 
 /* ===== FOCUS: stacked panels ===== */
 .focus { padding-top: clamp(40px, 5vw, 80px); }
@@ -207,8 +208,8 @@ html.js .portrait img { transform: translateY(100%); }
 .group dt { grid-column: 1 / span 3; font-size: var(--t-label); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); padding-top: 0.6em; }
 .group dd { grid-column: 4 / span 9; font-size: var(--t-wall); font-weight: 500; line-height: 1.05; letter-spacing: -0.01em; color: var(--mute); text-wrap: pretty; }
 .term { display: inline-block; position: relative; overflow: hidden; vertical-align: top; clip-path: polygon(0 3%, 0 99%, 100% 99%, 100% 3%); }
-.term::after { content: ','; }
-.term:last-child::after { content: ''; }
+.term > i::after, .term:not(:has(> i))::after { content: ','; }
+.term:last-child > i::after, .term:last-child:not(:has(> i))::after { content: ''; }
 .term > i { display: block; font-style: normal; transition: transform 0.5s var(--ease-out); }
 .term > i + i { position: absolute; left: 0; top: 100%; color: var(--blanc); }
 @media (hover: hover) and (pointer: fine) { .term:hover > i { transform: translateY(-100%); } }
@@ -231,7 +232,7 @@ html.js .portrait img { transform: translateY(100%); }
 .foot-meta { grid-column: 1 / span 5; }
 .foot-links { grid-column: 6 / span 5; display: flex; gap: 24px; color: var(--blanc); }
 .foot-copy { grid-column: 11 / span 2; text-align: right; }
-.wordmark { display: block; width: calc(100% - 2 * var(--mar)); margin-inline: var(--mar); position: relative; -webkit-tap-highlight-color: transparent; touch-action: none; user-select: none; }
+.wordmark { display: block; width: calc(100% - 2 * var(--mar)); margin-inline: var(--mar); position: relative; -webkit-tap-highlight-color: transparent; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .wordmark svg { display: block; width: 100%; height: auto; overflow: visible; }
 .wordmark text { font-family: 'Satoshi', 'Satoshi Fallback', sans-serif; font-weight: 900; font-size: 168px; letter-spacing: 0.02em; }
 .wm-outline { fill: transparent; stroke: var(--blanc); stroke-width: 1.5; transition: fill 0.5s ease; }

@@ -287,13 +287,34 @@
     }
 
     var dye, velocity, divergence, curl, pressure;
+    function deleteFBO(t) { if (!t) return; gl.deleteTexture(t.texture); gl.deleteFramebuffer(t.fbo); }
+    function resizeFBO(target, w, h, i, fmt, t, p) {
+      var next = createFBO(w, h, i, fmt, t, p);
+      P.copy.bind();
+      gl.uniform1i(P.copy.uniforms.uTexture, target.attach(0));
+      blit(next);
+      deleteFBO(target);
+      return next;
+    }
+    function resizeDoubleFBO(target, w, h, i, fmt, t, p) {
+      if (target.width === w && target.height === h) return target;
+      target.read = resizeFBO(target.read, w, h, i, fmt, t, p);
+      deleteFBO(target.write);
+      target.write = createFBO(w, h, i, fmt, t, p);
+      target.width = w; target.height = h; target.texelSizeX = 1 / w; target.texelSizeY = 1 / h;
+      return target;
+    }
     function initFramebuffers() {
       var simRes = getResolution(config.SIM_RES), dyeRes = getResolution(config.DYE_RES);
       var texType = ext.halfFloatTexType, rgba = ext.formatRGBA, rg = ext.formatRG, r = ext.formatR;
       var filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
       gl.disable(gl.BLEND);
-      dye = createDoubleFBO(dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering);
-      velocity = createDoubleFBO(simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering);
+      if (!dye) dye = createDoubleFBO(dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering);
+      else dye = resizeDoubleFBO(dye, dyeRes.width, dyeRes.height, rgba.internalFormat, rgba.format, texType, filtering);
+      if (!velocity) velocity = createDoubleFBO(simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering);
+      else velocity = resizeDoubleFBO(velocity, simRes.width, simRes.height, rg.internalFormat, rg.format, texType, filtering);
+      deleteFBO(divergence); deleteFBO(curl);
+      if (pressure) { deleteFBO(pressure.read); deleteFBO(pressure.write); }
       divergence = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
       curl = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
       pressure = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
@@ -309,7 +330,13 @@
     resizeCanvas();
     initFramebuffers();
 
+    canvas.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault(); destroyed = true;
+      if (typeof opts.onLost === 'function') opts.onLost();
+    }, false);
+
     var splats = [];
+    var pendingPointer = null;
     function splat(x, y, dx, dy, color, strength) {
       P.splat.bind();
       gl.uniform1i(P.splat.uniforms.uTarget, velocity.read.attach(0));
@@ -413,6 +440,7 @@
       if (dt <= 0) return;
       if (resizeCanvas()) initFramebuffers();
       autoSplat(dt);
+      if (pendingPointer) { splats.push(pendingPointer); pendingPointer = null; }
       while (splats.length) { var s = splats.shift(); splat(s.x, s.y, s.dx, s.dy, s.color || inkColor, s.strength); }
       step(dt);
       render();
@@ -425,15 +453,19 @@
     return {
       splat: function (x, y, dx, dy, strength, color) { splats.push({ x: x, y: y, dx: dx, dy: dy, strength: strength, color: color }); },
       pointer: function (px, py, dx, dy) {
-        // px,py relative to canvas in CSS px, y down; dx,dy movement in CSS px
+        // px,py relative to canvas in CSS px, y down; dx,dy movement in CSS px.
+        // Movement is accumulated and released as one splat per frame, so a
+        // high-rate mouse does not multiply the GPU work.
         var x = px / canvas.clientWidth, y = 1 - py / canvas.clientHeight;
         var aspect = canvas.clientWidth / canvas.clientHeight;
         var ddx = (dx / canvas.clientWidth) * config.SPLAT_FORCE * (aspect > 1 ? aspect : 1);
         var ddy = (-dy / canvas.clientHeight) * config.SPLAT_FORCE * (aspect < 1 ? 1 / aspect : 1);
-        var speed = Math.min(1, Math.hypot(dx, dy) / 40);
-        if (speed < 0.02) return;
-        splats.push({ x: x, y: y, dx: ddx, dy: ddy, strength: inkStrength * (0.25 + 0.75 * speed) });
         lastPointer = { x: x, y: y };
+        if (pendingPointer) { pendingPointer.x = x; pendingPointer.y = y; pendingPointer.dx += ddx; pendingPointer.dy += ddy; pendingPointer.px += dx; pendingPointer.py += dy; }
+        else pendingPointer = { x: x, y: y, dx: ddx, dy: ddy, px: dx, py: dy };
+        var speed = Math.min(1, Math.hypot(pendingPointer.px, pendingPointer.py) / 40);
+        if (speed < 0.02) { pendingPointer = null; return; }
+        pendingPointer.strength = inkStrength * (0.25 + 0.75 * speed);
       },
       scroll: function (velocityPx) {
         var v = Math.max(-1, Math.min(1, velocityPx / 60));

@@ -27,11 +27,14 @@
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
     gsap.ticker.lagSmoothing(0);
   }
+  function navHeight() { return parseFloat(getComputedStyle(html).getPropertyValue('--nav-h')) || 64; }
   function scrollToEl(el) {
-    if (lenis) lenis.scrollTo(el, { duration: 1.4, easing: function (t) { return 1 - Math.pow(1 - t, 4); } });
+    if (lenis) lenis.scrollTo(el, { offset: -navHeight(), duration: 1.4, easing: function (t) { return 1 - Math.pow(1 - t, 4); } });
     else el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   }
-  $$('a[href^="#"]').forEach(function (a) {
+  var skip = $('.skip-link'), mainEl = $('#main');
+  if (skip && mainEl) skip.addEventListener('click', function (e) { e.preventDefault(); mainEl.focus({ preventScroll: true }); window.scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true }); });
+  $$('a[href^="#"]:not(.skip-link)').forEach(function (a) {
     a.addEventListener('click', function (e) {
       var t = $(a.getAttribute('href')); if (!t) return;
       e.preventDefault(); scrollToEl(t);
@@ -64,7 +67,7 @@
   /* ===== INK (WebGL fluid behind the hero) ===== */
   var canvas = $('#ink'), ink = null, heroFade = 1, storming = false;
   if (canvas && !reduce && typeof Ink !== 'undefined') {
-    try { ink = Ink.create(canvas, { touch: touch, bg: hexToRgb01(THEMES.default.noir), ink: THEMES.default.ink }); } catch (e) { ink = null; }
+    try { ink = Ink.create(canvas, { touch: touch, bg: hexToRgb01(THEMES.default.noir), ink: THEMES.default.ink, onLost: function () { html.classList.add('no-ink'); ink = null; } }); } catch (e) { ink = null; }
   }
   if (!ink) html.classList.add('no-ink');
 
@@ -167,7 +170,14 @@
   (function () {
     var ms = $$('[data-marquee]'); if (!ms.length || !animate) return;
     var items = ms.map(function (m, i) { return { el: m, x: 0, w: 0, dir: parseFloat(m.getAttribute('data-dir')) || (i % 2 ? 1 : -1), speed: parseFloat(m.getAttribute('data-speed')) || 1, visible: false, span: $('span', m) }; });
-    function measure() { items.forEach(function (it) { it.w = it.span.getBoundingClientRect().width; }); }
+    function measure() {
+      items.forEach(function (it) {
+        it.w = it.span.getBoundingClientRect().width;
+        if (!it.w) return;
+        var need = Math.ceil((it.el.parentNode.clientWidth * 2) / it.w) + 1;
+        while (it.el.children.length < need) it.el.appendChild(it.span.cloneNode(true));
+      });
+    }
     measure(); window.addEventListener('resize', measure);
     var io = new IntersectionObserver(function (entries) { entries.forEach(function (en) { items.forEach(function (it) { if (it.el.parentNode === en.target) it.visible = en.isIntersecting; }); }); });
     $$('.marquees').forEach(function (g) { io.observe(g); });
@@ -187,22 +197,34 @@
   /* ===== EXPERIENCE: vertical scroll drives a horizontal ribbon ===== */
   (function () {
     var pin = $('[data-exp-pin]'), track = $('[data-track]'), bar = $('[data-bar]'), count = $('[data-count]');
-    if (!pin || !track || !animate || narrow) return;
+    if (!pin || !track) return;
     var cards = $$('.card', track);
+    function setProgress(p) {
+      bar.style.width = (12 + p * 88) + '%';
+      var n = Math.min(cards.length, Math.round(p * (cards.length - 1)) + 1);
+      count.textContent = pad(n) + ' / ' + pad(cards.length);
+    }
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
+    if (narrow || !animate) {
+      track.addEventListener('scroll', function () { var max = track.scrollWidth - track.clientWidth; setProgress(max > 0 ? track.scrollLeft / max : 0); }, { passive: true });
+      return;
+    }
     function dist() { return Math.max(0, track.scrollWidth - window.innerWidth); }
     gsap.to(track, {
       x: function () { return -dist(); }, ease: 'none',
       scrollTrigger: {
         trigger: pin, start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 0.4, anticipatePin: 1, invalidateOnRefresh: true,
-        onUpdate: function (st) {
-          bar.style.width = (12 + st.progress * 88) + '%';
-          var n = Math.min(cards.length, Math.round(st.progress * (cards.length - 1)) + 1);
-          count.textContent = (n < 10 ? '0' + n : n) + ' / 0' + cards.length;
-        }
+        onUpdate: function (st) { setProgress(st.progress); }
       }
     });
     gsap.from(cards, { y: 40, opacity: 0, duration: 1, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: pin, start: 'top 70%', once: true } });
   })();
+
+  /* ===== SKILLS: each term carries a second copy so it can roll on hover ===== */
+  if (!reduce) $$('.wall .term').forEach(function (t) {
+    var w = t.textContent;
+    t.innerHTML = '<i>' + w + '</i><i aria-hidden="true">' + w + '</i>';
+  });
 
   /* ===== CONTACT: copy the address ===== */
   (function () {
@@ -225,6 +247,9 @@
     if (themeMeta) themeMeta.setAttribute('content', t.noir);
     if (ink) { ink.setBg(hexToRgb01(t.noir)); ink.setInk(t.ink); }
     currentTheme = key;
+    logTheme(t);
+  }
+  function logTheme(t) {
     console.log('%c' + t.console[0] + '\n%chttps://github.com/jflavan', 'color:' + t.console[1] + ';font-size:14px;font-weight:bold;', 'color:' + t.console[2] + ';font-size:12px;');
   }
   var flipping = false;
@@ -244,7 +269,7 @@
   /* ===== WORDMARK: press and hold to charge, release at full to flip ===== */
   (function () {
     var wm = $('[data-wordmark]'); if (!wm) return;
-    var rect = $('[data-wm-clip]', wm), hint = $('[data-wm-hint]');
+    var rect = $('[data-wm-clip]', wm), hint = $('[data-wm-hint]'), hintText = hint ? hint.textContent : '';
     var HOLD = 3000, H = 132, holding = false, start = 0, done = false, raf = null;
     function setCharge(p) { rect.setAttribute('y', String(H - H * p)); }
     function stormOn() {
@@ -272,7 +297,7 @@
     function cancel() {
       if (!holding || done) return;
       holding = false; cancelAnimationFrame(raf);
-      wm.classList.remove('holding'); if (hint) hint.textContent = 'Hold';
+      wm.classList.remove('holding'); if (hint) hint.textContent = hintText;
       if (hasGsap) gsap.to(rect, { attr: { y: H }, duration: 0.5, ease: 'power4.out' }); else setCharge(0);
       stormOff();
     }
@@ -282,7 +307,7 @@
       cycleTheme();
       setTimeout(function () {
         if (hasGsap) gsap.to(rect, { attr: { y: H }, duration: 0.8, ease: 'power4.inOut' }); else setCharge(0);
-        if (hint) hint.textContent = 'Hold';
+        if (hint) hint.textContent = hintText;
         stormOff();
       }, 1400);
     }
@@ -301,5 +326,5 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     window.addEventListener('load', function () { ScrollTrigger.refresh(); });
   }
-  console.log('%cCurious? Check out my GitHub.\n%chttps://github.com/jflavan', 'color:#F1EFE8;font-size:14px;font-weight:bold;', 'color:#8a8a84;font-size:12px;');
+  logTheme(THEMES.default);
 })();

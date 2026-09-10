@@ -41,7 +41,7 @@ A dark, monumental, single-page site in the manner of the 2024–2026 Awwwards p
 - **Fluid**: a compact WebGL Navier–Stokes solver (Dobryakov style; sim 128, dye 1024 desktop / 512 touch, 12 pressure iterations, curl 25, dissipation ~0.985). Dye is off-white smoke by default and the theme colour when themed. Idle auto-splats keep it alive; pointer and scroll velocity add splats. Fixed behind the page, faded out past the hero, brought back during the wordmark hold. Falls back to a still gradient without WebGL. Pauses when the tab is hidden and under reduced motion.
 - **Scroll**: Lenis (MIT) driving GSAP ScrollTrigger; disabled on touch. Anchor links scroll via Lenis.
 - **Nav**: fixed, mix-blend-mode difference; name left, section links centre, live St. Louis clock right.
-- **Libraries**: GSAP 3.13 core + ScrollTrigger + SplitText, Lenis 1.3 — vendored under `vendor/`, no CDN dependency at runtime.
+- **Libraries**: GSAP 3.13 core + ScrollTrigger, Lenis 1.3 — vendored under `lib/`, no CDN dependency at runtime.
 - **Easing vocabulary**: power4.inOut 1s for structural moves, power4.out 0.4–0.6s for hover, power1.inOut for scrubs, 0.11–0.16s staggers. No ease-in on UI.
 - **SEO/metadata**: head, JSON-LD, Open Graph, sitemap, robots, canonical preserved; OG image regenerated to match.
 
@@ -60,5 +60,5 @@ A dark, monumental, single-page site in the manner of the 2024–2026 Awwwards p
 
 ## Further Notes
 
-- The three-variant prototype stays at `prototype/index.html` on this branch as the primary source for the decision; it is `noindex` and unlinked.
+- The three-variant prototype stays at `_prototype/index.html` on this branch as the primary source for the decision; the underscore keeps it out of the published site.
 - Research: `.agents/research/award-winning-portfolio-design.md`, `.agents/research/reference-sites-flotnoir-rxk.md`.

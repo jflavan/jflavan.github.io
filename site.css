@@ -3,7 +3,7 @@
    One grotesque, two colours, one motif (a bold word in a clipped box that
    types in, rolls, or drops), one physical effect (the ink behind the hero).
    Sections: tokens · fonts · base · motif · nav · hero · about · focus ·
-   experience · skills · contact · footer · themes · motion · responsive
+   experience · skills · contact · footer · consent · themes · motion · responsive
    ============================================================================= */
 
 /* ===== TOKENS ===== */
@@ -259,6 +259,23 @@ html.reveal-fallback .portrait .curtain, html.reveal-fallback .portrait img { tr
 @media (hover: hover) and (pointer: fine) { .wordmark:hover .wm-outline { fill: var(--blanc); } }
 .wordmark.holding .wm-outline { fill: transparent; }
 
+/* ===== CONSENT: a small card inside the margin; sits under the nav and the storm ink ===== */
+.consent {
+  position: fixed; right: var(--mar); bottom: var(--mar); z-index: 30;
+  width: min(380px, calc(100% - 2 * var(--mar)));
+  padding: 14px 18px 18px;
+  background: var(--noir); border: 1px solid var(--line); border-top: 2px solid var(--blanc);
+  opacity: 0; transform: translateY(12px);
+  transition: background 1s ease, opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+.consent.on { opacity: 1; transform: none; }
+.consent:focus { outline: none; }
+.consent .label { color: var(--blanc); }
+.consent-copy { margin-top: 10px; font-size: var(--t-small); color: var(--mute); max-width: 36ch; text-wrap: pretty; }
+.consent-copy a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--dim); transition: color 0.3s ease; }
+.consent-copy a:hover { color: var(--blanc); }
+.consent-row { display: flex; gap: 28px; margin-top: 16px; font-size: var(--t-small); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
 @media (max-width: 420px) {
   .nav { font-size: 11px; }
   .nav-links { gap: 10px; }
@@ -276,7 +293,7 @@ body.theme-cosmic { --noir: #05070E; --noir-2: #090C16; --noir-3: #0D111E; --acc
 body.theme-ember  { --noir: #120503; --noir-2: #1A0805; --noir-3: #220B07; --accent: #ffc07a; }
 body.theme-solar  { --noir: #0F0B02; --noir-2: #161003; --noir-3: #1D1505; --accent: #f5e090; }
 body.theme-rose   { --noir: #10040B; --noir-2: #180710; --noir-3: #200A15; --accent: #ffaad0; }
-body.themed .label.rule, body.themed .nav-clock, body.themed .index, body.themed .tools, body.themed .card .co, body.themed .group dt, body.themed .fine dt { color: var(--accent); }
+body.themed .label.rule, body.themed .consent .label, body.themed .nav-clock, body.themed .index, body.themed .tools, body.themed .card .co, body.themed .group dt, body.themed .fine dt { color: var(--accent); }
 body.themed .wr .wb { color: var(--accent); }
 
 /* ===== MOTION PREFERENCES ===== */
@@ -285,7 +302,7 @@ body.themed .wr .wb { color: var(--accent); }
   html.js .portrait .curtain, html.js .portrait img { transform: none; }
   .wr .wa { color: var(--blanc); }
   .wr .wb { display: none; }
-  .roll > span, .term > i, .copy span, .wm-outline { transition: none; }
+  .roll > span, .term > i, .copy span, .wm-outline, .consent { transition: none; }
   .ink { display: none; }
 }
 

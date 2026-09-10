@@ -5,14 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>John Flavan</title>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2RSYR38N8N"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-2RSYR38N8N');
-</script>
+<!-- Google Analytics is loaded by consent.js, only after the visitor opts in -->
 <script>document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('reveal-fallback');},3500);</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
@@ -129,6 +122,16 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Cookie consent: analytics stays off until this is answered -->
+<div class="consent" data-consent role="region" aria-label="Cookie consent" tabindex="-1" hidden>
+  <p class="label">Cookies</p>
+  <p class="consent-copy">This site counts visits with Google Analytics. It stays off until you say so. <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">How Google uses the data</a></p>
+  <div class="consent-row">
+    <button class="roll" type="button" data-consent-accept><span>Accept</span><span aria-hidden="true">Accept</span></button>
+    <button class="roll" type="button" data-consent-decline><span>Decline</span><span aria-hidden="true">Decline</span></button>
+  </div>
+</div>
 
 <!-- Ink: WebGL fluid behind the page. Decorative only. -->
 <canvas id="ink" class="ink" aria-hidden="true"></canvas>
@@ -323,6 +326,7 @@
     <ul class="foot-links">
       <li><a class="roll" href="https://github.com/jflavan" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span aria-hidden="true">GitHub</span></a></li>
       <li><a class="roll" href="https://linkedin.com/in/johnflavan" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><span aria-hidden="true">LinkedIn</span></a></li>
+      <li><button class="roll" type="button" data-consent-open><span>Cookies</span><span aria-hidden="true">Cookies</span></button></li>
     </ul>
     <p class="foot-copy">&copy; 2026</p>
   </div>
@@ -339,6 +343,7 @@
 <script src="lib/ScrollTrigger.min.js"></script>
 <script src="lib/lenis.min.js"></script>
 <script src="fluid.js"></script>
+<script src="consent.js"></script>
 <script src="site.js"></script>
 </body>
 </html>

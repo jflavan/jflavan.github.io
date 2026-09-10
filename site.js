@@ -72,14 +72,15 @@
       mask.appendChild(w); el.appendChild(mask);
     });
     cells.forEach(function (c) { c.faces[c.at].classList.add('on'); });
-    var busy = false;
-    function cycle(delay) {
+    var busy = false, active = null, inView = true, looping = false;
+    function cycle(delay, onDone) {
       if (!animate || busy) return;
       busy = true;
       var cur = cells.map(function (c) { return c.at; }), t = 0;
       var tl = gsap.timeline({ delay: delay || 0, onComplete: function () {
-        busy = false;
+        busy = false; active = null;
         cells.forEach(function (c) { c.faces.forEach(function (f, k) { gsap.set(f, { clearProps: 'clipPath,zIndex' }); f.classList.toggle('on', k === c.at); }); });
+        if (onDone) onDone();
       } });
       for (var s = 0; s < VOICES.length; s++) {
         cells.forEach(function (c, i) {
@@ -92,7 +93,13 @@
         });
         t += 0.35 + (cells.length - 1) * 0.06 + 0.25;
       }
+      active = tl;
       return tl;
+    }
+    // Runs for as long as the mark is on screen and the tab is visible
+    function loop() {
+      if (!animate || !looping || busy || !inView || document.hidden) return;
+      cycle(0.3, function () { setTimeout(loop, 0); });
     }
     function reveal() {
       if (!animate) return;
@@ -100,10 +107,20 @@
       gsap.set(ws[0], { yPercent: 130 }); if (ws[1]) gsap.set(ws[1], { yPercent: -130 });
       gsap.to(ws[0], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
       if (ws[1]) gsap.to(ws[1], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
-      cycle(0.7);
+      looping = true;
+      cycle(0.7, function () { setTimeout(loop, 0); });
     }
-    if (!touch) el.addEventListener('mouseenter', function () { cycle(0); });
-    el.addEventListener('focus', function () { cycle(0); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        if (active) { if (inView && !document.hidden) active.resume(); else active.pause(); }
+        else loop();
+      }).observe(el);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (active) { if (document.hidden) active.pause(); else if (inView) active.resume(); }
+      else if (!document.hidden) loop();
+    });
     return { reveal: reveal, cycle: cycle };
   })();
 

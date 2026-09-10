@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<!-- PROTOTYPE — throwaway. Three radically different directions for johnflavan.com,
+     switchable via ?variant=a|b|c (or #a/#b/#c) and the floating bar at the bottom.
+     Built per Matt Pocock's /prototype skill (UI branch). Not production code. -->
+<title>Flavan Redesign Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Martian+Mono:wght@300..800&family=Big+Shoulders+Display:wght@300..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap">
+</head>
+<body>
+<style>
+/* ===== PROTOTYPE SHELL ===== */
+:root { color-scheme: light dark; }
+html, body { margin: 0; }
+body { background: #111; }
+*, *::before, *::after { box-sizing: border-box; }
+.variant { display: none; }
+.variant.is-active { display: block; }
+img { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+/* Floating switcher — deliberately foreign to every variant */
+#proto-bar {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+  z-index: 99999; display: flex; align-items: center; gap: 4px;
+  background: #ffea00; color: #111; border: 2px solid #111;
+  font: 600 13px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  padding: 6px 8px; border-radius: 999px; box-shadow: 0 8px 30px rgba(0,0,0,.45);
+  user-select: none;
+}
+#proto-bar button { all: unset; cursor: pointer; padding: 6px 10px; border-radius: 999px; }
+#proto-bar button:hover { background: #111; color: #ffea00; }
+#proto-bar .lbl { padding: 0 8px; min-width: 260px; text-align: center; letter-spacing: .02em; }
+#proto-bar .key { font-weight: 800; }
+@media (max-width: 560px) { #proto-bar .lbl { min-width: 0; font-size: 11px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+</style>
+<!-- ============================================================
+     VARIANT A — "Field Notes"  (light · editorial · quiet motion)
+     ============================================================ -->
+<style>
+.va {
+  --paper: #E8EAE4; --paper-2: #DEE1DA; --paper-3: #D3D7CF;
+  --ink: #10201A; --ink-2: #44514A; --ink-3: #6E7A73;
+  --green: #0F4A35; --green-2: #1C6B4E;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --gutter: clamp(20px, 4vw, 64px);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.va ::selection { background: var(--green); color: var(--paper); }
+.va .wrap { padding-inline: var(--gutter); max-width: 1520px; margin-inline: auto; }
+.va .grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: clamp(12px, 2vw, 32px); }
+.va .label { font: 500 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.va .serif { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
+.va em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+
+/* nav */
+.va-nav { position: sticky; top: 0; z-index: 20; mix-blend-mode: multiply; }
+.va-nav .row { display: flex; align-items: baseline; justify-content: space-between; padding-block: 22px; font-size: 13px; letter-spacing: .02em; }
+.va-nav .brand { font-family: var(--serif); font-size: 20px; font-style: italic; }
+.va-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(14px, 2.4vw, 36px); }
+.va-nav a { text-decoration: none; position: relative; }
+.va-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .5s var(--ease); }
+.va-nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+.va-nav .clock { font-variant-numeric: tabular-nums; color: var(--ink-3); }
+@media (max-width: 720px) { .va-nav .clock { display: none; } }
+
+/* hero */
+.va-hero { padding-block: clamp(56px, 9vw, 140px) clamp(48px, 7vw, 100px); }
+.va-hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 7vw, 122px); line-height: .98; letter-spacing: -.025em; margin: 0; }
+.va-hero h1 em { font-weight: 300; color: var(--green); }
+.va-hero .line { display: block; overflow: hidden; }
+.va-hero .line > span { display: inline-block; transform: translateY(110%); animation: va-rise 1.3s var(--ease) forwards; }
+.va-hero .line:nth-child(2) > span { animation-delay: .08s; }
+.va-hero .line:nth-child(3) > span { animation-delay: .16s; }
+.va-hero .line:nth-child(4) > span { animation-delay: .24s; }
+@keyframes va-rise { to { transform: translateY(0); } }
+.va-hero .meta { margin-top: clamp(32px, 5vw, 72px); display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; opacity: 0; animation: va-fade 1.2s .6s var(--ease) forwards; }
+@keyframes va-fade { to { opacity: 1; } }
+.va-hero .meta div { grid-column: span 3; }
+.va-hero .meta div:first-child { grid-column: 1 / span 3; }
+.va-hero .meta .label { margin-bottom: 8px; }
+.va-hero .meta p { margin: 0; font-size: 15px; }
+@media (max-width: 860px) { .va-hero .meta div { grid-column: span 6; } }
+
+.va-rule { height: 1px; background: var(--ink); opacity: .25; transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--ease); }
+.va .in-view .va-rule, .va-rule.in-view { transform: scaleX(1); }
+
+/* generic section */
+.va-sec { padding-block: clamp(64px, 9vw, 150px); }
+.va-sec .head { grid-column: 1 / span 3; }
+.va-sec .body { grid-column: 4 / span 9; }
+@media (max-width: 860px) { .va-sec .head, .va-sec .body { grid-column: 1 / -1; } .va-sec .head { margin-bottom: 24px; } }
+.va-sec .head .label { position: sticky; top: 90px; }
+
+/* about */
+.va-about .statement { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 3.6vw, 56px); line-height: 1.16; letter-spacing: -.015em; margin: 0 0 clamp(40px, 5vw, 80px); max-width: 22ch; text-wrap: pretty; }
+.va-about .statement strong { font-weight: 500; }
+.va-about .two { display: grid; grid-template-columns: 5fr 4fr; gap: clamp(24px, 4vw, 72px); align-items: end; }
+@media (max-width: 860px) { .va-about .two { grid-template-columns: 1fr; } }
+.va-about .copy p { margin: 0 0 1.2em; max-width: 52ch; color: var(--ink-2); }
+.va-about figure { margin: 0; position: relative; }
+.va-about figure .clip { aspect-ratio: 4 / 5; overflow: hidden; clip-path: inset(0 0 100% 0); transition: clip-path 1.5s var(--ease); }
+.va-about figure.in-view .clip { clip-path: inset(0 0 0 0); }
+.va-about figure img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; filter: grayscale(1) contrast(1.05); transform: scale(1.12); transition: transform 1.5s var(--ease), filter .8s ease; }
+.va-about figure.in-view img { transform: scale(1); }
+.va-about figure:hover img { filter: grayscale(0); }
+.va-about figcaption { margin-top: 12px; font-size: 13px; color: var(--ink-3); display: flex; justify-content: space-between; }
+.va-about .fig { margin-top: clamp(40px, 5vw, 80px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 640px) { .va-about .fig { grid-template-columns: 1fr; } }
+.va-about .fig b { display: block; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 5vw, 76px); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.va-about .fig span { display: block; margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+
+/* focus */
+.va-focus .item { display: grid; grid-template-columns: 5fr 6fr; gap: clamp(20px, 3vw, 56px); padding-block: clamp(28px, 4vw, 56px); border-top: 1px solid rgba(16,32,26,.2); }
+.va-focus .item:first-child { border-top: 0; padding-top: 0; }
+@media (max-width: 720px) { .va-focus .item { grid-template-columns: 1fr; } }
+.va-focus h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3vw, 44px); line-height: 1.08; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+.va-focus h3 em { color: var(--green); }
+.va-focus p { margin: 0 0 18px; color: var(--ink-2); max-width: 46ch; }
+.va-focus .tools { font-size: 14px; color: var(--ink-3); }
+.va-focus .tools i { font-style: italic; font-family: var(--serif); font-size: 16px; color: var(--ink-2); }
+
+/* experience — sticky year rail */
+.va-exp .body { display: grid; grid-template-columns: 2fr 7fr; gap: clamp(16px, 3vw, 48px); }
+@media (max-width: 860px) { .va-exp .body { grid-template-columns: 1fr; } .va-exp .rail { display: none; } }
+.va-exp .rail { position: relative; }
+.va-exp .rail .year { position: sticky; top: 90px; font-family: var(--serif); font-weight: 300; font-size: clamp(80px, 9vw, 150px); line-height: .9; letter-spacing: -.04em; color: var(--green); font-variant-numeric: tabular-nums; }
+.va-exp .rail .year .d { display: inline-block; height: 1em; overflow: hidden; vertical-align: top; }
+.va-exp .rail .year .d span { display: block; transition: transform .7s var(--ease); }
+.va-exp .rail small { display: block; margin-top: 16px; font-size: 13px; color: var(--ink-3); letter-spacing: .1em; text-transform: uppercase; }
+.va-exp .roles { list-style: none; margin: 0; padding: 0; }
+.va-exp .role { display: grid; grid-template-columns: 1fr auto; gap: 16px 40px; padding-block: 28px; border-top: 1px solid rgba(16,32,26,.18); transition: padding-left .5s var(--ease); }
+.va-exp .role:hover { padding-left: 14px; }
+.va-exp .role h3 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.4vw, 34px); letter-spacing: -.015em; line-height: 1.1; }
+.va-exp .role .co { color: var(--ink-2); font-size: 15px; margin-top: 6px; }
+.va-exp .role .yrs { font-size: 13px; letter-spacing: .08em; color: var(--ink-3); text-transform: uppercase; font-variant-numeric: tabular-nums; padding-top: 6px; white-space: nowrap; }
+.va-exp .role p { grid-column: 1 / -1; margin: 0; max-width: 60ch; color: var(--ink-2); font-size: 16px; }
+
+/* skills — set as running text, no pills */
+.va-skills .group { display: grid; grid-template-columns: 3fr 9fr; gap: 16px 32px; padding-block: 20px; border-top: 1px solid rgba(16,32,26,.18); }
+.va-skills .group:first-child { border-top: 0; padding-top: 0; }
+@media (max-width: 720px) { .va-skills .group { grid-template-columns: 1fr; gap: 6px; } }
+.va-skills .group h3 { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 22px; }
+.va-skills .group p { margin: 0; font-size: clamp(17px, 1.6vw, 22px); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.va-skills .group p b { font-weight: 500; color: var(--ink); }
+
+/* contact */
+.va-contact { padding-block: clamp(80px, 12vw, 200px) clamp(60px, 8vw, 120px); }
+.va-contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(56px, 11vw, 200px); line-height: .92; letter-spacing: -.035em; margin: 0; }
+.va-contact h2 em { color: var(--green); }
+.va-contact .links { margin-top: clamp(28px, 4vw, 56px); display: flex; flex-wrap: wrap; gap: 12px 40px; font-size: clamp(18px, 2vw, 26px); }
+.va-contact .links a { text-decoration: none; position: relative; padding-bottom: 4px; }
+.va-contact .links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(1); transform-origin: left; transition: transform .6s var(--ease); }
+.va-contact .links a:hover::after { transform: scaleX(0); transform-origin: right; }
+
+/* footer marquee */
+.va-foot { overflow: hidden; border-top: 1px solid rgba(16,32,26,.2); padding-block: 22px 60px; }
+.va-foot .marq { display: flex; gap: 48px; white-space: nowrap; font-family: var(--serif); font-style: italic; font-size: clamp(20px, 2.6vw, 34px); color: var(--ink-3); animation: va-marq 40s linear infinite; }
+.va-foot .marq span { flex: none; }
+@keyframes va-marq { to { transform: translateX(-50%); } }
+.va-foot .small { margin-top: 28px; display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-3); }
+
+/* reveal */
+.va .rv { opacity: 0; transform: translateY(18px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.va .rv.in-view { opacity: 1; transform: none; }
+</style>
+
+<div class="variant va" data-variant="a" data-name="Field Notes · light editorial">
+  <nav class="va-nav" aria-label="Primary">
+    <div class="wrap row">
+      <a class="brand" href="#a-top">John Flavan</a>
+      <ul>
+        <li><a href="#a-about">About</a></li>
+        <li><a href="#a-focus">Focus</a></li>
+        <li><a href="#a-exp">Experience</a></li>
+        <li><a href="#a-skills">Skills</a></li>
+        <li><a href="#a-contact">Contact</a></li>
+      </ul>
+      <span class="clock" data-clock>St. Louis 00:00</span>
+    </div>
+  </nav>
+
+  <header class="va-hero wrap" id="a-top">
+    <h1>
+      <span class="line"><span>Leading engineering</span></span>
+      <span class="line"><span>teams through the</span></span>
+      <span class="line"><span><em>AI-shaped</em> change</span></span>
+      <span class="line"><span>in how software ships.</span></span>
+    </h1>
+    <div class="meta">
+      <div><p class="label">Name</p><p>John Flavan</p></div>
+      <div><p class="label">Role</p><p>Manager, Software Engineering<br>Alliant Insurance Services</p></div>
+      <div><p class="label">Based</p><p>St. Louis, Missouri</p></div>
+      <div><p class="label">Practising since</p><p>2010 · fifteen years</p></div>
+    </div>
+  </header>
+  <div class="wrap"><div class="va-rule"></div></div>
+
+  <section class="va-sec va-about wrap grid" id="a-about">
+    <div class="head"><p class="label">About</p></div>
+    <div class="body">
+      <p class="statement rv">I build products that actually matter to people, and I lead the teams that build them, turning <strong>messy, complicated problems</strong> into clean solutions that scale.</p>
+      <div class="two">
+        <div class="copy rv">
+          <p>Fifteen years in, I still write code most weeks. But the job now is the shape of the whole system: two development teams, one quality engineering team, and a software development lifecycle being rebuilt around AI tooling from planning through review.</p>
+          <p>Before management I was a tech lead, a UI developer, and for a while a one-person design studio. That history shows up in how I run teams: I care about what ships, how it looks, and whether anyone can trust it.</p>
+        </div>
+        <figure>
+          <div class="clip"><img src="/profile.jpg" alt="John Flavan" width="460" height="460"></div>
+          <figcaption><span>John Flavan</span><span>St. Louis, MO</span></figcaption>
+        </figure>
+      </div>
+      <div class="fig rv">
+        <div><b>3</b><span>teams: two development,<br>one quality engineering</span></div>
+        <div><b>15<span style="font-size:.5em">+</span></b><span>years building and<br>shipping software</span></div>
+        <div><b>1</b><span>SDLC being rebuilt<br>around AI, end to end</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="va-sec va-focus wrap grid" id="a-focus">
+    <div class="head"><p class="label">Current focus</p></div>
+    <div class="body">
+      <article class="item rv">
+        <h3>AI-enabled <em>engineering</em></h3>
+        <div><p>Leading a transformation of our software development lifecycle with AI tooling. Intelligent assistants at every stage: planning, coding, review, and testing.</p><p class="tools"><i>With</i> Claude Code, Codex, Copilot, Azure AI Foundry</p></div>
+      </article>
+      <article class="item rv">
+        <h3>Engineering <em>leadership</em></h3>
+        <div><p>Managing two development teams and a dedicated quality engineering team. High-trust environments where people do their best work and ship with confidence.</p><p class="tools"><i>Through</i> three teams, Agile and Scrum, mentorship</p></div>
+      </article>
+      <article class="item rv">
+        <h3>Quality engineering &amp; <em>AI testing</em></h3>
+        <div><p>A quality-first culture powered by intelligent automation. Testing agents that explore, validate, and catch what humans miss.</p><p class="tools"><i>Built on</i> Playwright, testing agents, AI automation</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="va-sec va-exp wrap grid" id="a-exp">
+    <div class="head"><p class="label">Experience</p></div>
+    <div class="body">
+      <div class="rail">
+        <div class="year" data-year-rail aria-hidden="true">
+          <span class="d" data-d="0"><span>2</span></span><span class="d" data-d="1"><span>0</span></span><span class="d" data-d="2"><span>2</span></span><span class="d" data-d="3"><span>5</span></span>
+        </div>
+        <small>Year</small>
+      </div>
+      <ol class="roles">
+        <li class="role rv" data-year="2025"><h3>Manager, Software Engineering</h3><span class="yrs">2025 – Present</span><div class="co">Alliant Insurance Services</div><p>Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</p></li>
+        <li class="role rv" data-year="2017"><h3>Full Stack Developer, Tech Lead</h3><span class="yrs">2017 – 2025</span><div class="co">Alliant Insurance Services</div><p>Led teams developing .NET and Angular projects on Azure. Transformed testing practices and worked with vendors and teams to implement automated testing.</p></li>
+        <li class="role rv" data-year="2015"><h3>Designer, Developer, PM</h3><span class="yrs">2015 – 2017</span><div class="co">bradgood.net</div><p>Custom Squarespace sites, end to end: brand design, integrations, SEO, and project management.</p></li>
+        <li class="role rv" data-year="2014"><h3>UI Developer</h3><span class="yrs">2014 – 2017</span><div class="co">Alliant Insurance Services</div><p>Designed and developed UI on SharePoint 2013 and MVC 5 sites. Led responsive redesigns and rapid prototyping.</p></li>
+        <li class="role rv" data-year="2013"><h3>Database Developer</h3><span class="yrs">2013 – 2014</span><div class="co">Cass Information Systems</div><p>B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p></li>
+        <li class="role rv" data-year="2011"><h3>Software Developer</h3><span class="yrs">2011 – 2015</span><div class="co">Royal Canin SAS</div><p>Built intranet applications, optimized SQL stored procedures, and developed scalable WCF web services for enterprise order processing.</p></li>
+        <li class="role rv" data-year="2010"><h3>Web Developer</h3><span class="yrs">2010 – 2011</span><div class="co">Smoky Jennings Chevrolet</div><p>Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="va-sec va-skills wrap grid" id="a-skills">
+    <div class="head"><p class="label">Skills</p></div>
+    <div class="body">
+      <div class="group rv"><h3>Languages &amp; frameworks</h3><p><b>C#</b>, <b>.NET Core</b>, <b>Angular</b>, TypeScript, JavaScript, SQL</p></div>
+      <div class="group rv"><h3>Cloud &amp; infrastructure</h3><p><b>Azure</b>, Azure DevOps, Redis, SignalR, Service Bus, GitHub, GitHub Actions, CI/CD, Azure IaC</p></div>
+      <div class="group rv"><h3>AI &amp; tooling</h3><p><b>Claude Code</b>, Codex, Copilot, Azure AI Foundry, AI integrations</p></div>
+      <div class="group rv"><h3>Data &amp; architecture</h3><p>MS SQL, PostgreSQL, <b>Clean Architecture</b>, CQRS, REST and Web API, Dapper, EF Core</p></div>
+      <div class="group rv"><h3>Testing &amp; quality</h3><p>XUnit, <b>Playwright</b>, automated testing, test strategy</p></div>
+      <div class="group rv"><h3>Integrations &amp; design</h3><p>Salesforce, Webflow, Applied Epic, Okta, Photoshop, Adobe Suite</p></div>
+    </div>
+  </section>
+
+  <section class="va-contact wrap" id="a-contact">
+    <h2 class="rv">An idea, a project,<br>or just <em>want to talk?</em></h2>
+    <div class="links rv">
+      <a href="mailto:johnflavan@gmail.com">johnflavan@gmail.com</a>
+      <a href="https://linkedin.com/in/johnflavan">LinkedIn</a>
+      <a href="https://github.com/jflavan">GitHub</a>
+    </div>
+  </section>
+
+  <footer class="va-foot">
+    <div class="marq" aria-hidden="true">
+      <span>John Flavan</span><span>Engineering leader</span><span>St. Louis, Missouri</span><span>Est. 2010</span>
+      <span>John Flavan</span><span>Engineering leader</span><span>St. Louis, Missouri</span><span>Est. 2010</span>
+    </div>
+    <div class="wrap small"><span>© 2026 John Flavan</span><span>Set in Newsreader &amp; Hanken Grotesk</span></div>
+  </footer>
+</div>
+<!-- ============================================================
+     VARIANT B — "Monument"  (dark · cinematic · scroll-driven scenes)
+     ============================================================ -->
+<style>
+.vb {
+  --bg: #0B0C0A; --bg-2: #141511; --bg-3: #0E2A1F; --bg-4: #1B1A16;
+  --fg: #EDEAE2; --fg-2: #B9B6AD; --fg-3: #77756D;
+  --acc: #86B89A;
+  --disp: "Bricolage Grotesque", "Archivo", "Helvetica Neue", sans-serif;
+  --mono: "Martian Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --gutter: clamp(20px, 4vw, 64px);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  background: var(--bg); color: var(--fg);
+  font-family: var(--disp); font-size: 17px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+.vb ::selection { background: var(--acc); color: var(--bg); }
+.vb .wrap { padding-inline: var(--gutter); }
+.vb .mono { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); font-weight: 400; }
+.vb .disp { font-family: var(--disp); font-variation-settings: "opsz" 96, "wdth" 100; font-weight: 800; letter-spacing: -.04em; line-height: .86; }
+
+/* preloader */
+.vb-load { position: fixed; inset: 0; z-index: 60; background: var(--bg); display: grid; place-items: end start; padding: var(--gutter); transition: transform 1s var(--ease); }
+.vb-load.done { transform: translateY(-100%); }
+.vb-load .n { font-family: var(--disp); font-weight: 800; font-size: clamp(64px, 14vw, 220px); letter-spacing: -.05em; line-height: .8; font-variant-numeric: tabular-nums; }
+.vb-load .n small { font-size: .3em; letter-spacing: 0; vertical-align: top; color: var(--fg-3); }
+
+/* nav */
+.vb-nav { position: fixed; inset: 0 0 auto; z-index: 30; display: flex; justify-content: space-between; align-items: center; padding: 20px var(--gutter); mix-blend-mode: difference; color: #fff; }
+.vb-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(14px, 2.2vw, 32px); }
+.vb-nav a { text-decoration: none; }
+.vb-nav a:hover { color: var(--acc); }
+.vb-nav .sig { font-family: var(--disp); font-weight: 800; letter-spacing: -.03em; font-size: 18px; opacity: 0; transition: opacity .4s; }
+.vb-nav.scrolled .sig { opacity: 1; }
+@media (max-width: 640px) { .vb-nav ul li:nth-child(n+4) { display: none; } }
+
+/* hero */
+.vb-hero { height: 100vh; min-height: 640px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--gutter); overflow: hidden; }
+.vb-hero .first { font-family: var(--disp); font-weight: 300; font-variation-settings: "opsz" 96, "wdth" 100; font-size: clamp(28px, 5vw, 72px); letter-spacing: -.02em; line-height: 1; margin: 0 0 .1em .04em; }
+.vb-hero .name { font-size: clamp(80px, 17.5vw, 340px); margin: 0; white-space: nowrap; margin-left: -.03em; will-change: transform; transform-origin: left bottom; overflow: hidden; padding-bottom: .06em; }
+.vb-hero .name span { display: block; transform: translateY(105%); }
+.vb-hero .sub { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: clamp(20px, 3vw, 40px); align-items: end; }
+.vb-hero .sub p { margin: 0; max-width: 34ch; font-size: 15px; color: var(--fg-2); text-wrap: pretty; }
+.vb-hero .sub .r { text-align: right; }
+@media (max-width: 720px) { .vb-hero .sub { grid-template-columns: 1fr; } .vb-hero .sub .r { text-align: left; } }
+.vb-hero .portrait { position: absolute; right: var(--gutter); top: 18vh; width: clamp(120px, 16vw, 240px); aspect-ratio: 4/5; overflow: hidden; }
+.vb-hero .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; filter: grayscale(1) contrast(1.1) brightness(.9); transition: filter .8s ease; }
+.vb-hero .portrait:hover img { filter: none; }
+.vb-hero .portrait::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(11,12,10,.35) 3px 4px); pointer-events: none; mix-blend-mode: multiply; }
+@media (max-width: 720px) { .vb-hero .portrait { top: 12vh; } }
+
+/* thesis: scrub-lit text */
+.vb-thesis { padding-block: 30vh; }
+.vb-thesis p { margin: 0 auto; max-width: 22ch; font-family: var(--disp); font-weight: 500; font-variation-settings: "opsz" 96, "wdth" 92; font-size: clamp(30px, 5.2vw, 84px); line-height: 1.02; letter-spacing: -.03em; text-wrap: balance; }
+.vb-thesis p .w { color: rgba(237,234,226,.16); transition: color .2s linear; }
+.vb-thesis p .w.lit { color: var(--fg); }
+.vb-thesis p .w.k.lit { color: var(--acc); }
+
+/* focus: stacked sticky panels */
+.vb-stack { position: relative; }
+.vb-panel { position: sticky; top: 0; height: 100vh; min-height: 640px; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gutter); padding: calc(var(--gutter) + 60px) var(--gutter) var(--gutter); align-content: end; transform-origin: top center; border-top: 1px solid rgba(237,234,226,.08); }
+.vb-panel:nth-child(1) { background: var(--bg-2); }
+.vb-panel:nth-child(2) { background: var(--bg-3); }
+.vb-panel:nth-child(3) { background: var(--bg-4); }
+.vb-panel h3 { font-family: var(--disp); font-weight: 800; font-variation-settings: "opsz" 96, "wdth" 85; font-size: clamp(44px, 8vw, 128px); line-height: .9; letter-spacing: -.04em; margin: 0; text-wrap: balance; }
+.vb-panel .desc { align-self: end; max-width: 42ch; }
+.vb-panel .desc p { margin: 0 0 20px; font-size: clamp(16px, 1.4vw, 20px); color: var(--fg-2); }
+.vb-panel .desc .mono { display: block; }
+.vb-panel .idx { position: absolute; top: calc(var(--gutter) + 60px); left: var(--gutter); }
+@media (max-width: 860px) { .vb-panel { grid-template-columns: 1fr; align-content: end; } }
+
+/* experience: horizontal ribbon */
+.vb-exp { position: relative; }
+.vb-exp .pin { height: 100vh; min-height: 640px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+.vb-exp .track { display: flex; gap: clamp(24px, 4vw, 64px); padding-inline: var(--gutter); will-change: transform; }
+.vb-exp .card { flex: none; width: clamp(280px, 34vw, 520px); border-top: 1px solid rgba(237,234,226,.2); padding-top: 20px; }
+.vb-exp .card .y { font-family: var(--disp); font-weight: 800; font-size: clamp(64px, 8vw, 128px); letter-spacing: -.05em; line-height: .85; margin: 0 0 22px; font-variant-numeric: tabular-nums; }
+.vb-exp .card .y small { font-size: .3em; letter-spacing: 0; font-weight: 400; color: var(--fg-3); vertical-align: top; margin-left: .3em; }
+.vb-exp .card h3 { margin: 0; font-weight: 600; font-size: clamp(20px, 2vw, 28px); letter-spacing: -.02em; line-height: 1.1; }
+.vb-exp .card .co { margin: 8px 0 14px; }
+.vb-exp .card p { margin: 0; color: var(--fg-2); font-size: 15px; }
+.vb-exp .head { position: absolute; top: calc(var(--gutter) + 40px); left: var(--gutter); right: var(--gutter); display: flex; justify-content: space-between; }
+.vb-exp .head .bar { width: 40vw; height: 1px; background: rgba(237,234,226,.15); position: relative; margin-top: 7px; }
+.vb-exp .head .bar i { position: absolute; left: 0; top: -1px; height: 3px; width: 10%; background: var(--acc); }
+
+/* skills: word wall with width axis on hover */
+.vb-skills { padding: 22vh var(--gutter); }
+.vb-skills .wall { font-family: var(--disp); font-weight: 300; font-variation-settings: "opsz" 96, "wdth" 100; font-size: clamp(30px, 5.5vw, 92px); line-height: 1; letter-spacing: -.03em; color: var(--fg-3); text-wrap: pretty; }
+.vb-skills .wall b { font-weight: 300; color: var(--fg); transition: font-variation-settings .5s var(--ease), color .3s; cursor: default; }
+.vb-skills .wall b:hover { font-variation-settings: "opsz" 96, "wdth" 75; color: var(--acc); }
+.vb-skills .wall i { font-style: normal; font-family: var(--mono); font-size: .18em; letter-spacing: .1em; text-transform: uppercase; vertical-align: .9em; margin: 0 .6em; color: var(--fg-3); }
+
+/* contact */
+.vb-contact { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: calc(var(--gutter) + 60px) var(--gutter) var(--gutter); background: var(--fg); color: var(--bg); }
+.vb-contact h2 { font-family: var(--disp); font-weight: 800; font-variation-settings: "opsz" 96, "wdth" 80; font-size: clamp(64px, 17vw, 300px); line-height: .85; letter-spacing: -.05em; margin: 0; }
+.vb-contact .mail { display: inline-block; text-decoration: none; font-size: clamp(20px, 3vw, 44px); font-weight: 500; letter-spacing: -.02em; border-bottom: 2px solid currentColor; margin-top: 24px; }
+.vb-contact .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+.vb-contact .foot .mono { color: #5b5a54; }
+.vb-contact .foot a { text-decoration: none; }
+
+/* magnetic cursor dot */
+.vb-cursor { position: fixed; left: 0; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--acc); pointer-events: none; z-index: 70; transform: translate(-50%, -50%); mix-blend-mode: difference; transition: width .3s, height .3s; }
+.vb-cursor.big { width: 64px; height: 64px; }
+@media (hover: none) { .vb-cursor { display: none; } }
+</style>
+
+<div class="variant vb" data-variant="b" data-name="Monument · dark cinematic">
+  <div class="vb-load" data-loader><div class="n"><span data-count>0</span><small>%</small></div></div>
+  <div class="vb-cursor" data-cursor aria-hidden="true"></div>
+  <nav class="vb-nav mono" data-bnav aria-label="Primary">
+    <span class="sig">JF</span>
+    <ul>
+      <li><a href="#b-thesis">About</a></li>
+      <li><a href="#b-focus">Focus</a></li>
+      <li><a href="#b-exp">Experience</a></li>
+      <li><a href="#b-skills">Skills</a></li>
+      <li><a href="#b-contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="vb-hero" id="b-top">
+    <div class="portrait" data-hover><img src="/profile.jpg" alt="John Flavan" width="460" height="460"></div>
+    <p class="first">John</p>
+    <h1 class="name disp" data-hero-name><span>Flavan</span></h1>
+    <div class="sub">
+      <p class="mono">Engineering Manager<br>Alliant Insurance Services</p>
+      <p>Leading development and quality teams, and rebuilding how software gets made around AI.</p>
+      <p class="mono r">St. Louis, MO<br>38.63° N, 90.20° W</p>
+    </div>
+  </header>
+
+  <section class="vb-thesis wrap" id="b-thesis">
+    <p data-lit>I build products that matter to people. I lead the engineers who build them. And I turn <span class="k">messy, complicated problems</span> into clean solutions that scale.</p>
+  </section>
+
+  <section class="vb-stack" id="b-focus">
+    <article class="vb-panel" data-panel>
+      <span class="idx mono">Focus · AI</span>
+      <h3>AI-enabled engineering</h3>
+      <div class="desc"><p>Leading a transformation of our software development lifecycle with AI tooling. Intelligent assistants at every stage: planning, coding, review, testing.</p><span class="mono">Claude Code · Codex · Copilot · Azure AI Foundry</span></div>
+    </article>
+    <article class="vb-panel" data-panel>
+      <span class="idx mono">Focus · People</span>
+      <h3>Engineering leadership</h3>
+      <div class="desc"><p>Two development teams and a dedicated quality engineering team. High-trust environments where people do their best work and ship with confidence.</p><span class="mono">3 teams · Agile / Scrum · Mentorship</span></div>
+    </article>
+    <article class="vb-panel" data-panel>
+      <span class="idx mono">Focus · Quality</span>
+      <h3>Quality engineering &amp; AI testing</h3>
+      <div class="desc"><p>A quality-first culture powered by intelligent automation. Testing agents that explore, validate, and catch what humans miss.</p><span class="mono">Playwright · Testing agents · AI automation</span></div>
+    </article>
+  </section>
+
+  <section class="vb-exp" id="b-exp" data-hexp>
+    <div class="pin">
+      <div class="head"><span class="mono">Experience · 2010 → now</span><div class="bar"><i data-hbar></i></div></div>
+      <div class="track" data-track>
+        <div class="card"><p class="y">2025<small>now</small></p><h3>Manager, Software Engineering</h3><p class="co mono">Alliant Insurance Services</p><p>Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</p></div>
+        <div class="card"><p class="y">2017</p><h3>Full Stack Developer, Tech Lead</h3><p class="co mono">Alliant Insurance Services</p><p>Led .NET and Angular projects on Azure. Transformed testing practices and implemented automated testing with vendors and teams.</p></div>
+        <div class="card"><p class="y">2015</p><h3>Designer, Developer, PM</h3><p class="co mono">bradgood.net</p><p>Custom Squarespace sites, end to end: brand design, integrations, SEO, and project management.</p></div>
+        <div class="card"><p class="y">2014</p><h3>UI Developer</h3><p class="co mono">Alliant Insurance Services</p><p>UI on SharePoint 2013 and MVC 5. Led responsive redesigns and rapid prototyping.</p></div>
+        <div class="card"><p class="y">2013</p><h3>Database Developer</h3><p class="co mono">Cass Information Systems</p><p>B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p></div>
+        <div class="card"><p class="y">2011</p><h3>Software Developer</h3><p class="co mono">Royal Canin SAS</p><p>Intranet applications, optimized SQL stored procedures, scalable WCF web services for enterprise order processing.</p></div>
+        <div class="card"><p class="y">2010</p><h3>Web Developer</h3><p class="co mono">Smoky Jennings Chevrolet</p><p>Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vb-skills" id="b-skills">
+    <p class="wall">
+      <i>Languages</i><b>C#</b>, <b>.NET Core</b>, <b>Angular</b>, TypeScript, JavaScript, SQL
+      <i>Cloud</i><b>Azure</b>, Azure DevOps, Redis, SignalR, Service Bus, GitHub Actions, CI/CD
+      <i>AI</i><b>Claude Code</b>, Codex, Copilot, Azure AI Foundry
+      <i>Architecture</i>MS SQL, PostgreSQL, <b>Clean Architecture</b>, CQRS, REST, Dapper, EF Core
+      <i>Quality</i>XUnit, <b>Playwright</b>, automated testing, test strategy
+      <i>Integrations</i>Salesforce, Webflow, Applied Epic, Okta, Adobe Suite
+    </p>
+  </section>
+
+  <section class="vb-contact" id="b-contact">
+    <div>
+      <h2>Let's<br>talk.</h2>
+      <a class="mail" href="mailto:johnflavan@gmail.com" data-hover>johnflavan@gmail.com</a>
+    </div>
+    <div class="foot mono">
+      <span>John Flavan · Engineering Leader · St. Louis, MO</span>
+      <span><a href="https://github.com/jflavan">GitHub</a> &nbsp;/&nbsp; <a href="https://linkedin.com/in/johnflavan">LinkedIn</a> &nbsp;/&nbsp; © 2026</span>
+    </div>
+  </section>
+</div>
+<!-- ============================================================
+     VARIANT C — "Drafting Sheet"  (cyanotype · engineering drawing · line-drawn)
+     ============================================================ -->
+<style>
+.vc {
+  --blue: #0C2E57; --blue-2: #0A2749; --line: rgba(232,240,252,.11); --line-2: rgba(232,240,252,.22);
+  --ink: #EEF3FA; --ink-2: #A9BBD6; --ink-3: #7A90B0; --red: #FFB380;
+  --disp: "Big Shoulders Display", "Oswald", Impact, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --gutter: clamp(18px, 3.5vw, 56px);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  background: var(--blue); color: var(--ink);
+  font-family: var(--mono); font-size: 14px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  position: relative; cursor: none;
+  background-image:
+    linear-gradient(var(--line-2) 1px, transparent 1px), linear-gradient(90deg, var(--line-2) 1px, transparent 1px),
+    linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+  background-position: -1px -1px;
+}
+@media (hover: none) { .vc { cursor: auto; } }
+.vc ::selection { background: var(--red); color: var(--blue); }
+.vc a { cursor: none; }
+.vc .wrap { padding-inline: var(--gutter); }
+.vc .lab { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.vc .disp { font-family: var(--disp); font-weight: 700; text-transform: uppercase; letter-spacing: .01em; line-height: .9; }
+
+/* sheet frame */
+.vc-frame { position: fixed; inset: 12px; pointer-events: none; z-index: 5; }
+.vc-frame svg { width: 100%; height: 100%; display: block; }
+.vc-frame path, .vc-frame line, .vc-frame rect { fill: none; stroke: var(--ink); stroke-width: 1; stroke-dasharray: 4000; stroke-dashoffset: 4000; animation: vc-draw 2.4s var(--ease) forwards; }
+@keyframes vc-draw { to { stroke-dashoffset: 0; } }
+.vc-frame .ticks { opacity: .5; animation-delay: .6s; }
+@media (max-width: 720px) { .vc-frame { inset: 6px; } }
+
+/* crosshair */
+.vc-cross { position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0; transition: opacity .3s; }
+.vc-cross.on { opacity: 1; }
+.vc-cross .h, .vc-cross .v { position: absolute; background: rgba(255,179,128,.55); }
+.vc-cross .h { left: 0; right: 0; height: 1px; }
+.vc-cross .v { top: 0; bottom: 0; width: 1px; }
+.vc-cross .xy { position: absolute; font: 10px/1 var(--mono); color: var(--red); letter-spacing: .08em; padding: 6px 8px; transform: translate(12px, 12px); white-space: nowrap; }
+@media (hover: none) { .vc-cross { display: none; } }
+
+/* nav = view index */
+.vc-nav { position: sticky; top: 0; z-index: 20; background: linear-gradient(var(--blue) 70%, transparent); padding: 28px 0 20px; }
+.vc-nav .row { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+.vc-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(12px, 2vw, 28px); flex-wrap: wrap; }
+.vc-nav a { text-decoration: none; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.vc-nav a b { color: var(--red); font-weight: 500; margin-right: 6px; }
+.vc-nav a:hover { color: var(--ink); }
+.vc-nav .dwg { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+@media (max-width: 640px) { .vc-nav .dwg { display: none; } }
+
+/* hero */
+.vc-hero { padding-block: clamp(40px, 7vw, 100px) clamp(40px, 6vw, 80px); position: relative; }
+.vc-hero .title { position: relative; width: 100%; }
+.vc-hero svg.name { width: 100%; height: auto; display: block; overflow: visible; }
+.vc-hero svg.name text { font-family: var(--disp); font-weight: 900; font-size: 210px; letter-spacing: 2px; fill: var(--ink); fill-opacity: 0; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 900; stroke-dashoffset: 900; animation: vc-draw 2.2s .3s var(--ease) forwards, vc-fill 1s 1.8s ease forwards; }
+@keyframes vc-fill { to { fill-opacity: 1; } }
+.vc-hero .dim { position: absolute; left: 0; right: 0; bottom: -34px; height: 24px; opacity: 0; animation: vc-in .6s 2.4s ease forwards; }
+@keyframes vc-in { to { opacity: 1; } }
+.vc-hero .dim::before { content: ""; position: absolute; left: 0; right: 0; top: 12px; height: 1px; background: var(--red); transform: scaleX(0); transform-origin: left; animation: vc-grow 1.2s 2.5s var(--ease) forwards; }
+@keyframes vc-grow { to { transform: scaleX(1); } }
+.vc-hero .dim i { position: absolute; top: 4px; width: 1px; height: 18px; background: var(--red); }
+.vc-hero .dim i:first-child { left: 0; } .vc-hero .dim i:nth-child(2) { right: 0; }
+.vc-hero .dim span { position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%); background: var(--blue); padding: 0 8px; color: var(--red); font-size: 11px; letter-spacing: .1em; }
+.vc-hero .under { margin-top: 64px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid var(--line-2); padding-top: 16px; opacity: 0; animation: vc-in 1s 2.6s ease forwards; }
+.vc-hero .under div { border-left: 1px solid var(--line-2); padding-left: 12px; }
+.vc-hero .under .lab { display: block; margin-bottom: 4px; }
+.vc-hero .under p { margin: 0; font-size: 13px; }
+.vc-hero .under .disp { font-size: 30px; line-height: 1; }
+@media (max-width: 760px) { .vc-hero .under { grid-template-columns: 1fr 1fr; } }
+
+/* section header */
+.vc-sec { padding-block: clamp(48px, 7vw, 110px); }
+.vc-sec .sh { display: flex; align-items: baseline; gap: 16px; border-bottom: 1px solid var(--line-2); padding-bottom: 10px; margin-bottom: clamp(24px, 4vw, 48px); }
+.vc-sec .sh .disp { font-size: clamp(34px, 5vw, 72px); }
+.vc-sec .sh .disp b { color: var(--red); font-weight: 400; margin-right: .2em; }
+.vc-sec .sh .lab { margin-left: auto; }
+.vc-sec .sh.rv .disp { clip-path: inset(0 100% 0 0); transition: clip-path 1.2s var(--ease); }
+.vc-sec .sh.rv.in-view .disp { clip-path: inset(0 0 0 0); }
+
+/* about = detail bubble */
+.vc-about .body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 80px); align-items: center; }
+@media (max-width: 800px) { .vc-about .body { grid-template-columns: 1fr; } }
+.vc-about .statement { font-family: var(--disp); font-weight: 500; font-size: clamp(30px, 4.2vw, 62px); line-height: .98; text-transform: uppercase; margin: 0 0 24px; text-wrap: balance; }
+.vc-about .statement b { color: var(--red); font-weight: 700; }
+.vc-about .copy { max-width: 56ch; color: var(--ink-2); }
+.vc-about .copy p { margin: 0 0 1em; }
+.vc-about .bubble { position: relative; width: min(100%, 420px); aspect-ratio: 1; margin-inline: auto; }
+.vc-about .bubble .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--ink); }
+.vc-about .bubble .ring.b { inset: 12px; border-style: dashed; opacity: .4; animation: vc-spin 60s linear infinite; }
+@keyframes vc-spin { to { transform: rotate(360deg); } }
+.vc-about .bubble img { position: absolute; inset: 24px; width: calc(100% - 48px); height: calc(100% - 48px); border-radius: 50%; object-fit: cover; object-position: 50% 15%; filter: grayscale(1) contrast(1.15) brightness(.85) sepia(1) hue-rotate(180deg) saturate(1.6); mix-blend-mode: screen; transition: filter .6s; }
+.vc-about .bubble:hover img { filter: none; mix-blend-mode: normal; }
+.vc-about .bubble .tag { position: absolute; left: -10%; top: 6%; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--red); }
+.vc-about .bubble .tag::after { content: ""; position: absolute; left: 100%; top: 50%; width: 60px; height: 1px; background: var(--red); transform: rotate(35deg); transform-origin: left; }
+.vc-about .bubble .cap { position: absolute; left: 50%; bottom: -34px; transform: translateX(-50%); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+
+/* focus = details with hatching */
+.vc-focus .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 860px) { .vc-focus .grid { grid-template-columns: 1fr; } }
+.vc-focus .det { border: 1px solid var(--line-2); padding: 18px; position: relative; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+.vc-focus .det::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(232,240,252,.07) 10px 11px); transform: translateY(100%); transition: transform 1.2s var(--ease); }
+.vc-focus .det.in-view::before { transform: none; }
+.vc-focus .det > * { position: relative; }
+.vc-focus .det .num { position: absolute; top: 14px; left: 14px; width: 30px; height: 30px; border: 1px solid var(--red); border-radius: 50%; display: grid; place-items: center; color: var(--red); font-size: 12px; }
+.vc-focus .det h3 { font-family: var(--disp); font-weight: 700; text-transform: uppercase; font-size: clamp(30px, 3vw, 44px); line-height: .92; margin: 0 0 12px; text-wrap: balance; }
+.vc-focus .det p { margin: 0 0 12px; color: var(--ink-2); font-size: 13px; }
+.vc-focus .det .lab { display: block; }
+
+/* experience = revision table */
+.vc-exp table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.vc-exp th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 0 12px 10px 0; border-bottom: 1px solid var(--ink); }
+.vc-exp td { vertical-align: top; padding: 16px 12px 16px 0; border-bottom: 1px solid var(--line-2); }
+.vc-exp tr.rv td { opacity: 0; transform: translateX(-8px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.vc-exp tr.rv.in-view td { opacity: 1; transform: none; }
+.vc-exp td.rev { color: var(--red); white-space: nowrap; width: 5ch; }
+.vc-exp td.date { white-space: nowrap; color: var(--ink-2); font-variant-numeric: tabular-nums; width: 14ch; }
+.vc-exp td.role .disp { font-size: 24px; font-weight: 600; display: block; margin-bottom: 4px; }
+.vc-exp td.role .co { color: var(--ink-3); font-size: 12px; display: block; margin-bottom: 8px; }
+.vc-exp td.role p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+@media (max-width: 640px) { .vc-exp td.date { display: none; } .vc-exp th:nth-child(2) { display: none; } }
+
+/* skills = bill of materials */
+.vc-skills table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.vc-skills th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 0 12px 10px 0; border-bottom: 1px solid var(--ink); }
+.vc-skills td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+.vc-skills td.no { color: var(--red); width: 5ch; }
+.vc-skills td.cat { width: 26ch; font-family: var(--disp); text-transform: uppercase; font-size: 20px; font-weight: 600; line-height: 1; padding-top: 14px; }
+.vc-skills td.items { color: var(--ink-2); }
+.vc-skills td.items b { color: var(--ink); font-weight: 500; }
+@media (max-width: 640px) { .vc-skills td.cat { width: auto; font-size: 16px; } }
+
+/* contact = general notes + stamp */
+.vc-contact .body { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+@media (max-width: 800px) { .vc-contact .body { grid-template-columns: 1fr; } }
+.vc-contact ol { margin: 0; padding-left: 2.4ch; color: var(--ink-2); font-size: 14px; }
+.vc-contact ol li { margin-bottom: 10px; }
+.vc-contact ol a { color: var(--ink); }
+.vc-contact .big { font-family: var(--disp); font-weight: 800; text-transform: uppercase; font-size: clamp(56px, 9vw, 150px); line-height: .85; margin: 0 0 24px; }
+.vc-contact .stamp { display: inline-block; border: 3px double var(--red); color: var(--red); padding: 10px 16px; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; transform: rotate(-6deg); opacity: .9; text-decoration: none; transition: transform .4s var(--ease); }
+.vc-contact .stamp:hover { transform: rotate(0) scale(1.04); }
+
+/* title block */
+.vc-tb { margin: 40px var(--gutter) 60px; border: 1px solid var(--ink); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.vc-tb div { padding: 10px 12px; border-right: 1px solid var(--ink); border-top: 1px solid var(--ink); min-height: 54px; }
+.vc-tb div:nth-child(-n+4) { border-top: 0; }
+.vc-tb div:nth-child(4n) { border-right: 0; }
+.vc-tb .lab { display: block; margin-bottom: 4px; font-size: 9px; }
+.vc-tb .disp { font-size: 22px; letter-spacing: .02em; }
+@media (max-width: 640px) { .vc-tb { grid-template-columns: 1fr 1fr; } .vc-tb div:nth-child(-n+4) { border-top: 1px solid var(--ink); } .vc-tb div:nth-child(-n+2) { border-top: 0; } .vc-tb div:nth-child(4n) { border-right: 1px solid var(--ink); } .vc-tb div:nth-child(2n) { border-right: 0; } }
+</style>
+
+<div class="variant vc" data-variant="c" data-name="Drafting Sheet · cyanotype">
+  <div class="vc-frame" aria-hidden="true">
+    <svg viewBox="0 0 1000 620" preserveAspectRatio="none">
+      <rect x="1" y="1" width="998" height="618" vector-effect="non-scaling-stroke"/>
+      <g class="ticks" vector-effect="non-scaling-stroke">
+        <line x1="250" y1="1" x2="250" y2="10"/><line x1="500" y1="1" x2="500" y2="10"/><line x1="750" y1="1" x2="750" y2="10"/>
+        <line x1="250" y1="609" x2="250" y2="618"/><line x1="500" y1="609" x2="500" y2="618"/><line x1="750" y1="609" x2="750" y2="618"/>
+        <line x1="1" y1="155" x2="10" y2="155"/><line x1="1" y1="310" x2="10" y2="310"/><line x1="1" y1="465" x2="10" y2="465"/>
+        <line x1="990" y1="155" x2="998" y2="155"/><line x1="990" y1="310" x2="998" y2="310"/><line x1="990" y1="465" x2="998" y2="465"/>
+      </g>
+    </svg>
+  </div>
+  <div class="vc-cross" data-cross aria-hidden="true"><div class="h"></div><div class="v"></div><div class="xy">X 0000 · Y 0000</div></div>
+
+  <nav class="vc-nav" aria-label="Views">
+    <div class="wrap row">
+      <ul>
+        <li><a href="#c-about"><b>A-A</b>About</a></li>
+        <li><a href="#c-focus"><b>B-B</b>Focus</a></li>
+        <li><a href="#c-exp"><b>C-C</b>Revisions</a></li>
+        <li><a href="#c-skills"><b>D-D</b>Materials</a></li>
+        <li><a href="#c-contact"><b>E-E</b>Notes</a></li>
+      </ul>
+      <span class="dwg">DWG JF-2026 · Sheet 1 of 1 · Scale 1:1</span>
+    </div>
+  </nav>
+
+  <header class="vc-hero wrap" id="c-top">
+    <div class="title">
+      <svg class="name" viewBox="0 0 1000 200" aria-labelledby="c-name-t"><title id="c-name-t">John Flavan</title>
+        <text x="0" y="185" textLength="1000" lengthAdjust="spacingAndGlyphs">JOHN FLAVAN</text>
+      </svg>
+      <div class="dim" aria-hidden="true"><i></i><i></i><span>Overall — 15 yrs, 2010 → 2026</span></div>
+    </div>
+    <div class="under">
+      <div><span class="lab">Designation</span><p class="disp">Eng. Manager</p></div>
+      <div><span class="lab">Employer</span><p>Alliant Insurance Services</p></div>
+      <div><span class="lab">Location</span><p>St. Louis, MO · 38.63N 90.20W</p></div>
+      <div><span class="lab">Scope</span><p>2 dev teams · 1 QE team · AI-enabled SDLC</p></div>
+    </div>
+  </header>
+
+  <section class="vc-sec vc-about wrap" id="c-about">
+    <div class="sh rv"><h2 class="disp"><b>A-A</b>About</h2><span class="lab">Detail · not to scale</span></div>
+    <div class="body">
+      <div>
+        <p class="statement">I build products that matter. I lead the teams that build them. <b>Messy problems in, clean solutions out.</b></p>
+        <div class="copy"><p>Fifteen years in, I still write code most weeks, but the job now is the shape of the whole system: two development teams, one quality engineering team, and a software development lifecycle being rebuilt around AI tooling from planning through review.</p><p>Before management I was a tech lead, a UI developer, and for a while a one-person design studio. I care about what ships, how it looks, and whether anyone can trust it.</p></div>
+      </div>
+      <div class="bubble"><div class="ring"></div><div class="ring b"></div><img src="/profile.jpg" alt="John Flavan" width="460" height="460"><span class="tag">Detail A</span><span class="cap">John Flavan · St. Louis</span></div>
+    </div>
+  </section>
+
+  <section class="vc-sec vc-focus wrap" id="c-focus">
+    <div class="sh rv"><h2 class="disp"><b>B-B</b>Current focus</h2><span class="lab">Three details</span></div>
+    <div class="grid">
+      <article class="det rv"><span class="num">1</span><h3>AI-enabled engineering</h3><p>Leading a transformation of the software development lifecycle with AI tooling. Intelligent assistants at every stage, from planning and coding to review and testing.</p><span class="lab">Claude Code · Codex · Copilot · Azure AI Foundry</span></article>
+      <article class="det rv"><span class="num">2</span><h3>Engineering leadership</h3><p>Two development teams and a dedicated quality engineering team. High-trust environments where people do their best work and ship with confidence.</p><span class="lab">3 teams · Agile / Scrum · Mentorship</span></article>
+      <article class="det rv"><span class="num">3</span><h3>Quality engineering &amp; AI testing</h3><p>A quality-first culture powered by intelligent automation. Testing agents that explore, validate, and catch what humans miss.</p><span class="lab">Playwright · Testing agents · AI automation</span></article>
+    </div>
+  </section>
+
+  <section class="vc-sec vc-exp wrap" id="c-exp">
+    <div class="sh rv"><h2 class="disp"><b>C-C</b>Revision history</h2><span class="lab">Latest first</span></div>
+    <table>
+      <thead><tr><th>Rev</th><th>Date</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr class="rv"><td class="rev">G</td><td class="date">2025 – now</td><td class="role"><span class="disp">Manager, Software Engineering</span><span class="co">Alliant Insurance Services</span><p>Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</p></td></tr>
+        <tr class="rv"><td class="rev">F</td><td class="date">2017 – 2025</td><td class="role"><span class="disp">Full Stack Developer, Tech Lead</span><span class="co">Alliant Insurance Services</span><p>Led .NET and Angular projects on Azure. Transformed testing practices and implemented automated testing with vendors and teams.</p></td></tr>
+        <tr class="rv"><td class="rev">E</td><td class="date">2015 – 2017</td><td class="role"><span class="disp">Designer, Developer, PM</span><span class="co">bradgood.net</span><p>Custom Squarespace sites, end to end: brand design, integrations, SEO, and project management.</p></td></tr>
+        <tr class="rv"><td class="rev">D</td><td class="date">2014 – 2017</td><td class="role"><span class="disp">UI Developer</span><span class="co">Alliant Insurance Services</span><p>UI on SharePoint 2013 and MVC 5. Led responsive redesigns and rapid prototyping.</p></td></tr>
+        <tr class="rv"><td class="rev">C</td><td class="date">2013 – 2014</td><td class="role"><span class="disp">Database Developer</span><span class="co">Cass Information Systems</span><p>B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p></td></tr>
+        <tr class="rv"><td class="rev">B</td><td class="date">2011 – 2015</td><td class="role"><span class="disp">Software Developer</span><span class="co">Royal Canin SAS</span><p>Intranet applications, optimized SQL stored procedures, scalable WCF web services for enterprise order processing.</p></td></tr>
+        <tr class="rv"><td class="rev">A</td><td class="date">2010 – 2011</td><td class="role"><span class="disp">Web Developer</span><span class="co">Smoky Jennings Chevrolet</span><p>Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="vc-sec vc-skills wrap" id="c-skills">
+    <div class="sh rv"><h2 class="disp"><b>D-D</b>Bill of materials</h2><span class="lab">Six assemblies</span></div>
+    <table>
+      <thead><tr><th>No.</th><th>Assembly</th><th>Components</th></tr></thead>
+      <tbody>
+        <tr><td class="no">1</td><td class="cat">Languages &amp; frameworks</td><td class="items"><b>C#</b>, <b>.NET Core</b>, <b>Angular</b>, TypeScript, JavaScript, SQL</td></tr>
+        <tr><td class="no">2</td><td class="cat">Cloud &amp; infrastructure</td><td class="items"><b>Azure</b>, Azure DevOps, Redis, SignalR, Service Bus, GitHub, GitHub Actions, CI/CD, Azure IaC</td></tr>
+        <tr><td class="no">3</td><td class="cat">AI &amp; tooling</td><td class="items"><b>Claude Code</b>, Codex, Copilot, Azure AI Foundry, AI integrations</td></tr>
+        <tr><td class="no">4</td><td class="cat">Data &amp; architecture</td><td class="items">MS SQL, PostgreSQL, <b>Clean Architecture</b>, CQRS, REST / Web API, Dapper, EF Core</td></tr>
+        <tr><td class="no">5</td><td class="cat">Testing &amp; quality</td><td class="items">XUnit, <b>Playwright</b>, automated testing, test strategy</td></tr>
+        <tr><td class="no">6</td><td class="cat">Integrations &amp; design</td><td class="items">Salesforce, Webflow, Applied Epic, Okta, Photoshop, Adobe Suite</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="vc-sec vc-contact wrap" id="c-contact">
+    <div class="sh rv"><h2 class="disp"><b>E-E</b>General notes</h2><span class="lab">Read before proceeding</span></div>
+    <div class="body">
+      <div>
+        <p class="big">Let's<br>talk.</p>
+        <a class="stamp" href="mailto:johnflavan@gmail.com">Approved for conversation</a>
+      </div>
+      <ol>
+        <li>All inquiries to <a href="mailto:johnflavan@gmail.com">johnflavan@gmail.com</a>. Ideas, projects, or just to connect.</li>
+        <li>Professional history on <a href="https://linkedin.com/in/johnflavan">LinkedIn</a>; code on <a href="https://github.com/jflavan">GitHub</a>.</li>
+        <li>Located in St. Louis, Missouri, Central Time. Remote-friendly.</li>
+        <li>Dimensions in years unless otherwise noted. Do not scale drawing.</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="vc-tb" aria-label="Title block">
+    <div><span class="lab">Title</span><span class="disp">John Flavan</span></div>
+    <div><span class="lab">Drawn by</span>JF</div>
+    <div><span class="lab">Date</span>2026-09</div>
+    <div><span class="lab">Rev</span>G</div>
+    <div><span class="lab">Description</span>Engineering leader · St. Louis, MO</div>
+    <div><span class="lab">Sheet</span>1 of 1</div>
+    <div><span class="lab">Scale</span>1:1</div>
+    <div><span class="lab">Approved</span>© 2026</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var VARIANTS = ['a', 'b', 'c'];
+  function readVariant() {
+    var q = new URLSearchParams(location.search).get('variant');
+    var h = location.hash.replace('#', '').toLowerCase();
+    var v = (q || h || '').toLowerCase();
+    if (VARIANTS.indexOf(v) < 0) { try { v = localStorage.getItem('proto-variant') || 'a'; } catch (e) { v = 'a'; } }
+    return VARIANTS.indexOf(v) < 0 ? 'a' : v;
+  }
+  var current = readVariant();
+  try { localStorage.setItem('proto-variant', current); } catch (e) {}
+  var roots = {};
+  document.querySelectorAll('.variant').forEach(function (el) { roots[el.dataset.variant] = el; });
+  Object.keys(roots).forEach(function (k) { roots[k].classList.toggle('is-active', k === current); if (k !== current) roots[k].remove(); });
+  var root = roots[current];
+  document.body.style.background = getComputedStyle(root).backgroundColor;
+
+  // --- floating switcher (prototype-only chrome) ---
+  var bar = document.createElement('div');
+  bar.id = 'proto-bar';
+  bar.innerHTML = '<button type="button" data-prev aria-label="Previous variant">&larr;</button><span class="lbl"><span class="key"></span> <span class="name"></span></span><button type="button" data-next aria-label="Next variant">&rarr;</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('.key').textContent = current.toUpperCase();
+  bar.querySelector('.name').textContent = root.dataset.name;
+  function go(dir) {
+    var i = (VARIANTS.indexOf(current) + dir + VARIANTS.length) % VARIANTS.length;
+    var next = VARIANTS[i];
+    try { localStorage.setItem('proto-variant', next); } catch (e) {}
+    var url = location.pathname + '?variant=' + next + '#' + next;
+    try { history.replaceState(null, '', url); } catch (e) { location.hash = next; }
+    location.reload();
+  }
+  bar.querySelector('[data-prev]').addEventListener('click', function () { go(-1); });
+  bar.querySelector('[data-next]').addEventListener('click', function () { go(1); });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.key === 'ArrowLeft') go(-1); if (e.key === 'ArrowRight') go(1);
+  });
+
+  // --- shared: in-view reveals ---
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  root.querySelectorAll('.rv, .va-rule, .va-about figure, .vc-focus .det, .vc-sec .sh').forEach(function (el) { io.observe(el); });
+
+  // smooth anchor scroll
+  root.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+  if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+
+  // =============== VARIANT A ===============
+  if (current === 'a') {
+    var clock = root.querySelector('[data-clock]');
+    function tick() {
+      try { clock.textContent = 'St. Louis ' + new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Chicago' }).format(new Date()); } catch (e) {}
+    }
+    tick(); setInterval(tick, 15000);
+    // sticky year rail: digits roll to the role nearest the middle of the viewport
+    var rail = root.querySelector('[data-year-rail]');
+    var roles = Array.prototype.slice.call(root.querySelectorAll('.va-exp .role'));
+    var digits = rail ? rail.querySelectorAll('.d > span') : [];
+    var lastYear = '';
+    function setYear(y) {
+      if (y === lastYear) return; lastYear = y;
+      for (var i = 0; i < 4; i++) {
+        var el = digits[i]; if (!el) continue;
+        var ch = y.charAt(i);
+        if (el.textContent === ch) continue;
+        el.style.transition = 'none'; el.style.transform = 'translateY(100%)'; el.textContent = ch;
+        void el.offsetHeight;
+        el.style.transition = ''; el.style.transform = 'translateY(0)';
+      }
+    }
+    function railUpdate() {
+      var mid = window.innerHeight * 0.45, best = null, bd = 1e9;
+      roles.forEach(function (r) { var d = Math.abs(r.getBoundingClientRect().top + 40 - mid); if (d < bd) { bd = d; best = r; } });
+      if (best) setYear(best.dataset.year);
+    }
+    window.addEventListener('scroll', railUpdate, { passive: true }); railUpdate();
+  }
+
+  // =============== VARIANT B ===============
+  if (current === 'b') {
+    var loader = root.querySelector('[data-loader]'), count = root.querySelector('[data-count]');
+    var nameSpan = root.querySelector('[data-hero-name] span');
+    function finishLoad() {
+      loader.classList.add('done');
+      setTimeout(function () { loader.remove(); }, 1100);
+      if (hasGsap && !reduce) gsap.fromTo(nameSpan, { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 1.4, ease: 'expo.out', delay: .15 });
+      else nameSpan.style.transform = 'none';
+    }
+    if (reduce) { finishLoad(); }
+    else {
+      var t0 = performance.now(), dur = 1300;
+      (function step(now) {
+        var p = Math.min(1, (now - t0) / dur); var e = 1 - Math.pow(1 - p, 3);
+        count.textContent = Math.round(e * 100);
+        if (p < 1) requestAnimationFrame(step); else setTimeout(finishLoad, 180);
+      })(t0);
+    }
+    var nav = root.querySelector('[data-bnav]');
+    window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.6); }, { passive: true });
+
+    // cursor
+    var cur = root.querySelector('[data-cursor]');
+    if (window.matchMedia('(hover: hover)').matches) {
+      var cx = 0, cy = 0, tx = 0, ty = 0;
+      document.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; }, { passive: true });
+      (function loop() { cx += (tx - cx) * .18; cy += (ty - cy) * .18; cur.style.transform = 'translate(' + (cx - 5) + 'px,' + (cy - 5) + 'px)'; requestAnimationFrame(loop); })();
+      root.querySelectorAll('a, [data-hover], .wall b').forEach(function (el) { el.addEventListener('mouseenter', function () { cur.classList.add('big'); }); el.addEventListener('mouseleave', function () { cur.classList.remove('big'); }); });
+    }
+
+    // scrub-lit thesis
+    var lit = root.querySelector('[data-lit]');
+    var html = '';
+    lit.childNodes.forEach(function (n) {
+      if (n.nodeType === 3) { html += n.textContent.split(/(\s+)/).map(function (w) { return /\S/.test(w) ? '<span class="w">' + w + '</span>' : w; }).join(''); }
+      else { html += n.textContent.split(/(\s+)/).map(function (w) { return /\S/.test(w) ? '<span class="w k">' + w + '</span>' : w; }).join(''); }
+    });
+    lit.innerHTML = html;
+    var words = lit.querySelectorAll('.w');
+
+    if (hasGsap && !reduce) {
+      gsap.to(root.querySelector('[data-hero-name]'), { scale: .55, opacity: 0, ease: 'none', scrollTrigger: { trigger: root.querySelector('.vb-hero'), start: 'top top', end: 'bottom top', scrub: true } });
+      ScrollTrigger.create({ trigger: lit, start: 'top 80%', end: 'bottom 45%', scrub: true, onUpdate: function (st) { var n = Math.round(st.progress * words.length); words.forEach(function (w, i) { w.classList.toggle('lit', i < n); }); } });
+      var panels = root.querySelectorAll('[data-panel]');
+      panels.forEach(function (p, i) {
+        var next = panels[i + 1]; if (!next) return;
+        gsap.to(p, { scale: .92, filter: 'brightness(.55)', ease: 'none', scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true } });
+      });
+      var track = root.querySelector('[data-track]'), hbar = root.querySelector('[data-hbar]');
+      var dist = function () { return track.scrollWidth - window.innerWidth + 64; };
+      gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: { trigger: root.querySelector('[data-hexp]'), start: 'top top', end: function () { return '+=' + dist(); }, pin: root.querySelector('.vb-exp .pin'), scrub: true, invalidateOnRefresh: true, onUpdate: function (st) { hbar.style.left = (st.progress * 90) + '%'; } } });
+    } else { words.forEach(function (w) { w.classList.add('lit'); }); }
+  }
+
+  // =============== VARIANT C ===============
+  if (current === 'c') {
+    var cross = root.querySelector('[data-cross]');
+    if (cross && window.matchMedia('(hover: hover)').matches) {
+      var h = cross.querySelector('.h'), v = cross.querySelector('.v'), xy = cross.querySelector('.xy');
+      document.addEventListener('mousemove', function (e) {
+        cross.classList.add('on');
+        h.style.top = e.clientY + 'px'; v.style.left = e.clientX + 'px';
+        xy.style.left = e.clientX + 'px'; xy.style.top = e.clientY + 'px';
+        xy.textContent = 'X ' + String(e.clientX).padStart(4, '0') + ' · Y ' + String(e.clientY + window.scrollY).padStart(4, '0');
+      }, { passive: true });
+      document.addEventListener('mouseleave', function () { cross.classList.remove('on'); });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

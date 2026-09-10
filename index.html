@@ -13,6 +13,7 @@
   gtag('js', new Date());
   gtag('config', 'G-2RSYR38N8N');
 </script>
+<script>document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('reveal-fallback');},3500);</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
 <meta name="description" content="John Flavan — Engineering manager leading development and quality teams. Building AI-enabled workflows that transform how software gets made.">
@@ -42,11 +43,15 @@
 <meta name="robots" content="index, follow">
 
 <!-- Theme -->
-<meta name="theme-color" content="#04100b">
+<meta name="theme-color" content="#111110">
 <meta name="color-scheme" content="dark">
 
 <!-- Fonts (self-hosted) & styles -->
-<link rel="preload" href="/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/satoshi-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/plex-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/satoshi-300.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="site.css">
 
 <!-- Structured Data -->
@@ -120,324 +125,190 @@
   }
 ]
 </script>
-<noscript>
-  <style>
-    .reveal, .reveal-left, .reveal-right, .reveal-scale, .word-reveal, .section-divider,
-    .hero-enter, .hero-enter-left, .hero-line, .scroll-cue, nav {
-      opacity: 1 !important;
-      transform: none !important;
-      animation: none !important;
-      transition: none !important;
-    }
-    .gradient-bg canvas { display: none; }
-  </style>
-</noscript>
 </head>
 <body>
-
 <a class="skip-link" href="#main">Skip to content</a>
 
-<div class="gradient-bg" aria-hidden="true">
-  <canvas id="aurora-bg"></canvas>
-</div>
+<!-- Ink: WebGL fluid behind the page. Decorative only. -->
+<canvas id="ink" class="ink" aria-hidden="true"></canvas>
+<div class="wipe" aria-hidden="true"></div>
 
-<!-- NAV -->
-<nav aria-label="Main navigation">
-  <div class="nav-inner container">
+<header class="nav" data-nav>
+  <a class="nav-name logotype" href="#top" data-logotype aria-label="John Flavan">John Flavan</a>
+  <nav aria-label="Main navigation">
     <ul class="nav-links">
-      <li><a href="#about" class="magnetic">About</a></li>
-      <li><a href="#focus" class="magnetic">Focus</a></li>
-      <li><a href="#experience" class="magnetic">Experience</a></li>
-      <li><a href="#skills" class="magnetic">Skills</a></li>
+      <li><a class="roll" href="#about"><span>About</span><span aria-hidden="true">About</span></a></li>
+      <li><a class="roll" href="#focus"><span>Focus</span><span aria-hidden="true">Focus</span></a></li>
+      <li><a class="roll" href="#experience"><span>Experience</span><span aria-hidden="true">Experience</span></a></li>
+      <li><a class="roll" href="#skills"><span>Skills</span><span aria-hidden="true">Skills</span></a></li>
+      <li><a class="roll" href="#contact"><span>Contact</span><span aria-hidden="true">Contact</span></a></li>
     </ul>
-    <div class="nav-contact">
-      <a href="#contact" class="magnetic" aria-label="Contact">
-        <svg class="nav-contact-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        <span class="nav-contact-label">Contact</span>
-      </a>
-    </div>
-  </div>
-</nav>
+  </nav>
+  <p class="nav-clock"><span data-clock>--:--</span> St. Louis</p>
+</header>
 
-<main id="main">
+<main id="main" tabindex="-1">
 
 <!-- HERO -->
-<section class="hero" aria-label="Introduction">
-  <div class="hero-inner container">
-    <div class="hero-title">
-      <p class="hero-meta hero-enter-left hero-enter-delay-1">Engineering Manager &middot; St. Louis, MO</p>
-      <h1 class="hero-name hero-enter-left hero-enter-delay-2">
-        <span class="first">John</span><br>
-        <span class="last">Flavan</span>
-      </h1>
-    </div>
-    <p class="hero-tagline hero-enter hero-enter-delay-3">
-      Engineering manager leading development and quality teams. Building AI-enabled workflows that transform how software gets made.
-    </p>
+<section class="hero" id="top" aria-label="Introduction">
+  <h1 class="statement" data-statement>
+    <span class="line"><span class="line-in"><span class="w">Building</span> <span class="w">AI&#8209;enabled</span></span></span>
+    <span class="line"><span class="line-in"><span class="w">workflows</span> <span class="w">that</span></span></span>
+    <span class="line"><span class="line-in"><span class="w">transform</span> <span class="w">how</span></span></span>
+    <span class="line"><span class="line-in"><span class="w">software</span> <span class="w">gets</span> <span class="w">made.</span></span></span>
+  </h1>
+  <div class="hero-fine grid" data-fine>
+    <p class="fine-lead">Engineering manager running two development teams and a quality engineering team, and rebuilding how they ship around AI.</p>
+    <dl class="fine">
+      <dt>Currently</dt>
+      <dd>Manager, Software Engineering<br>Alliant Insurance Services</dd>
+    </dl>
+    <dl class="fine">
+      <dt>Based</dt>
+      <dd>St. Louis, Missouri</dd>
+    </dl>
+    <dl class="fine">
+      <dt>Since</dt>
+      <dd>2010</dd>
+    </dl>
+    <a class="scroll-cue roll" href="#about"><span>Scroll</span><span aria-hidden="true">Scroll</span></a>
   </div>
-  <div class="container">
-    <div class="hero-line"></div>
-  </div>
-  <a class="scroll-cue" href="#about">Scroll</a>
 </section>
 
 <!-- ABOUT -->
-<section class="section about" id="about">
-  <div class="container">
-    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-    <div class="section-asymmetric">
-      <h2 class="section-label reveal">About</h2>
-      <div class="about-content">
-      <p class="statement word-reveal-container">
-        <span class="word-reveal">I</span>
-        <span class="word-reveal"><strong>build</strong></span>
-        <span class="word-reveal"><strong>products</strong></span>
-        <span class="word-reveal">that</span>
-        <span class="word-reveal">actually</span>
-        <span class="word-reveal">matter</span>
-        <span class="word-reveal">to</span>
-        <span class="word-reveal">people.</span>
-        <span class="word-reveal">I</span>
-        <span class="word-reveal">lead</span>
-        <span class="word-reveal">engineering</span>
-        <span class="word-reveal">teams</span>
-        <span class="word-reveal">and</span>
-        <span class="word-reveal">turn</span>
-        <span class="word-reveal">messy,</span>
-        <span class="word-reveal">complicated</span>
-        <span class="word-reveal">problems</span>
-        <span class="word-reveal">into</span>
-        <span class="word-reveal"><strong>clean</strong></span>
-        <span class="word-reveal"><strong>solutions</strong></span>
-        <span class="word-reveal">that</span>
-        <span class="word-reveal">scale.</span>
-      </p>
-      <figure class="about-portrait reveal reveal-delay-1">
-        <img src="/profile.jpg" alt="John Flavan" width="460" height="460" loading="lazy" decoding="async">
-      </figure>
-      </div>
-    </div>
+<section class="about section" id="about">
+  <div class="grid">
+    <h2 class="label rule">About</h2>
+    <p class="roll-statement" data-wordroll>I build products that actually matter to people. I lead engineering teams and turn messy, complicated problems into clean solutions that scale.</p>
+    <figure class="portrait" data-curtain>
+      <div class="curtain"><img src="/profile.jpg" alt="John Flavan" width="460" height="460" loading="lazy" decoding="async"></div>
+      <figcaption><span>John Flavan</span><span>St. Louis, MO</span></figcaption>
+    </figure>
   </div>
 </section>
 
 <!-- FOCUS -->
-<section class="section focus" id="focus">
-  <div class="container">
-    <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
-    <div class="section-asymmetric">
-      <h2 class="section-label reveal">Current Focus</h2>
-      <div class="focus-grid">
-        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-1">
-          <div class="focus-icon focus-icon-circle" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            </svg>
-          </div>
-          <h3>AI-Enabled Engineering</h3>
-          <p>Leading a transformation of our software development lifecycle with AI tooling. Integrating intelligent assistants into every stage, from planning and coding to review and testing.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Claude Code</span>
-            <span class="focus-tag">Codex</span>
-            <span class="focus-tag">Copilot</span>
-            <span class="focus-tag">Azure Foundry</span>
-          </div>
-        </article>
-        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-2">
-          <div class="focus-icon focus-icon-rounded" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          </div>
-          <h3>Engineering Leadership</h3>
-          <p>Managing two development teams and a dedicated quality engineering team. Focused on building high-trust environments where people do their best work and ship with confidence.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">3 Teams</span>
-            <span class="focus-tag">Agile/Scrum</span>
-            <span class="focus-tag">Mentorship</span>
-          </div>
-        </article>
-        <article class="focus-item glass-card glass-card-lift reveal reveal-delay-3">
-          <div class="focus-icon focus-icon-circle" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.5">
-              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-            </svg>
-          </div>
-          <h3>Quality Engineering &amp; AI Testing</h3>
-          <p>Building a quality-first culture powered by intelligent automation. Leading teams in developing AI-driven testing agents that explore, validate, and catch what humans miss.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Testing Agents</span>
-            <span class="focus-tag">Playwright</span>
-            <span class="focus-tag">AI Automation</span>
-          </div>
-        </article>
+<section class="focus section" id="focus">
+  <div class="grid focus-head">
+    <h2 class="label rule">Current Focus</h2>
+  </div>
+  <div class="stack">
+    <article class="panel" data-panel>
+      <div class="shade" aria-hidden="true"></div>
+      <div class="panel-in grid">
+        <span class="index">01</span>
+        <h3>AI&#8209;Enabled Engineering</h3>
+        <div class="panel-copy">
+          <p>Rebuilding our software development lifecycle around AI tooling: assistants in planning, coding, review, and testing, with engineers still owning the result.</p>
+          <ul class="tools"><li>Claude Code</li><li>Codex</li><li>Copilot</li><li>Azure Foundry</li></ul>
+        </div>
       </div>
-    </div>
+          <div class="marquees" aria-hidden="true">
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1"><span>Claude Code&nbsp;&middot;&nbsp;Codex&nbsp;&middot;&nbsp;Copilot&nbsp;&middot;&nbsp;Azure Foundry&nbsp;&middot;&nbsp;</span><span>Claude Code&nbsp;&middot;&nbsp;Codex&nbsp;&middot;&nbsp;Copilot&nbsp;&middot;&nbsp;Azure Foundry&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="1" data-speed="0.7"><span>Spec&nbsp;&middot;&nbsp;Plan&nbsp;&middot;&nbsp;Code&nbsp;&middot;&nbsp;Review&nbsp;&middot;&nbsp;Test&nbsp;&middot;&nbsp;Ship&nbsp;&middot;&nbsp;</span><span>Spec&nbsp;&middot;&nbsp;Plan&nbsp;&middot;&nbsp;Code&nbsp;&middot;&nbsp;Review&nbsp;&middot;&nbsp;Test&nbsp;&middot;&nbsp;Ship&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1.25"><span>Agents draft&nbsp;&middot;&nbsp;Engineers own the merge&nbsp;&middot;&nbsp;</span><span>Agents draft&nbsp;&middot;&nbsp;Engineers own the merge&nbsp;&middot;&nbsp;</span></div>
+      </div>
+    </article>
+    <article class="panel" data-panel>
+      <div class="shade" aria-hidden="true"></div>
+      <div class="panel-in grid">
+        <span class="index">02</span>
+        <h3>Engineering Leadership</h3>
+        <div class="panel-copy">
+          <p>Two development teams and a dedicated quality engineering team. My job is the environment: clear ownership, honest feedback, and the trust it takes to ship without fear.</p>
+          <ul class="tools"><li>3 Teams</li><li>Agile/Scrum</li><li>Mentorship</li></ul>
+        </div>
+      </div>
+          <div class="marquees" aria-hidden="true">
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1"><span>Two dev teams&nbsp;&middot;&nbsp;One QE team&nbsp;&middot;&nbsp;</span><span>Two dev teams&nbsp;&middot;&nbsp;One QE team&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="1" data-speed="0.7"><span>Hiring&nbsp;&middot;&nbsp;One-on-ones&nbsp;&middot;&nbsp;Roadmaps&nbsp;&middot;&nbsp;Retros&nbsp;&middot;&nbsp;Code review&nbsp;&middot;&nbsp;</span><span>Hiring&nbsp;&middot;&nbsp;One-on-ones&nbsp;&middot;&nbsp;Roadmaps&nbsp;&middot;&nbsp;Retros&nbsp;&middot;&nbsp;Code review&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1.25"><span>Small batches&nbsp;&middot;&nbsp;Clear owners&nbsp;&middot;&nbsp;No heroics&nbsp;&middot;&nbsp;</span><span>Small batches&nbsp;&middot;&nbsp;Clear owners&nbsp;&middot;&nbsp;No heroics&nbsp;&middot;&nbsp;</span></div>
+      </div>
+    </article>
+    <article class="panel" data-panel>
+      <div class="shade" aria-hidden="true"></div>
+      <div class="panel-in grid">
+        <span class="index">03</span>
+        <h3>Quality Engineering &amp; AI&nbsp;Testing</h3>
+        <div class="panel-copy">
+          <p>Quality as a discipline, not a phase. We build AI testing agents that explore the product, validate the paths that matter, and catch what humans miss.</p>
+          <ul class="tools"><li>Testing Agents</li><li>Playwright</li><li>AI Automation</li></ul>
+        </div>
+      </div>
+          <div class="marquees" aria-hidden="true">
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1"><span>Testing agents&nbsp;&middot;&nbsp;Playwright&nbsp;&middot;&nbsp;AI automation&nbsp;&middot;&nbsp;</span><span>Testing agents&nbsp;&middot;&nbsp;Playwright&nbsp;&middot;&nbsp;AI automation&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="1" data-speed="0.7"><span>Unit&nbsp;&middot;&nbsp;Integration&nbsp;&middot;&nbsp;End-to-end&nbsp;&middot;&nbsp;Exploratory&nbsp;&middot;&nbsp;</span><span>Unit&nbsp;&middot;&nbsp;Integration&nbsp;&middot;&nbsp;End-to-end&nbsp;&middot;&nbsp;Exploratory&nbsp;&middot;&nbsp;</span></div>
+        <div class="marquee" data-marquee data-dir="-1" data-speed="1.25"><span>Flaky tests are bugs&nbsp;&middot;&nbsp;Green means green&nbsp;&middot;&nbsp;</span><span>Flaky tests are bugs&nbsp;&middot;&nbsp;Green means green&nbsp;&middot;&nbsp;</span></div>
+      </div>
+    </article>
   </div>
 </section>
 
 <!-- EXPERIENCE -->
-<section class="section experience" id="experience">
-  <div class="container">
-    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-    <div class="section-asymmetric">
-      <h2 class="section-label reveal">Experience</h2>
-      <div>
-        <p class="statement word-reveal-container">
-          <span class="word-reveal">15+</span>
-          <span class="word-reveal">years</span>
-          <span class="word-reveal">building</span>
-          <span class="word-reveal">software,</span>
-          <span class="word-reveal">leading</span>
-          <span class="word-reveal">teams,</span>
-          <span class="word-reveal">and</span>
-          <span class="word-reveal">shipping</span>
-          <span class="word-reveal">products</span>
-          <span class="word-reveal">across</span>
-          <span class="word-reveal">insurance,</span>
-          <span class="word-reveal">logistics,</span>
-          <span class="word-reveal">and</span>
-          <span class="word-reveal">enterprise</span>
-          <span class="word-reveal">SaaS.</span>
-        </p>
-
-        <div class="timeline-list">
-          <article class="timeline-item glass-card reveal">
-            <h3>Manager, Software Engineering</h3>
-            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2025 – Present</span></p>
-            <p class="timeline-desc">Leading two development teams and a quality engineering team building full stack cloud solutions for public entity insurance brokering. Driving AI-enabled SDLC transformation.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>Full Stack Developer, Tech Lead</h3>
-            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2017 – 2025</span></p>
-            <p class="timeline-desc">Lead teams in developing .NET and Angular projects with Azure infrastructure. Transformed testing practices and worked with vendors and teams to implement automated testing.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>UI Developer</h3>
-            <p class="timeline-meta"><span class="timeline-company">Alliant Insurance Services</span><span class="timeline-date">2014 – 2017</span></p>
-            <p class="timeline-desc">Designed and developed UI on SharePoint 2013 and MVC 5 sites. Led responsive redesigns and rapid prototyping.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>Designer, Developer, PM</h3>
-            <p class="timeline-meta"><span class="timeline-company">bradgood.net</span><span class="timeline-date">2015 – 2017</span></p>
-            <p class="timeline-desc">Custom Squarespace sites. End-to-end delivery: brand design, integrations, SEO, and project management.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>Software Developer</h3>
-            <p class="timeline-meta"><span class="timeline-company">Royal Canin SAS</span><span class="timeline-date">2011 – 2015</span></p>
-            <p class="timeline-desc">Built intranet applications, optimized SQL stored procedures, and developed scalable WCF Web Services for enterprise order processing.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>Database Developer</h3>
-            <p class="timeline-meta"><span class="timeline-company">Cass Information Systems</span><span class="timeline-date">2013 – 2014</span></p>
-            <p class="timeline-desc">B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p>
-          </article>
-
-          <article class="timeline-item glass-card reveal">
-            <h3>Web Developer</h3>
-            <p class="timeline-meta"><span class="timeline-company">Smoky Jennings Chevrolet</span><span class="timeline-date">2010 – 2011</span></p>
-            <p class="timeline-desc">Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p>
-          </article>
-        </div>
-      </div>
+<section class="exp section" id="experience" data-exp>
+  <div class="grid exp-lead">
+    <h2 class="label rule">Experience</h2>
+    <p class="roll-statement" data-wordroll>15+ years building software, leading teams, and shipping products across insurance, logistics, and enterprise SaaS.</p>
+  </div>
+  <div class="exp-pin" data-exp-pin>
+    <div class="exp-head">
+      <span class="label">2010 &rarr; Present</span>
+      <div class="bar" aria-hidden="true"><i data-bar></i></div>
+      <span class="label exp-count" data-count>01 / 07</span>
     </div>
+    <ol class="track" data-track>
+      <li class="card"><span class="index">01</span><p class="year">2025<small>Present</small></p><h3>Manager, Software Engineering</h3><p class="co">Alliant Insurance Services</p><p class="desc">Leading two development teams and a quality engineering team building full stack cloud products for public entity insurance brokering. Driving the AI-enabled rebuild of how we deliver software.</p></li>
+      <li class="card"><span class="index">02</span><p class="year">2017<small>2025</small></p><h3>Full Stack Developer, Tech Lead</h3><p class="co">Alliant Insurance Services</p><p class="desc">Led teams building .NET and Angular applications on Azure. Transformed testing practices and worked with vendors and teams to put automated testing in place.</p></li>
+      <li class="card"><span class="index">03</span><p class="year">2014<small>2017</small></p><h3>UI Developer</h3><p class="co">Alliant Insurance Services</p><p class="desc">Designed and developed UI on SharePoint 2013 and MVC 5 sites. Led responsive redesigns and rapid prototyping.</p></li>
+      <li class="card"><span class="index">04</span><p class="year">2015<small>2017</small></p><h3>Designer, Developer, PM</h3><p class="co">bradgood.net</p><p class="desc">Custom Squarespace sites. End-to-end delivery: brand design, integrations, SEO, and project management.</p></li>
+      <li class="card"><span class="index">05</span><p class="year">2011<small>2015</small></p><h3>Software Developer</h3><p class="co">Royal Canin SAS</p><p class="desc">Built intranet applications, optimized SQL stored procedures, and developed scalable WCF Web Services for enterprise order processing.</p></li>
+      <li class="card"><span class="index">06</span><p class="year">2013<small>2014</small></p><h3>Database Developer</h3><p class="co">Cass Information Systems</p><p class="desc">B2B logistics expense management software using SQL Server, C#, WCF, and Silverlight.</p></li>
+      <li class="card"><span class="index">07</span><p class="year">2010<small>2011</small></p><h3>Web Developer</h3><p class="co">Smoky Jennings Chevrolet</p><p class="desc">Vehicle inventory and tracking web application in .NET with SQL Server and jQuery.</p></li>
+    </ol>
   </div>
 </section>
 
 <!-- SKILLS -->
-<section class="section skills" id="skills">
-  <div class="container">
-    <div class="section-divider section-divider-right reveal" role="presentation" aria-hidden="true"></div>
-    <div class="section-asymmetric">
-      <h2 class="section-label reveal">Skills</h2>
-      <div class="skills-grid">
-        <div class="skill-group glass-card reveal reveal-delay-1">
-          <h3>Languages &amp; Frameworks</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">C#</span>
-            <span class="skill-tag">.NET Core</span>
-            <span class="skill-tag">Angular</span>
-            <span class="skill-tag">TypeScript</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">SQL</span>
-          </div>
-        </div>
-        <div class="skill-group glass-card reveal reveal-delay-2">
-          <h3>Cloud &amp; Infrastructure</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">Azure</span>
-            <span class="skill-tag">Azure DevOps</span>
-            <span class="skill-tag">Redis</span>
-            <span class="skill-tag">SignalR</span>
-            <span class="skill-tag">Service Bus</span>
-            <span class="skill-tag">GitHub</span>
-            <span class="skill-tag">GitHub Actions</span>
-            <span class="skill-tag">CI/CD</span>
-            <span class="skill-tag">Azure IaC</span>
-          </div>
-        </div>
-        <div class="skill-group glass-card reveal reveal-delay-3">
-          <h3>AI &amp; Tooling</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">Claude Code</span>
-            <span class="skill-tag">Codex</span>
-            <span class="skill-tag">Copilot</span>
-            <span class="skill-tag">Azure Foundry</span>
-            <span class="skill-tag">AI Integrations</span>
-          </div>
-        </div>
-        <div class="skill-group glass-card reveal reveal-delay-2">
-          <h3>Data &amp; Architecture</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">MS SQL</span>
-            <span class="skill-tag">PostgreSQL</span>
-            <span class="skill-tag">Clean Architecture</span>
-            <span class="skill-tag">CQRS</span>
-            <span class="skill-tag">REST/Web API</span>
-            <span class="skill-tag">Dapper</span>
-            <span class="skill-tag">EF Core</span>
-          </div>
-        </div>
-        <div class="skill-group glass-card reveal reveal-delay-3">
-          <h3>Testing &amp; Quality</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">XUnit</span>
-            <span class="skill-tag">Playwright</span>
-            <span class="skill-tag">Automated Testing</span>
-            <span class="skill-tag">Test Strategy</span>
-          </div>
-        </div>
-        <div class="skill-group glass-card reveal reveal-delay-4">
-          <h3>Integrations &amp; Design</h3>
-          <div class="skill-tags">
-            <span class="skill-tag">Salesforce</span>
-            <span class="skill-tag">Webflow</span>
-            <span class="skill-tag">Applied Epic</span>
-            <span class="skill-tag">Okta</span>
-            <span class="skill-tag">Photoshop</span>
-            <span class="skill-tag">Adobe Suite</span>
-          </div>
-        </div>
-      </div>
-    </div>
+<section class="skills section" id="skills">
+  <div class="grid">
+    <h2 class="label rule">Skills</h2>
   </div>
+  <dl class="wall">
+    <div class="group grid">
+      <dt>Languages &amp; Frameworks</dt>
+      <dd><span class="term">C#</span><span class="term">.NET Core</span><span class="term">Angular</span><span class="term">TypeScript</span><span class="term">JavaScript</span><span class="term">SQL</span></dd>
+    </div>
+    <div class="group grid">
+      <dt>Cloud &amp; Infrastructure</dt>
+      <dd><span class="term">Azure</span><span class="term">Azure DevOps</span><span class="term">Redis</span><span class="term">SignalR</span><span class="term">Service Bus</span><span class="term">GitHub</span><span class="term">GitHub Actions</span><span class="term">CI/CD</span><span class="term">Azure IaC</span></dd>
+    </div>
+    <div class="group grid">
+      <dt>AI &amp; Tooling</dt>
+      <dd><span class="term">Claude Code</span><span class="term">Codex</span><span class="term">Copilot</span><span class="term">Azure Foundry</span><span class="term">AI Integrations</span></dd>
+    </div>
+    <div class="group grid">
+      <dt>Data &amp; Architecture</dt>
+      <dd><span class="term">MS SQL</span><span class="term">PostgreSQL</span><span class="term">Clean Architecture</span><span class="term">CQRS</span><span class="term">REST/Web API</span><span class="term">Dapper</span><span class="term">EF Core</span></dd>
+    </div>
+    <div class="group grid">
+      <dt>Testing &amp; Quality</dt>
+      <dd><span class="term">XUnit</span><span class="term">Playwright</span><span class="term">Automated Testing</span><span class="term">Test Strategy</span></dd>
+    </div>
+    <div class="group grid">
+      <dt>Integrations &amp; Design</dt>
+      <dd><span class="term">Salesforce</span><span class="term">Webflow</span><span class="term">Applied Epic</span><span class="term">Okta</span><span class="term">Photoshop</span><span class="term">Adobe Suite</span></dd>
+    </div>
+  </dl>
 </section>
 
 <!-- CONTACT -->
-<section class="section contact" id="contact">
-  <div class="container">
-    <div class="section-divider section-divider-left reveal" role="presentation" aria-hidden="true"></div>
-    <h2 class="section-label reveal-right">Contact</h2>
-    <p class="contact-prompt reveal-right reveal-delay-1">
-      An idea, a project,<br>
-      or just want to connect?
-    </p>
-    <div class="contact-links reveal-right reveal-delay-2">
-      <a href="mailto:johnflavan@gmail.com" class="contact-btn primary magnetic">Let's talk <span class="btn-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+<section class="contact section" id="contact">
+  <div class="grid">
+    <h2 class="label rule">Contact</h2>
+    <p class="contact-prompt" data-lines>An idea, a project,<br>or just want to connect?</p>
+    <div class="contact-row">
+      <a class="cta roll" href="mailto:johnflavan@gmail.com"><span>Let's talk</span><span aria-hidden="true">Let's talk</span></a>
+      <button class="copy" type="button" data-copy="johnflavan@gmail.com"><span class="copy-a">johnflavan@gmail.com</span><span class="copy-b" aria-hidden="true">Copied</span></button>
     </div>
   </div>
 </section>
@@ -445,999 +316,29 @@
 </main>
 
 <!-- FOOTER -->
-<footer>
-  <div class="container">
-    <div class="footer-line reveal"></div>
-    <div class="footer-name reveal-scale reveal-delay-1" aria-hidden="true">John Flavan</div>
-    <div class="footer-links reveal reveal-delay-2">
-      <a href="https://github.com/jflavan" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="https://linkedin.com/in/johnflavan" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-    </div>
-    <div class="footer-meta reveal reveal-delay-3">
-      <span>Engineering Leader &middot; St. Louis, MO</span>
-      <span>&copy; 2026</span>
-    </div>
+<footer class="foot">
+  <div class="grid foot-row">
+    <p class="foot-meta">Engineering Leader &middot; St. Louis, MO</p>
+    <ul class="foot-links">
+      <li><a class="roll" href="https://github.com/jflavan" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span aria-hidden="true">GitHub</span></a></li>
+      <li><a class="roll" href="https://linkedin.com/in/johnflavan" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><span aria-hidden="true">LinkedIn</span></a></li>
+    </ul>
+    <p class="foot-copy">&copy; 2026</p>
   </div>
+  <button class="wordmark" type="button" data-wordmark aria-label="Press and hold to change the site's colour">
+    <svg viewBox="0 0 1000 132" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs><clipPath id="wm-clip"><rect x="0" y="132" width="1000" height="132" data-wm-clip/></clipPath></defs>
+      <text class="wm-outline" x="0" y="126" textLength="1000" lengthAdjust="spacingAndGlyphs">JOHN FLAVAN</text>
+      <text class="wm-fill" x="0" y="126" textLength="1000" lengthAdjust="spacingAndGlyphs" clip-path="url(#wm-clip)">JOHN FLAVAN</text>
+    </svg>
+    <span class="wm-hint" data-wm-hint>Press and hold</span>
+  </button>
 </footer>
 
-<script>
-  // Intersection Observer for scroll-triggered animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  // Observe all reveal elements
-  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
-    observer.observe(el);
-  });
-
-  // Custom smooth scroll with eased animation
-  function smoothScrollTo(targetY, duration = 1200) {
-    const startY = window.scrollY;
-    const diff = targetY - startY;
-    let startTime = null;
-
-    function easeOutQuint(t) {
-      return 1 - Math.pow(1 - t, 5);
-    }
-
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startY + diff * easeOutQuint(progress));
-      if (progress < 1) requestAnimationFrame(step);
-    }
-
-    requestAnimationFrame(step);
-  }
-
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
-        // Land with the section's divider just under the nav rather than at its padding edge
-        const pad = parseFloat(getComputedStyle(target).paddingTop) || 0;
-        const top = target.getBoundingClientRect().top + window.scrollY + Math.max(0, pad - 40) - navH;
-        smoothScrollTo(top);
-      }
-    });
-  });
-
-  // ===== POINTER (one listener feeds the aurora and the magnetic links) =====
-  const hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const pointer = { x: 0.5, y: 0.5, clientX: -1, clientY: -1 };
-  const magneticEls = document.querySelectorAll('.magnetic');
-  const magneticStrength = 0.12; // how far elements pull (ratio of distance)
-  const magneticRadius = 60; // activation radius in px
-  let magneticQueued = false;
-
-  function updateMagnetic() {
-    magneticQueued = false;
-    magneticEls.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const distX = pointer.clientX - (rect.left + rect.width / 2);
-      const distY = pointer.clientY - (rect.top + rect.height / 2);
-      const dist = Math.sqrt(distX * distX + distY * distY);
-      if (dist < magneticRadius) {
-        const pull = (1 - dist / magneticRadius) * magneticStrength;
-        el.style.transform = `translate(${distX * pull}px, ${distY * pull}px)`;
-      } else if (el.style.transform) {
-        el.style.transform = '';
-      }
-    });
-  }
-
-  if (hasHover) {
-    document.addEventListener('mousemove', (e) => {
-      pointer.clientX = e.clientX;
-      pointer.clientY = e.clientY;
-      pointer.x = e.clientX / window.innerWidth;
-      pointer.y = 1.0 - e.clientY / window.innerHeight;
-      if (!magneticQueued) {
-        magneticQueued = true;
-        requestAnimationFrame(updateMagnetic);
-      }
-    }, { passive: true });
-  }
-
-  // ===== COSMIC MODE STATE =====
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  // ===== THEME DEFINITIONS =====
-  const THEMES = {
-    default: {
-      label: 'default',
-      cssVars: { '--accent-deep': '#0b3d2c', '--accent-mid': '#1e7a58', '--accent-bright': '#3fb287', '--accent-light': '#a9e5c8', '--bg-base': '#04100b', '--glow-color-r': '30', '--glow-color-g': '122', '--glow-color-b': '88' },
-      shaderStops: [[0.01,0.035,0.022],[0.02,0.08,0.05],[0.04,0.17,0.11],[0.06,0.25,0.16],[0.10,0.36,0.24],[0.16,0.46,0.32],[0.24,0.56,0.40]],
-      voidColor: [0.005, 0.02, 0.012],
-      starTint: [0.6, 1.0, 0.78],
-      console: ['Curious? Check out my GitHub.', '#a9e5c8', '#3fb287']
-    },
-    cosmic: {
-      label: 'cosmic',
-      cssVars: { '--accent-deep': '#1a3a5c', '--accent-mid': '#6fa8dc', '--accent-bright': '#a0c4ff', '--accent-light': '#d0e8ff', '--bg-base': '#04060c', '--glow-color-r': '111', '--glow-color-g': '168', '--glow-color-b': '220' },
-      shaderStops: [[0.015,0.02,0.045],[0.025,0.04,0.10],[0.04,0.10,0.25],[0.06,0.14,0.26],[0.20,0.38,0.55],[0.30,0.48,0.65],[0.42,0.58,0.72]],
-      voidColor: [0.006, 0.008, 0.02],
-      starTint: [0.7, 0.85, 1.0],
-      console: ['You found the cosmos. \u2726', '#a0c4ff', '#6fa8dc']
-    },
-    ember: {
-      label: 'ember',
-      cssVars: { '--accent-deep': '#7a2000', '--accent-mid': '#d95b20', '--accent-bright': '#ff8c42', '--accent-light': '#ffc07a', '--bg-base': '#0c0402', '--glow-color-r': '217', '--glow-color-g': '91', '--glow-color-b': '32' },
-      shaderStops: [[0.03,0.005,0.0],[0.10,0.02,0.0],[0.22,0.05,0.01],[0.38,0.10,0.03],[0.55,0.22,0.06],[0.65,0.32,0.10],[0.72,0.42,0.16]],
-      voidColor: [0.02, 0.005, 0.0],
-      starTint: [1.0, 0.8, 0.5],
-      console: ['The embers glow. \u2737', '#ff8c42', '#d95b20']
-    },
-    solar: {
-      label: 'solar',
-      cssVars: { '--accent-deep': '#5a4000', '--accent-mid': '#c49930', '--accent-bright': '#e8c050', '--accent-light': '#f5e090', '--bg-base': '#080600', '--glow-color-r': '196', '--glow-color-g': '153', '--glow-color-b': '48' },
-      shaderStops: [[0.025,0.015,0.0],[0.06,0.04,0.0],[0.15,0.10,0.02],[0.28,0.20,0.04],[0.48,0.38,0.10],[0.58,0.48,0.16],[0.65,0.55,0.25]],
-      voidColor: [0.015, 0.01, 0.0],
-      starTint: [1.0, 0.9, 0.6],
-      console: ['Solar winds blow. \u2600', '#e8c050', '#c49930']
-    },
-    rose: {
-      label: 'rose',
-      cssVars: { '--accent-deep': '#7a1050', '--accent-mid': '#d94088', '--accent-bright': '#ff6aaa', '--accent-light': '#ffaad0', '--bg-base': '#0a0208', '--glow-color-r': '217', '--glow-color-g': '64', '--glow-color-b': '136' },
-      shaderStops: [[0.02,0.0,0.015],[0.08,0.0,0.05],[0.22,0.03,0.12],[0.35,0.06,0.22],[0.55,0.16,0.35],[0.62,0.25,0.42],[0.68,0.35,0.50]],
-      voidColor: [0.015, 0.0, 0.01],
-      starTint: [1.0, 0.7, 0.85],
-      console: ['A rose in the void. \u273F', '#ff6aaa', '#d94088']
-    }
-  };
-
-  const THEME_KEYS = Object.keys(THEMES);
-
-  let currentTheme = 'default';
-  let cosmicTransitioning = false;
-  let auroraResume = null;      // set by the aurora module
-  let auroraGlitch = null;      // (strength 0..1, duration ms) → trigger a glitch burst
-  let auroraHold = null;        // (bool) → build-up while the hero line is held
-  let cosmicValue = 0.0;        // 0 = default, 1 = non-default (controls stars/aurora)
-  let cosmicTarget = 0.0;
-  let cosmicAnimStart = null;
-  let cosmicAnimStartValue = 0.0;
-  const COSMIC_ANIM_DURATION = 2000;
-
-  // Current shader color values (interpolated during transitions)
-  let currentShaderStops = THEMES.default.shaderStops.map(s => [...s]);
-  let fromShaderStops = THEMES.default.shaderStops.map(s => [...s]);
-  let targetShaderStops = THEMES.default.shaderStops.map(s => [...s]);
-  let currentVoidColor = [...THEMES.default.voidColor];
-  let fromVoidColor = [...THEMES.default.voidColor];
-  let targetVoidColor = [...THEMES.default.voidColor];
-  let currentStarTint = [...THEMES.default.starTint];
-  let fromStarTint = [...THEMES.default.starTint];
-  let targetStarTint = [...THEMES.default.starTint];
-
-  function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  }
-
-  function applyThemeCssVars(theme) {
-    const vars = THEMES[theme].cssVars;
-    const root = document.documentElement;
-    for (const [prop, val] of Object.entries(vars)) {
-      root.style.setProperty(prop, val);
-    }
-    const themeMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeMeta) themeMeta.setAttribute('content', vars['--bg-base']);
-  }
-
-  // Always start on the default (forest green) theme
-  try {
-    localStorage.removeItem('cosmicMode');
-    localStorage.removeItem('colorTheme');
-  } catch (e) {
-    // localStorage unavailable
-  }
-
-  function cycleTheme() {
-    // Pick a random theme that isn't the current one
-    const available = THEME_KEYS.filter(k => k !== currentTheme);
-    const nextTheme = available[Math.floor(Math.random() * available.length)];
-
-    // Snapshot current colors as "from" values
-    fromShaderStops = currentShaderStops.map(s => [...s]);
-    fromVoidColor = [...currentVoidColor];
-    fromStarTint = [...currentStarTint];
-
-    // Set targets
-    targetShaderStops = THEMES[nextTheme].shaderStops.map(s => [...s]);
-    targetVoidColor = [...THEMES[nextTheme].voidColor];
-    targetStarTint = [...THEMES[nextTheme].starTint];
-
-    // Animate uCosmic for stars/aurora transition
-    cosmicTransitioning = true;
-    cosmicTarget = nextTheme === 'default' ? 0.0 : 1.0;
-    cosmicAnimStartValue = cosmicValue;
-    cosmicAnimStart = performance.now();
-
-    currentTheme = nextTheme;
-
-    document.body.classList.toggle('themed', nextTheme !== 'default');
-    applyThemeCssVars(nextTheme);
-    if (auroraResume) auroraResume();
-    if (auroraGlitch) auroraGlitch(1, 480);
-
-    // Persist
-    try { localStorage.setItem('colorTheme', nextTheme); } catch (e) {}
-
-    // Console message
-    const [msg, c1, c2] = THEMES[nextTheme].console;
-    console.log(
-      '%c' + msg + '\n%chttps://github.com/jflavan',
-      'color:' + c1 + ';font-size:14px;font-weight:bold;',
-      'color:' + c2 + ';font-size:12px;'
-    );
-  }
-
-  // ===== WEBGL AURORA BACKGROUND =====
-  // Renders at reduced resolution (everything drawn is a soft gradient), caps
-  // frame rate on touch devices, pauses when hidden, survives context loss,
-  // reacts to pointer, touch and scroll, and freezes to one frame under
-  // prefers-reduced-motion.
-  (function() {
-    const canvas = document.getElementById('aurora-bg');
-    const gl = canvas.getContext('webgl2', {
-      alpha: false, depth: false, stencil: false, antialias: false,
-      powerPreference: 'low-power', preserveDrawingBuffer: false
-    });
-    if (!gl) return;
-
-    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
-    const maxDpr = coarsePointer ? 1 : 1.5;
-    // Half of the capped device-pixel size, never below 0.6 CSS px on phones
-    const renderScale = Math.max(coarsePointer ? 0.6 : 0.5, 0.5 * Math.min(window.devicePixelRatio || 1, maxDpr));
-    const minFrameMs = coarsePointer ? 1000 / 30 : 0;
-
-    const vsSource = `#version 300 es
-      in vec2 a_position;
-      out vec2 vUv;
-      void main() {
-        vUv = a_position * 0.5 + 0.5;
-        gl_Position = vec4(a_position, 0.0, 1.0);
-      }`;
-
-    const fsSource = `#version 300 es
-      precision highp float;
-      in vec2 vUv;
-      out vec4 fragColor;
-
-      uniform float uTime;
-      uniform vec2 uResolution;
-      uniform vec2 uMouse;
-      uniform float uCosmic;
-      uniform float uScroll;   // viewport heights scrolled
-      uniform float uCalm;     // 0 in the hero and contact, 1 over the content sections
-      uniform float uGlitch;   // burst envelope 0..1
-      uniform float uGlitchSeed;
-      uniform float uTear;     // scroll-velocity tearing 0..1
-      uniform vec3 uC0, uC1, uC2, uC3, uC4, uC5, uC6;
-      uniform vec3 uVoidColor;
-      uniform vec3 uStarTint;
-
-      // ---- Simplex-style 3D noise ----
-      vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-      vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-      vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-      vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-      float snoise(vec3 v) {
-        const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-        vec3 i = floor(v + dot(v, C.yyy));
-        vec3 x0 = v - i + dot(i, C.xxx);
-        vec3 g = step(x0.yzx, x0.xyz);
-        vec3 l = 1.0 - g;
-        vec3 i1 = min(g.xyz, l.zxy);
-        vec3 i2 = max(g.xyz, l.zxy);
-        vec3 x1 = x0 - i1 + C.xxx;
-        vec3 x2 = x0 - i2 + C.yyy;
-        vec3 x3 = x0 - D.yyy;
-        i = mod289(i);
-        vec4 p = permute(permute(permute(
-          i.z + vec4(0.0, i1.z, i2.z, 1.0))
-          + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-          + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-        float n_ = 0.142857142857;
-        vec3 ns = n_ * D.wyz - D.xzx;
-        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-        vec4 x_ = floor(j * ns.z);
-        vec4 y_ = floor(j - 7.0 * x_);
-        vec4 x = x_ * ns.x + ns.yyyy;
-        vec4 y = y_ * ns.x + ns.yyyy;
-        vec4 h = 1.0 - abs(x) - abs(y);
-        vec4 b0 = vec4(x.xy, y.xy);
-        vec4 b1 = vec4(x.zw, y.zw);
-        vec4 s0 = floor(b0)*2.0 + 1.0;
-        vec4 s1 = floor(b1)*2.0 + 1.0;
-        vec4 sh = -step(h, vec4(0.0));
-        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-        vec3 p0 = vec3(a0.xy, h.x);
-        vec3 p1 = vec3(a0.zw, h.y);
-        vec3 p2 = vec3(a1.xy, h.z);
-        vec3 p3 = vec3(a1.zw, h.w);
-        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-        p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-        m = m * m;
-        return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-      }
-
-      // ---- oklab color space for perceptual gradient ----
-      vec3 srgbToLinear(vec3 c) {
-        return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(0.04045, c));
-      }
-      vec3 linearToSrgb(vec3 c) {
-        return mix(c * 12.92, 1.055 * pow(c, vec3(1.0/2.4)) - 0.055, step(0.0031308, c));
-      }
-      vec3 linearToOklab(vec3 c) {
-        float l = 0.4122214708 * c.r + 0.5363325363 * c.g + 0.0514459929 * c.b;
-        float m = 0.2119034982 * c.r + 0.6806995451 * c.g + 0.1073969566 * c.b;
-        float s = 0.0883024619 * c.r + 0.2817188376 * c.g + 0.6299787005 * c.b;
-        l = pow(l, 1.0/3.0); m = pow(m, 1.0/3.0); s = pow(s, 1.0/3.0);
-        return vec3(
-          0.2104542553*l + 0.7936177850*m - 0.0040720468*s,
-          1.9779984951*l - 2.4285922050*m + 0.4505937099*s,
-          0.0259040371*l + 0.7827717662*m - 0.8086757660*s
-        );
-      }
-      vec3 oklabToLinear(vec3 c) {
-        float l = c.x + 0.3963377774 * c.y + 0.2158037573 * c.z;
-        float m = c.x - 0.1055613458 * c.y - 0.0638541728 * c.z;
-        float s = c.x - 0.0894841775 * c.y - 1.2914855480 * c.z;
-        l=l*l*l; m=m*m*m; s=s*s*s;
-        return vec3(
-          4.0767416621*l - 3.3077115913*m + 0.2309699292*s,
-          -1.2684380046*l + 2.6097574011*m - 0.3413193965*s,
-          -0.0041960863*l - 0.7034186147*m + 1.7076147010*s
-        );
-      }
-      vec3 mixOklab(vec3 a, vec3 b, float t) {
-        vec3 aLab = linearToOklab(srgbToLinear(a));
-        vec3 bLab = linearToOklab(srgbToLinear(b));
-        return linearToSrgb(max(vec3(0.0), oklabToLinear(mix(aLab, bLab, t))));
-      }
-
-      // ---- Full-range color gradient using dynamic theme uniforms ----
-      vec3 colorGradient(float t) {
-        t = clamp(t, 0.0, 1.0);
-        if (t < 0.12) return mixOklab(uC0, uC1, smoothstep(0.0, 0.12, t));
-        if (t < 0.28) return mixOklab(uC1, uC2, smoothstep(0.12, 0.28, t));
-        if (t < 0.45) return mixOklab(uC2, uC3, smoothstep(0.28, 0.45, t));
-        if (t < 0.62) return mixOklab(uC3, uC4, smoothstep(0.45, 0.62, t));
-        if (t < 0.80) return mixOklab(uC4, uC5, smoothstep(0.62, 0.80, t));
-        return mixOklab(uC5, uC6, smoothstep(0.80, 1.0, t));
-      }
-
-      // ---- Hash for dithering ----
-      float rand(vec2 co) {
-        return fract(sin(dot(co + fract(uTime * 0.1), vec2(12.9898, 78.233))) * 43758.5453);
-      }
-
-      // Soft glow — Gaussian-like falloff
-      float softGlow(vec2 uv, vec2 center, float radius) {
-        float d = length(uv - center) / radius;
-        return exp(-d * d * 2.5);
-      }
-
-      // Elongated glow — stretched along a direction for streaky look
-      float elongatedGlow(vec2 uv, vec2 center, vec2 stretch, float radius) {
-        vec2 diff = (uv - center) / stretch;
-        float d = length(diff) / radius;
-        return exp(-d * d * 2.0);
-      }
-
-      float starHash(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-      }
-
-      vec3 starLayer(vec2 uv, float time) {
-        vec3 stars = vec3(0.0);
-        vec2 gridUv = uv * 120.0;
-        vec2 cell = floor(gridUv);
-        vec2 localUv = fract(gridUv);
-
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            vec2 neighbor = vec2(float(x), float(y));
-            vec2 cellId = cell + neighbor;
-            float h = starHash(cellId);
-
-            if (h > 0.98) {
-              vec2 starPos = vec2(starHash(cellId + 0.1), starHash(cellId + 0.2));
-              float dist = length(localUv - neighbor - starPos);
-
-              float brightness = starHash(cellId + 0.3) * 0.6 + 0.4;
-              float twinkleSpeed = starHash(cellId + 0.4) * 2.0 + 0.5;
-              float twinkle = sin(h * 1000.0 + time * twinkleSpeed) * 0.3 + 0.7;
-
-              float starGlow = exp(-dist * dist * 800.0);
-
-              vec3 starColor = mix(vec3(0.9, 0.95, 1.0), uStarTint, starHash(cellId + 0.5));
-
-              stars += starColor * starGlow * brightness * twinkle;
-            }
-          }
-        }
-        return stars;
-      }
-
-      vec3 scene(vec2 uv) {
-        float aspect = uResolution.x / uResolution.y;
-        vec2 auv = vec2(uv.x * aspect, uv.y);
-        float t = uTime;
-        float calm = uCalm;
-
-        // ---- Layer 1: Animated rotated gradient (dark base) ----
-        float angle = 2.65;
-        vec2 dir = vec2(cos(angle), sin(angle));
-        float gradPos = dot(uv - 0.5, dir) + 0.5;
-        float animOffset = sin(t * 0.03) * 0.06 + sin(t * 0.07) * 0.025;
-        gradPos = clamp(gradPos + animOffset, 0.0, 1.0);
-        vec3 color = colorGradient(gradPos);
-
-        // Dithering (kills banding in the dark gradients)
-        color += (rand(gl_FragCoord.xy) - 0.5) * 0.006;
-
-        // ---- Layer 2: Noise-warped UV for organic flowing distortion ----
-        float breatheBase = 0.09 + 0.035 * sin(t * 0.08) + 0.02 * sin(t * 0.13 + 1.0);
-        float breathe = mix(breatheBase, 0.04, uCosmic);
-
-        float n1 = snoise(vec3(uv * 1.8, t * 0.025)) * 0.6
-                 + snoise(vec3(uv * 3.5, t * 0.035 + 10.0)) * 0.3
-                 + snoise(vec3(uv * 7.0, t * 0.045 + 20.0)) * 0.1;
-        float n2 = snoise(vec3(uv.yx * 1.8, t * 0.028 + 50.0)) * 0.6
-                 + snoise(vec3(uv.yx * 3.5, t * 0.038 + 60.0)) * 0.3
-                 + snoise(vec3(uv.yx * 7.0, t * 0.048 + 70.0)) * 0.1;
-        vec2 warpedAuv = auv + vec2(n1, n2) * breathe;
-
-        // ---- Pointer and scroll offsets (near layers move more than far) ----
-        vec2 m = uMouse - 0.5;
-        float tiltX = m.y * 0.12;
-        float tiltY = m.x * 0.12;
-        vec2 mouseFollow = m * vec2(0.3 * aspect, 0.3);
-        vec2 mouseOppose = -m * vec2(0.4 * aspect, 0.4);
-        vec2 near = vec2(0.0, uScroll * 0.14);
-        vec2 mid  = vec2(0.0, uScroll * 0.08);
-        vec2 far  = vec2(0.0, uScroll * 0.03);
-
-        // ---- Palette derived from the active theme ----
-        vec3 hot1 = mixOklab(uC6, vec3(1.0), 0.3);
-        vec3 hot2 = mixOklab(uC6, vec3(1.0), 0.55);
-        float glowScale = mix(1.0, 0.65, uCosmic) * mix(1.0, 0.5, calm);
-
-        // Secondary motion that registers within a visit: ~10 s breath, 15–25 s drifts
-        float breath = 0.90 + 0.10 * sin(t * 0.6);
-        vec2 drift1 = vec2(sin(t * 0.29) * 0.055 * aspect, cos(t * 0.23) * 0.04);
-        vec2 drift3 = vec2(cos(t * 0.41 + 1.0) * 0.065 * aspect, sin(t * 0.37) * 0.05);
-
-        // ---- Shape 1: Large primary band (mid layer) ----
-        vec2 center1 = vec2(0.5 * aspect, 0.5) + vec2(tiltY * aspect, -tiltX) + mouseFollow + mid + drift1;
-        center1 += vec2(sin(t * 0.04) * 0.06 * aspect, cos(t * 0.03) * 0.04);
-        vec2 stretch1 = vec2(1.3 + 0.3 * sin(t * 0.06), 0.8 + 0.2 * cos(t * 0.07 + 0.5));
-        float rad1 = 0.55 + 0.08 * sin(t * 0.09);
-        float glow1 = elongatedGlow(warpedAuv, center1, stretch1, rad1);
-        vec3 col1 = mixOklab(uC3, uC5, glow1);
-        color = mix(color, col1, glow1 * (0.85 + 0.1 * sin(t * 0.05)) * glowScale);
-
-        // ---- Shape 2: Secondary band — opposite parallax (mid layer) ----
-        float orbit = t * 0.06;
-        vec2 center2 = vec2(0.55 * aspect, 0.4) + mouseOppose + mid;
-        center2 += vec2(cos(orbit) * 0.10 * aspect, sin(orbit) * 0.08);
-        vec2 stretch2 = vec2(0.9 + 0.25 * sin(t * 0.07 + 2.0), 1.4 + 0.3 * cos(t * 0.05 + 1.0));
-        float rad2 = 0.5 + 0.07 * sin(t * 0.08 + 3.0);
-        float glow2 = elongatedGlow(warpedAuv, center2, stretch2, rad2);
-        vec3 col2 = mixOklab(uC2, uC4, glow2);
-        color = mix(color, col2, glow2 * 0.75 * glowScale);
-
-        // ---- Shape 3: Bright accent streak (near layer) ----
-        vec2 center3 = vec2(0.4 * aspect, 0.6) + near + drift3;
-        center3 += vec2(sin(t * 0.05) * 0.15 * aspect, cos(t * 0.06) * 0.10);
-        center3 += m * vec2(0.12 * aspect, 0.12);
-        vec2 stretch3 = vec2(1.5 + 0.4 * cos(t * 0.055 + 1.5), 0.7 + 0.25 * sin(t * 0.065 + 0.8));
-        float rad3 = 0.4 + 0.06 * sin(t * 0.1 + 2.0);
-        float glow3 = elongatedGlow(warpedAuv, center3, stretch3, rad3);
-        vec3 col3 = mixOklab(uC5, hot2, glow3);
-        color = mix(color, col3, glow3 * (0.6 + 0.12 * sin(t * 0.07 + 1.0)) * breath * glowScale);
-
-        // ---- Shape 4: Large deep ambient (far layer: slower, weaker parallax) ----
-        vec2 center4 = vec2(0.3 * aspect, 0.75) + far + m * vec2(0.04 * aspect, 0.04);
-        center4 += vec2(sin(t * 0.02 + 2.0) * 0.12 * aspect, cos(t * 0.018) * 0.09);
-        float rad4 = 0.8 + 0.12 * sin(t * 0.03 + 4.0);
-        float glow4 = softGlow(warpedAuv, center4, rad4);
-        vec3 col4 = mixOklab(uC2, uC3, glow4);
-        color = mix(color, col4, glow4 * (0.4 + 0.1 * sin(t * 0.04)) * glowScale);
-
-        // ---- Shape 5: Hot bright spot (near layer) ----
-        vec2 center5 = vec2(0.65 * aspect, 0.3) + near * 1.2 + drift3 * 0.6;
-        center5 += vec2(cos(t * 0.055 + 1.0) * 0.12 * aspect, sin(t * 0.065 + 3.0) * 0.09);
-        center5 += mouseOppose * 0.5;
-        float rad5 = 0.35 + 0.08 * sin(t * 0.075 + 5.0);
-        float glow5 = softGlow(warpedAuv, center5, rad5);
-        vec3 col5 = mixOklab(hot1, hot2, glow5);
-        color = mix(color, col5, glow5 * (0.55 + 0.1 * cos(t * 0.06)) * breath * glowScale);
-
-        // ---- Filaments: thin vertical curtains that only show inside the lit areas ----
-        {
-          vec2 p = vec2(warpedAuv.x * 3.0 + t * 0.015, warpedAuv.y * 0.6 - uScroll * 0.05);
-          float n = snoise(vec3(p, t * 0.04 + 33.0));
-          float ridge = pow(1.0 - abs(n), 9.0);
-          float lit = clamp(glow1 * 0.8 + glow3 * 1.2 + glow5, 0.0, 1.0);
-          float fil = ridge * lit * lit * 0.11 * mix(1.0, 0.4, calm) * mix(1.0, 0.6, uCosmic);
-          color += mixOklab(uC5, hot2, 0.5) * fil;
-        }
-
-        // ---- Dark void — soft concentrated dark area for contrast ----
-        vec2 voidCenter = vec2(0.38 * aspect, 0.42) + mouseFollow * 0.25 + mid * 0.5;
-        voidCenter += vec2(sin(t * 0.035 + 4.0) * 0.12 * aspect, cos(t * 0.04 + 1.0) * 0.09);
-        float voidRad = 0.45 + 0.06 * sin(t * 0.07 + 2.0);
-        float voidDist = length(warpedAuv - voidCenter) / voidRad;
-        float voidMask = 1.0 - exp(-voidDist * voidDist * 1.2);
-        float voidAddend = mix(0.4, 0.55, uCosmic) - 0.15 * calm;
-        color = mix(uVoidColor, color, clamp(voidMask + voidAddend, 0.0, 1.0));
-
-        // ---- Stars (themed modes) ----
-        color += starLayer(warpedAuv, t) * uCosmic * mix(1.0, 0.7, calm);
-
-        // ---- Calm: quieter, slightly desaturated ground under the content sections ----
-        float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-        color = mix(color, vec3(luma), 0.22 * calm);
-
-        // ---- Soft vignette keeps the edges quiet ----
-        float vig = smoothstep(0.95, 0.35, length((uv - 0.5) * vec2(1.0, 1.15)));
-        color *= mix(0.72, 1.0, vig);
-
-        return color;
-      }
-
-      float hash1(float n) { return fract(sin(n) * 43758.5453); }
-
-      void main() {
-        vec2 uv = vUv;
-        float g = uGlitch;
-        float tear = uTear;
-        float amt = max(g, tear * 0.7);
-        // Re-roll the slice pattern ~18 times a second so bursts flicker
-        float tick = floor(uTime * 18.0);
-
-        // ---- Slice displacement, vertical smear (scroll tear) and block quantisation ----
-        if (amt > 0.002) {
-          float bands = mix(14.0, 46.0, hash1(uGlitchSeed * 7.1));
-          float band = floor(uv.y * bands + uGlitchSeed * 91.0);
-          float h = hash1(band * 13.7 + uGlitchSeed * 3.3 + tick * 0.37);
-          float sliceOn = step(1.0 - 0.45 * amt, h);
-          float shift = (hash1(band * 5.1 + uGlitchSeed * 17.0 + tick) - 0.5) * 0.18 * amt * sliceOn;
-          uv.x += shift;
-          uv.y += (hash1(band * 2.3 + uGlitchSeed) - 0.5) * 0.08 * tear * sliceOn;
-          float blocky = step(0.72, hash1(band * 3.9 + uGlitchSeed * 5.0)) * sliceOn * step(0.3, g);
-          if (blocky > 0.5) {
-            float q = mix(28.0, 90.0, hash1(band + uGlitchSeed));
-            uv = floor(uv * q) / q;
-          }
-        }
-
-        vec3 color = scene(uv);
-
-        // ---- Chromatic split, scanlines and a brightness pop during bursts ----
-        if (g > 0.002) {
-          float d = (0.005 + 0.014 * g) * (0.5 + hash1(tick * 0.91 + uGlitchSeed));
-          vec3 cr = scene(uv + vec2(d, 0.0));
-          vec3 cb = scene(uv - vec2(d, 0.0));
-          color = mix(color, vec3(cr.r, color.g, cb.b), min(1.0, g * 1.6));
-          float scan = step(0.5, fract(gl_FragCoord.y * 0.5));
-          color *= 1.0 - 0.2 * g * scan;
-          color += uC6 * 0.14 * g * g;
-        }
-
-        // ---- Idle signal: a faint bar rolling down the screen ----
-        float roll = fract(uv.y + uTime * 0.02);
-        float bar = smoothstep(0.0, 0.012, roll) * smoothstep(0.045, 0.012, roll);
-        color += vec3(bar * 0.03 * (1.0 - 0.5 * uCalm));
-
-        fragColor = vec4(color, 1.0);
-      }`;
-
-    function createShader(type, source) {
-      const shader = gl.createShader(type);
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error('Shader error:', gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
-    }
-
-    // Program + uniform locations; rebuilt after a context restore
-    let U = null;
-    function setup() {
-      const vs = createShader(gl.VERTEX_SHADER, vsSource);
-      const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
-      if (!vs || !fs) return false;
-
-      const program = gl.createProgram();
-      gl.attachShader(program, vs);
-      gl.attachShader(program, fs);
-      gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('Program error:', gl.getProgramInfoLog(program));
-        return false;
-      }
-      gl.useProgram(program);
-
-      const posBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-      const posLoc = gl.getAttribLocation(program, 'a_position');
-      gl.enableVertexAttribArray(posLoc);
-      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-      const u = name => gl.getUniformLocation(program, name);
-      U = {
-        time: u('uTime'), resolution: u('uResolution'), mouse: u('uMouse'),
-        cosmic: u('uCosmic'), scroll: u('uScroll'), calm: u('uCalm'),
-        glitch: u('uGlitch'), glitchSeed: u('uGlitchSeed'), tear: u('uTear'),
-        stops: [0,1,2,3,4,5,6].map(i => u('uC' + i)),
-        voidColor: u('uVoidColor'), starTint: u('uStarTint')
-      };
-      return true;
-    }
-    if (!setup()) return;
-
-    // ---- Sizing: only reallocate when the width changes or the height changes a lot
-    // (mobile URL bars nudge the height on every scroll direction change) ----
-    let cssW = 0, cssH = 0;
-    let heroH = 1, contactTop = 1e9;
-
-    function measure() {
-      const hero = document.querySelector('.hero');
-      const contact = document.getElementById('contact');
-      heroH = hero ? hero.offsetHeight : window.innerHeight;
-      contactTop = contact ? contact.getBoundingClientRect().top + window.scrollY : 1e9;
-    }
-
-    function resize(force) {
-      const w = window.innerWidth, h = window.innerHeight;
-      if (!force && w === cssW && Math.abs(h - cssH) < cssH * 0.2) { measure(); return; }
-      cssW = w; cssH = h;
-      canvas.width = Math.max(1, Math.round(w * renderScale));
-      canvas.height = Math.max(1, Math.round(h * renderScale));
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      measure();
-    }
-    resize(true);
-
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { resize(false); requestFrame(); }, 150);
-    });
-    window.addEventListener('load', measure);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-
-    // ---- Touch parallax (mouse is fed by the shared pointer listener above) ----
-    if (!hasHover) {
-      document.addEventListener('touchmove', (e) => {
-        const tch = e.touches[0];
-        if (!tch) return;
-        pointer.x = tch.clientX / window.innerWidth;
-        pointer.y = 1.0 - tch.clientY / window.innerHeight;
-      }, { passive: true });
-    }
-
-    // ---- Scroll-derived signals ----
-    function smoothstep01(x) { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); }
-    function targetCalm() {
-      const y = window.scrollY, vh = window.innerHeight;
-      const exitHero = smoothstep01((y - heroH * 0.35) / (heroH * 0.65));
-      const enterContact = smoothstep01((y + vh - contactTop) / (vh * 0.8));
-      return exitHero * (1 - enterContact);
-    }
-
-    // ---- Render loop ----
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const startTime = performance.now();
-    let running = false;
-    let lastNow = startTime;
-    let lastDraw = 0;
-    let smoothMouseX = 0.5, smoothMouseY = 0.5;
-    let smoothScroll = 0, smoothCalm = 0;
-
-    // ---- Glitch scheduler: rare random bursts, scroll-velocity tearing,
-    //      a build-up while the hero line is held, a pop on theme change ----
-    let glitchEnv = 0, glitchSeed = Math.random(), burstStrength = 0, burstUntil = 0;
-    let nextBurst = startTime + 3000 + Math.random() * 6000;
-    let holding = false, holdRamp = 0;
-    let lastScrollY = window.scrollY, tear = 0;
-
-    function triggerGlitch(strength, duration) {
-      if (reduceMotion.matches) return;
-      const now = performance.now();
-      burstStrength = Math.max(burstStrength, strength);
-      burstUntil = Math.max(burstUntil, now + duration);
-      glitchSeed = Math.random();
-      document.body.classList.add('glitching');
-      requestFrame();
-    }
-    auroraGlitch = triggerGlitch;
-    auroraHold = (on) => { holding = on; };
-
-    function render(now) {
-      if (!running) return;
-      requestAnimationFrame(render);
-      if (now - lastDraw < minFrameMs) return;
-
-      const dt = Math.min(0.1, (now - lastNow) / 1000);
-      lastNow = now;
-      lastDraw = now;
-
-      const still = reduceMotion.matches;
-      // Frame-rate independent easing (≈ the old 0.03/frame at 60 fps)
-      const kPointer = 1 - Math.exp(-dt * 2.0);
-      const kScroll = 1 - Math.exp(-dt * 4.0);
-      const px = still ? 0.5 : pointer.x, py = still ? 0.5 : pointer.y;
-      smoothMouseX += (px - smoothMouseX) * kPointer;
-      smoothMouseY += (py - smoothMouseY) * kPointer;
-      smoothScroll += (window.scrollY / window.innerHeight - smoothScroll) * kScroll;
-      smoothCalm += (targetCalm() - smoothCalm) * kScroll;
-
-      // Glitch envelope
-      let g = 0;
-      if (still) {
-        glitchEnv = 0; tear = 0; holdRamp = 0;
-        document.body.classList.remove('glitching');
-      } else {
-        if (now >= nextBurst) {
-          triggerGlitch(0.45 + Math.random() * 0.55, 120 + Math.random() * 300);
-          nextBurst = now + 5000 + Math.random() * 9000;
-        }
-        if (now < burstUntil) {
-          glitchEnv = burstStrength * (Math.random() < 0.7 ? 1 : 0.25);
-          if (Math.random() < 0.15) glitchSeed = Math.random();
-        } else if (glitchEnv > 0) {
-          glitchEnv *= Math.exp(-dt * 25);
-          if (glitchEnv < 0.01) {
-            glitchEnv = 0; burstStrength = 0;
-            document.body.classList.remove('glitching');
-          }
-        }
-        // Hold: ramps up over ~3 s, releases quickly
-        const holdTarget = holding ? 0.4 : 0;
-        holdRamp += (holdTarget - holdRamp) * (1 - Math.exp(-dt * (holding ? 0.6 : 8)));
-        // Tear: viewport heights per second of scroll, decaying
-        const dy = Math.abs(window.scrollY - lastScrollY);
-        lastScrollY = window.scrollY;
-        const vel = dy / Math.max(dt, 1e-3) / window.innerHeight;
-        tear = Math.max(tear * Math.exp(-dt * 6), Math.min(1, vel * 0.22));
-        g = Math.min(1, glitchEnv + holdRamp) * (1 - 0.6 * smoothCalm);
-      }
-
-      // Under reduced motion draw a fixed moment in the animation
-      const t = still ? 20.0 : (now - startTime) / 1000.0;
-      gl.uniform1f(U.time, t);
-      gl.uniform2f(U.resolution, canvas.width, canvas.height);
-      gl.uniform2f(U.mouse, smoothMouseX, smoothMouseY);
-      gl.uniform1f(U.scroll, Math.min(6, smoothScroll));
-      gl.uniform1f(U.calm, smoothCalm);
-      gl.uniform1f(U.glitch, g);
-      gl.uniform1f(U.glitchSeed, glitchSeed);
-      gl.uniform1f(U.tear, tear * (1 - 0.5 * smoothCalm));
-
-      // Theme transition (colors + cosmic amount)
-      if (cosmicAnimStart !== null) {
-        const elapsed = performance.now() - cosmicAnimStart;
-        const progress = Math.min(elapsed / COSMIC_ANIM_DURATION, 1.0);
-        const eased = easeInOutCubic(progress);
-        cosmicValue = cosmicAnimStartValue + (cosmicTarget - cosmicAnimStartValue) * eased;
-
-        for (let i = 0; i < 7; i++) {
-          for (let j = 0; j < 3; j++) {
-            currentShaderStops[i][j] = fromShaderStops[i][j] + (targetShaderStops[i][j] - fromShaderStops[i][j]) * eased;
-          }
-        }
-        for (let j = 0; j < 3; j++) {
-          currentVoidColor[j] = fromVoidColor[j] + (targetVoidColor[j] - fromVoidColor[j]) * eased;
-          currentStarTint[j] = fromStarTint[j] + (targetStarTint[j] - fromStarTint[j]) * eased;
-        }
-
-        if (progress >= 1.0) {
-          cosmicValue = cosmicTarget;
-          for (let i = 0; i < 7; i++) currentShaderStops[i] = [...targetShaderStops[i]];
-          currentVoidColor = [...targetVoidColor];
-          currentStarTint = [...targetStarTint];
-          cosmicAnimStart = null;
-          cosmicTransitioning = false;
-        }
-      }
-
-      gl.uniform1f(U.cosmic, cosmicValue);
-      for (let i = 0; i < 7; i++) {
-        gl.uniform3f(U.stops[i], currentShaderStops[i][0], currentShaderStops[i][1], currentShaderStops[i][2]);
-      }
-      gl.uniform3f(U.voidColor, currentVoidColor[0], currentVoidColor[1], currentVoidColor[2]);
-      gl.uniform3f(U.starTint, currentStarTint[0], currentStarTint[1], currentStarTint[2]);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-      // Reduced motion: one frame is enough unless a theme transition is in flight
-      // or the scroll-driven calm is still settling.
-      if (still && cosmicAnimStart === null && Math.abs(targetCalm() - smoothCalm) < 0.002) {
-        running = false;
-      }
-    }
-
-    function requestFrame() {
-      if (running || document.hidden || gl.isContextLost()) return;
-      running = true;
-      lastNow = performance.now();
-      requestAnimationFrame(render);
-    }
-    auroraResume = requestFrame;
-
-    // Pause while hidden (battery), resume when visible
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) running = false;
-      else requestFrame();
-    });
-
-    // Reduced motion: redraw when scrolling changes the calm state, and when the preference flips
-    window.addEventListener('scroll', () => { if (reduceMotion.matches) requestFrame(); }, { passive: true });
-    if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', requestFrame);
-
-    // Survive context loss (mobile Safari drops contexts for backgrounded tabs)
-    canvas.addEventListener('webglcontextlost', (e) => {
-      e.preventDefault();
-      running = false;
-      canvas.classList.add('is-lost');
-    });
-    canvas.addEventListener('webglcontextrestored', () => {
-      if (!setup()) return;
-      resize(true);
-      canvas.classList.remove('is-lost');
-      requestFrame();
-    });
-
-    requestFrame();
-  })();
-
-  // ===== SCROLL-DRIVEN EFFECTS =====
-  const navEl = document.querySelector('nav');
-  let ticking = false;
-
-  // Hero line wiggle on first scroll
-  (function() {
-    const heroLine = document.querySelector('.hero-line');
-    if (!heroLine || prefersReducedMotion.matches) return;
-
-    window.addEventListener('scroll', function onFirstScroll() {
-      window.removeEventListener('scroll', onFirstScroll);
-      // Stop lineReveal and lock in its final state
-      heroLine.style.opacity = '1';
-      heroLine.style.transform = 'scaleX(1)';
-      heroLine.style.animation = 'none';
-      // Force reflow so browser registers the cleared animation
-      void heroLine.offsetWidth;
-      // Remove inline animation so the .pulse class animation can take effect
-      heroLine.style.animation = '';
-      heroLine.classList.add('pulse');
-      heroLine.addEventListener('animationend', () => {
-        heroLine.classList.remove('pulse');
-      }, { once: true });
-    }, { passive: true });
-  })();
-
-  function onScroll() {
-    const scrollY = window.scrollY;
-    navEl.classList.toggle('scrolled', scrollY > 100);
-
-    // Cosmic mode: subtle parallax on revealed elements
-    if (currentTheme !== 'default' && !prefersReducedMotion.matches) {
-      const viewportCenter = window.innerHeight / 2;
-      const revealEls = document.querySelectorAll('.reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible');
-
-      revealEls.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const elCenter = rect.top + rect.height / 2;
-        const offset = (elCenter - viewportCenter) / window.innerHeight;
-        const parallax = offset * 12;
-        el.style.transform = `translateY(${parallax}px)`;
-      });
-    } else {
-      const revealEls = document.querySelectorAll('.reveal.visible, .reveal-left.visible, .reveal-right.visible, .reveal-scale.visible');
-      revealEls.forEach(el => {
-        if (el.style.transform.includes('translateY')) {
-          el.style.transform = '';
-        }
-      });
-    }
-
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(onScroll);
-      ticking = true;
-    }
-  }, { passive: true });
-
-  onScroll();
-
-  // ===== CONSOLE EASTER EGG =====
-  console.log(
-    '%cCurious? Check out my GitHub.\n%chttps://github.com/jflavan',
-    'color:#a9e5c8;font-size:14px;font-weight:bold;',
-    'color:#3fb287;font-size:12px;'
-  );
-
-  // ===== HERO LINE HOLD INTERACTION =====
-  (function() {
-    const heroLine = document.querySelector('.hero-line');
-    if (!heroLine) return;
-
-    let holdTimer = null;
-
-    function startHold(e) {
-      if (cosmicTransitioning) return;
-      e.preventDefault();
-
-      heroLine.classList.remove('reset');
-      heroLine.classList.add('holding');
-      if (auroraHold) auroraHold(true);
-
-      holdTimer = setTimeout(() => {
-        holdTimer = null;
-        // Flash
-        heroLine.classList.remove('holding');
-        heroLine.classList.add('flash');
-        if (auroraHold) auroraHold(false);
-
-        // Toggle cosmic after brief flash
-        setTimeout(() => {
-          heroLine.classList.remove('flash');
-          heroLine.classList.add('reset');
-          cycleTheme();
-        }, 150);
-      }, 3000);
-    }
-
-    function cancelHold() {
-      if (holdTimer !== null) {
-        clearTimeout(holdTimer);
-        holdTimer = null;
-        if (auroraHold) auroraHold(false);
-        heroLine.classList.remove('holding');
-        heroLine.classList.add('reset');
-        // Remove reset class after transition completes
-        setTimeout(() => heroLine.classList.remove('reset'), 300);
-      }
-    }
-
-    // Mouse events
-    heroLine.addEventListener('mousedown', startHold);
-    heroLine.addEventListener('mouseup', cancelHold);
-    heroLine.addEventListener('mouseleave', cancelHold);
-
-    // Touch events
-    heroLine.addEventListener('touchstart', startHold, { passive: false });
-    heroLine.addEventListener('touchend', cancelHold);
-    heroLine.addEventListener('touchmove', cancelHold);
-  })();
-</script>
+<script src="lib/gsap.min.js"></script>
+<script src="lib/ScrollTrigger.min.js"></script>
+<script src="lib/lenis.min.js"></script>
+<script src="fluid.js"></script>
 <script src="site.js"></script>
-
 </body>
 </html>

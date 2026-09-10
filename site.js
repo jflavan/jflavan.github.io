@@ -138,7 +138,7 @@
   function hexToRgb01(hex) { var n = parseInt(hex.slice(1), 16); return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]; }
 
   /* ===== INK (WebGL fluid behind the hero) ===== */
-  var canvas = $('#ink'), ink = null, heroFade = 1, storming = false;
+  var canvas = $('#ink'), ink = null, heroFade = 1, storming = false, settling = null;
   if (canvas && !reduce && typeof Ink !== 'undefined') {
     try { ink = Ink.create(canvas, { touch: touch, bg: hexToRgb01(THEMES.default.noir), ink: THEMES.default.ink, onLost: function () { html.classList.add('no-ink'); ink = null; } }); } catch (e) { ink = null; }
   }
@@ -165,7 +165,7 @@
     }
 
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) ink.pause(); else if (heroFade > 0 || storming) ink.resume();
+      if (document.hidden) ink.pause(); else if (heroFade > 0 || storming || settling) ink.resume();
     });
   }
 
@@ -196,7 +196,7 @@
       trigger: hero, start: 'bottom 90%', end: 'bottom 10%', scrub: true,
       onUpdate: function (st) {
         heroFade = 1 - st.progress;
-        if (!ink) return;
+        if (!ink || storming || settling) return; // the storm (and its settle) own the fade until they end
         ink.setFade(heroFade);
         if (heroFade <= 0.001 && !storming) ink.pause(); else if (!ink.isRunning()) ink.resume();
       }
@@ -348,11 +348,28 @@
     function setCharge(p) { rect.setAttribute('y', String(H - H * p)); }
     function stormOn() {
       storming = true;
-      if (ink) { ink.storm(true); ink.setFade(1); ink.resume(); canvas.classList.add('storm'); }
+      if (!ink) return;
+      if (settling) { settling.kill(); settling = null; }
+      canvas.style.opacity = '';
+      ink.storm(true); ink.setFade(1); ink.resume(); canvas.classList.add('storm');
     }
     function stormOff() {
       storming = false;
-      if (ink) { ink.storm(false); ink.setFade(heroFade); canvas.classList.remove('storm'); if (heroFade <= 0.001) setTimeout(function () { if (!storming) ink.pause(); }, 1200); }
+      if (!ink) return;
+      ink.storm(false);
+      if (!hasGsap) { ink.setFade(heroFade); canvas.classList.remove('storm'); if (heroFade <= 0.001) ink.pause(); return; }
+      // Let the storm subside rather than cut: the dye drains back to the scroll fade over ~1.8s (eased out, since the display roll-off makes a linear fade look back-loaded),
+      // the canvas then dims through its CSS transition, and only then drops back behind the page.
+      var p = { t: 0 };
+      settling = gsap.timeline({ onComplete: function () {
+        settling = null;
+        canvas.classList.remove('storm');
+        canvas.style.opacity = '';
+        if (heroFade <= 0.001) ink.pause();
+      } })
+        .to(p, { t: 1, duration: 1.8, ease: 'power2.out', onUpdate: function () { ink.setFade(1 - (1 - heroFade) * p.t); } })
+        .add(function () { canvas.style.opacity = '0'; }, '-=0.4')
+        .to({}, { duration: 0.6 });
     }
     function loop(now) {
       if (!holding) return;

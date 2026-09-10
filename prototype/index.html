@@ -337,8 +337,8 @@ a { color: inherit; }
 /* hero */
 .vb-hero { height: 100vh; min-height: 640px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--gutter); overflow: hidden; }
 .vb-hero .first { font-family: var(--disp); font-weight: 300; font-variation-settings: "opsz" 96, "wdth" 100; font-size: clamp(28px, 5vw, 72px); letter-spacing: -.02em; line-height: 1; margin: 0 0 .1em .04em; }
-.vb-hero .name { font-size: clamp(88px, 19.4vw, 400px); margin: 0; white-space: nowrap; margin-left: -.03em; will-change: transform; transform-origin: left bottom; }
-.vb-hero .name span { display: inline-block; transform: translateY(105%); }
+.vb-hero .name { font-size: clamp(80px, 17.5vw, 340px); margin: 0; white-space: nowrap; margin-left: -.03em; will-change: transform; transform-origin: left bottom; overflow: hidden; padding-bottom: .06em; }
+.vb-hero .name span { display: block; transform: translateY(105%); }
 .vb-hero .sub { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: clamp(20px, 3vw, 40px); align-items: end; }
 .vb-hero .sub p { margin: 0; max-width: 34ch; font-size: 15px; color: var(--fg-2); text-wrap: pretty; }
 .vb-hero .sub .r { text-align: right; }
@@ -421,7 +421,7 @@ a { color: inherit; }
   <header class="vb-hero" id="b-top">
     <div class="portrait" data-hover><img src="/profile.jpg" alt="John Flavan" width="460" height="460"></div>
     <p class="first">John</p>
-    <h1 class="name disp" data-name><span>Flavan</span></h1>
+    <h1 class="name disp" data-hero-name><span>Flavan</span></h1>
     <div class="sub">
       <p class="mono">Engineering Manager<br>Alliant Insurance Services</p>
       <p>Leading development and quality teams, and rebuilding how software gets made around AI.</p>
@@ -859,11 +859,11 @@ a { color: inherit; }
   // =============== VARIANT B ===============
   if (current === 'b') {
     var loader = root.querySelector('[data-loader]'), count = root.querySelector('[data-count]');
-    var nameSpan = root.querySelector('[data-name] span');
+    var nameSpan = root.querySelector('[data-hero-name] span');
     function finishLoad() {
       loader.classList.add('done');
       setTimeout(function () { loader.remove(); }, 1100);
-      if (hasGsap && !reduce) gsap.to(nameSpan, { y: 0, duration: 1.4, ease: 'expo.out', delay: .15 });
+      if (hasGsap && !reduce) gsap.fromTo(nameSpan, { yPercent: 105, y: 0 }, { yPercent: 0, y: 0, duration: 1.4, ease: 'expo.out', delay: .15 });
       else nameSpan.style.transform = 'none';
     }
     if (reduce) { finishLoad(); }
@@ -898,7 +898,7 @@ a { color: inherit; }
     var words = lit.querySelectorAll('.w');
 
     if (hasGsap && !reduce) {
-      gsap.to(root.querySelector('[data-name]'), { scale: .55, opacity: 0, ease: 'none', scrollTrigger: { trigger: root.querySelector('.vb-hero'), start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to(root.querySelector('[data-hero-name]'), { scale: .55, opacity: 0, ease: 'none', scrollTrigger: { trigger: root.querySelector('.vb-hero'), start: 'top top', end: 'bottom top', scrub: true } });
       ScrollTrigger.create({ trigger: lit, start: 'top 80%', end: 'bottom 45%', scrub: true, onUpdate: function (st) { var n = Math.round(st.progress * words.length); words.forEach(function (w, i) { w.classList.toggle('lit', i < n); }); } });
       var panels = root.querySelectorAll('[data-panel]');
       panels.forEach(function (p, i) {

@@ -220,7 +220,8 @@
       PRESSURE_ITERATIONS: opts.touch ? 8 : 14,
       CURL: opts.curl != null ? opts.curl : 22,
       SPLAT_RADIUS: opts.radius != null ? opts.radius : 0.32,
-      SPLAT_FORCE: 5000
+      SPLAT_FORCE: 5000,
+      TIME_SCALE: opts.timeScale != null ? opts.timeScale : 0.75   // slows the swirl without changing its character
     };
 
     var bg = opts.bg || [0.067, 0.067, 0.063];
@@ -440,6 +441,7 @@
       if (dt <= 0) return;
       if (resizeCanvas()) initFramebuffers();
       autoSplat(dt);
+      dt *= config.TIME_SCALE;
       if (pendingPointer) { splats.push(pendingPointer); pendingPointer = null; }
       while (splats.length) { var s = splats.shift(); splat(s.x, s.y, s.dx, s.dy, s.color || inkColor, s.strength); }
       step(dt);

@@ -54,8 +54,8 @@
   /* ===== LOGOTYPE: a ransom-note wordmark that settles into a fixed mix of voices ===== */
   var logotype = (function () {
     var el = $('[data-logotype]'); if (!el) return null;
-    var VOICES = ['sans', 'serif', 'swash', 'pixel'];
-    // Resting voice per letter: J o h n / F l a v a n
+    var VOICES = ['sans', 'serif', 'mono', 'light'];
+    // Resting voice per letter: J O H N / F L A V A N
     var REST = [1, 0, 2, 3, 0, 1, 3, 2, 0, 1];
     var words = el.textContent.trim().split(/\s+/);
     el.textContent = '';

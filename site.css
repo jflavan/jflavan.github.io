@@ -40,8 +40,8 @@
 @font-face { font-family: 'Satoshi'; font-weight: 900; font-style: normal; font-display: swap; src: url('/fonts/satoshi-900.woff2') format('woff2'); }
 /* Logotype voices (subset to the letters of the name only) */
 @font-face { font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/instrument-serif-italic.woff2') format('woff2'); }
-@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 600; font-display: swap; src: url('/fonts/playfair-italic.woff2') format('woff2'); }
-@font-face { font-family: 'Handjet'; font-style: normal; font-weight: 300 900; font-display: swap; src: url('/fonts/handjet.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/plex-mono.woff2') format('woff2'); }
+@font-face { font-family: 'Satoshi'; font-weight: 300; font-style: normal; font-display: swap; src: url('/fonts/satoshi-300.woff2') format('woff2'); }
 @font-face {
   font-family: 'Satoshi Fallback';
   src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
@@ -117,7 +117,7 @@ main, footer { position: relative; z-index: 1; }
 .nav-name, .nav-links a, .nav-clock { line-height: 1.2; }
 
 /* Logotype: every letter wears its own voice; the words shear in through tilted masks */
-.logotype { font-size: clamp(22px, 1.9vw, 28px); line-height: 1; display: inline-flex; align-items: baseline; gap: 0.3em; letter-spacing: 0; overflow: visible; }
+.logotype { font-size: clamp(20px, 1.7vw, 25px); line-height: 1; display: inline-flex; align-items: baseline; gap: 0.36em; letter-spacing: 0.01em; text-transform: uppercase; overflow: visible; }
 .logotype .lt-mask { display: inline-block; overflow: hidden; padding: 0.18em 0.06em; margin: -0.18em -0.06em; transform: skewY(-6deg); }
 .logotype .lt-mask + .lt-mask { transform: skewY(6deg); }
 .logotype .lt-word { display: inline-grid; grid-auto-flow: column; align-items: baseline; transform: skewY(6deg); }
@@ -126,9 +126,9 @@ main, footer { position: relative; z-index: 1; }
 .logotype .lt i { grid-area: g; font-style: normal; white-space: pre; line-height: 1; clip-path: inset(0 0 100% 0); }
 .logotype .lt i.on { clip-path: inset(0 0 0 0); }
 .logotype .v-sans { font-family: 'Satoshi', 'Satoshi Fallback', sans-serif; font-weight: 900; font-size: 0.94em; }
-.logotype .v-serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.16em; }
-.logotype .v-swash { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 600; font-size: 1.02em; }
-.logotype .v-pixel { font-family: 'Handjet', monospace; font-weight: 800; font-size: 1.22em; letter-spacing: 0.02em; }
+.logotype .v-serif { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; font-size: 1.1em; }
+.logotype .v-mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; font-size: 0.95em; }
+.logotype .v-light { font-family: 'Satoshi', 'Satoshi Fallback', sans-serif; font-weight: 300; font-size: 0.94em; }
 @media (prefers-reduced-motion: reduce) { .logotype .lt-mask, .logotype .lt-word { transform: none; } }
 
 /* ===== HERO ===== */

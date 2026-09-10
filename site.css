@@ -259,6 +259,17 @@ html.reveal-fallback .portrait .curtain, html.reveal-fallback .portrait img { tr
 @media (hover: hover) and (pointer: fine) { .wordmark:hover .wm-outline { fill: var(--blanc); } }
 .wordmark.holding .wm-outline { fill: transparent; }
 
+@media (max-width: 420px) {
+  .nav { font-size: 11px; }
+  .nav-links { gap: 10px; }
+  .nav-links li:nth-child(2) { display: none; }
+  .logotype { font-size: 16px; }
+}
+@media (max-width: 350px) {
+  .nav-links li:nth-child(1) { display: none; }
+  .logotype { font-size: 15px; }
+}
+
 /* ===== THEMES (set by the wordmark Easter egg) ===== */
 body.theme-forest { --noir: #07130D; --noir-2: #0B1A12; --noir-3: #0F2118; --accent: #a9e5c8; }
 body.theme-cosmic { --noir: #05070E; --noir-2: #090C16; --noir-3: #0D111E; --accent: #a0c4ff; }
@@ -297,10 +308,12 @@ body.themed .wr .wb { color: var(--accent); }
 }
 @media (max-width: 720px) {
   :root { --nav-h: 56px; --t-hero: clamp(38px, 11vw, 150px); }
-  .nav { font-size: 12px; }
+  .nav { font-size: 12px; gap: 12px; }
   .nav-clock { display: none; }
-  .nav-links { gap: 14px; }
+  .nav-links { gap: 12px; flex-wrap: nowrap; }
   .nav-links li:nth-child(4) { display: none; }
+  .logotype { font-size: 17px; flex: none; }
+  .nav nav { min-width: 0; }
   .statement { padding-block: 4vh 4vh; }
   .hero-fine { row-gap: 18px; }
   .fine-lead { grid-column: 1 / -1; }

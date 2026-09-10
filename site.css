@@ -213,7 +213,7 @@ html.reveal-fallback .portrait .curtain, html.reveal-fallback .portrait img { tr
 .term > i { display: block; font-style: normal; transition: transform 0.5s var(--ease-out); }
 .term > i + i { position: absolute; left: 0; top: 100%; color: var(--blanc); }
 @media (hover: hover) and (pointer: fine) { .term:hover > i { transform: translateY(-100%); } }
-.term + .term { margin-left: 0.3em; }
+.term { margin-right: 0.3em; }
 
 /* ===== CONTACT ===== */
 .contact { padding-block: clamp(80px, 10vw, 160px) clamp(100px, 14vw, 220px); border-top: 2px solid var(--blanc); }

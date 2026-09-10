@@ -51,6 +51,62 @@
     setTimeout(function () { tick(); setInterval(tick, 60000); }, (60 - new Date().getSeconds()) * 1000);
   })();
 
+  /* ===== LOGOTYPE: a ransom-note wordmark that settles into a fixed mix of voices ===== */
+  var logotype = (function () {
+    var el = $('[data-logotype]'); if (!el) return null;
+    var VOICES = ['sans', 'serif', 'swash', 'pixel'];
+    // Resting voice per letter: J o h n / F l a v a n
+    var REST = [1, 0, 2, 3, 0, 1, 3, 2, 0, 1];
+    var words = el.textContent.trim().split(/\s+/);
+    el.textContent = '';
+    var cells = [], idx = 0;
+    words.forEach(function (word) {
+      var mask = document.createElement('span'); mask.className = 'lt-mask';
+      var w = document.createElement('span'); w.className = 'lt-word';
+      word.split('').forEach(function (ch) {
+        var cell = document.createElement('span'); cell.className = 'lt';
+        VOICES.forEach(function (v) { var i = document.createElement('i'); i.className = 'v-' + v; i.textContent = ch; i.setAttribute('aria-hidden', 'true'); cell.appendChild(i); });
+        cells.push({ el: cell, faces: $$('i', cell), at: REST[idx % REST.length], rest: REST[idx % REST.length] });
+        idx++; w.appendChild(cell);
+      });
+      mask.appendChild(w); el.appendChild(mask);
+    });
+    cells.forEach(function (c) { c.faces[c.at].classList.add('on'); });
+    var busy = false;
+    function cycle(delay) {
+      if (!animate || busy) return;
+      busy = true;
+      var cur = cells.map(function (c) { return c.at; }), t = 0;
+      var tl = gsap.timeline({ delay: delay || 0, onComplete: function () {
+        busy = false;
+        cells.forEach(function (c) { c.faces.forEach(function (f, k) { gsap.set(f, { clearProps: 'clipPath,zIndex' }); f.classList.toggle('on', k === c.at); }); });
+      } });
+      for (var s = 0; s < VOICES.length; s++) {
+        cells.forEach(function (c, i) {
+          var from = c.faces[cur[i]], next = (cur[i] + 1) % VOICES.length, to = c.faces[next], at = t + i * 0.06;
+          tl.set(to, { clipPath: 'inset(100% 0% 0% 0%)', zIndex: 2 }, at);
+          tl.set(from, { clipPath: 'inset(0% 0% 0% 0%)', zIndex: 1 }, at);
+          tl.to(to, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.35, ease: 'expo.inOut' }, at);
+          tl.to(from, { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.35, ease: 'expo.inOut' }, at);
+          cur[i] = next;
+        });
+        t += 0.35 + (cells.length - 1) * 0.06 + 0.25;
+      }
+      return tl;
+    }
+    function reveal() {
+      if (!animate) return;
+      var ws = $$('.lt-word', el);
+      gsap.set(ws[0], { yPercent: 130 }); if (ws[1]) gsap.set(ws[1], { yPercent: -130 });
+      gsap.to(ws[0], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
+      if (ws[1]) gsap.to(ws[1], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
+      cycle(0.7);
+    }
+    if (!touch) el.addEventListener('mouseenter', function () { cycle(0); });
+    el.addEventListener('focus', function () { cycle(0); });
+    return { reveal: reveal, cycle: cycle };
+  })();
+
   /* ===== THEMES ===== */
   var THEMES = {
     default: { cls: '', noir: '#111110', ink: [0.95, 0.93, 0.88], console: ['Curious? Check out my GitHub.', '#F1EFE8', '#8a8a84'] },
@@ -99,6 +155,7 @@
   /* ===== INTRO: the statement is typeset one word at a time ===== */
   var words = $$('[data-statement] .w'), fine = $('[data-fine]');
   function showInk() { if (canvas && ink) canvas.classList.add('on'); }
+  if (logotype) logotype.reveal();
   if (animate && words.length) {
     var intro = gsap.timeline({ delay: 0.7 });
     intro.set(words, { opacity: 1, stagger: 0.11 });

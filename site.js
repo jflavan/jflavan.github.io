@@ -166,18 +166,18 @@
   /* ===== MARQUEES: outlined tags drift, and rush with scroll velocity ===== */
   (function () {
     var ms = $$('[data-marquee]'); if (!ms.length || !animate) return;
-    var items = ms.map(function (m, i) { return { el: m, x: 0, w: 0, dir: i % 2 ? 1 : -1, visible: false, span: $('span', m) }; });
+    var items = ms.map(function (m, i) { return { el: m, x: 0, w: 0, dir: parseFloat(m.getAttribute('data-dir')) || (i % 2 ? 1 : -1), speed: parseFloat(m.getAttribute('data-speed')) || 1, visible: false, span: $('span', m) }; });
     function measure() { items.forEach(function (it) { it.w = it.span.getBoundingClientRect().width; }); }
     measure(); window.addEventListener('resize', measure);
-    var io = new IntersectionObserver(function (entries) { entries.forEach(function (en) { var it = items.filter(function (i) { return i.el === en.target; })[0]; if (it) it.visible = en.isIntersecting; }); });
-    items.forEach(function (it) { io.observe(it.el); });
+    var io = new IntersectionObserver(function (entries) { entries.forEach(function (en) { items.forEach(function (it) { if (it.el.parentNode === en.target) it.visible = en.isIntersecting; }); }); });
+    $$('.marquees').forEach(function (g) { io.observe(g); });
     var lastT = performance.now();
     gsap.ticker.add(function () {
       var now = performance.now(), dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
       var v = Math.min(3, Math.abs(scrollVelocity) / 40);
       items.forEach(function (it) {
         if (!it.visible || !it.w) return;
-        it.x += it.dir * (40 + 220 * v) * dt;
+        it.x += it.dir * (34 * it.speed + 240 * v) * dt;
         if (it.x <= -it.w) it.x += it.w; if (it.x > 0) it.x -= it.w;
         it.el.style.transform = 'translate3d(' + it.x + 'px,0,0)';
       });

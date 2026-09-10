@@ -159,25 +159,28 @@ html.js .portrait img { transform: translateY(100%); }
 .stack { position: relative; }
 .panel {
   position: sticky; top: 0; height: 100svh; min-height: 620px; overflow: hidden;
-  display: flex; align-items: flex-end;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding-top: calc(var(--nav-h) + 3vh);
   border-top: 2px solid var(--blanc); transform-origin: 50% 0;
   transition: background 1s ease;
 }
 .panel:nth-child(1) { background: var(--noir); z-index: 1; }
 .panel:nth-child(2) { background: var(--noir-2); z-index: 2; }
 .panel:nth-child(3) { background: var(--noir-3); z-index: 3; }
-.panel .shade { position: absolute; inset: 0; background: var(--noir); opacity: 0; pointer-events: none; }
-.panel-in { width: 100%; align-items: end; row-gap: 24px; padding-bottom: clamp(24px, 4vw, 64px); position: relative; }
-.panel .index { grid-column: 1 / span 1; align-self: start; padding-top: 4px; }
+.panel .shade { position: absolute; inset: 0; background: var(--noir); opacity: 0; pointer-events: none; z-index: 2; }
+.panel-in { width: 100%; align-items: start; row-gap: 20px; position: relative; z-index: 1; }
+.panel .index { grid-column: 1 / span 1; padding-top: 4px; }
 .panel h3 { grid-column: 1 / span 8; font-size: var(--t-h3); font-weight: 900; line-height: 0.86; text-transform: uppercase; text-wrap: balance; }
-.panel-copy { grid-column: 9 / span 4; }
+.panel-copy { grid-column: 9 / span 4; padding-top: 0.35em; }
 .panel-copy p { max-width: 38ch; color: var(--blanc); }
-.tools { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); font-size: var(--t-label); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+.tools { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 20px; padding-top: 14px; border-top: 2px solid var(--blanc); font-size: var(--t-small); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--blanc); }
+.marquees { position: absolute; left: 0; right: 0; bottom: 3vh; max-height: 54%; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
 .marquee {
-  position: absolute; top: calc(var(--nav-h) + 6vh); left: 0; white-space: nowrap; display: flex;
-  font-size: clamp(56px, 9vw, 180px); font-weight: 900; line-height: 1; text-transform: uppercase;
-  color: transparent; -webkit-text-stroke: 1px var(--line); pointer-events: none; will-change: transform;
+  white-space: nowrap; display: flex; flex: none;
+  font-size: min(8vw, 15vh); font-weight: 900; line-height: 0.98; text-transform: uppercase;
+  color: transparent; -webkit-text-stroke: 1px var(--line); will-change: transform;
 }
+.marquee:nth-child(2) { color: rgba(241, 239, 232, 0.07); -webkit-text-stroke: 0; }
 .marquee span { flex: none; padding-right: 0.25em; }
 
 /* ===== EXPERIENCE: horizontal ribbon ===== */
@@ -267,7 +270,7 @@ body.themed .wr .wb { color: var(--accent); }
   .about .roll-statement { grid-column: 1 / -1; }
   .portrait { grid-column: 7 / span 6; }
   .panel h3 { grid-column: 1 / -1; }
-  .panel-copy { grid-column: 1 / span 8; }
+  .panel-copy { grid-column: 1 / span 8; padding-top: 0; }
   .exp-lead .roll-statement { grid-column: 1 / -1; }
   .group dt { grid-column: 1 / -1; padding-top: 0; }
   .group dd { grid-column: 1 / -1; }
@@ -288,9 +291,10 @@ body.themed .wr .wb { color: var(--accent); }
   .fine:nth-of-type(3) { grid-column: 1 / span 4; }
   .scroll-cue { grid-column: 8 / span 5; }
   .portrait { grid-column: 3 / span 10; }
-  .panel { min-height: 560px; align-items: flex-end; }
-  .marquee { top: calc(var(--nav-h) + 4vh); font-size: 20vw; }
-  .panel-copy { grid-column: 1 / -1; }
+  .panel { min-height: 560px; }
+  .marquee { font-size: min(15vw, 9vh); }
+  .marquees { bottom: 2vh; max-height: 42%; }
+  .panel-copy { grid-column: 1 / -1; padding-top: 0; }
   .exp-pin { height: auto; min-height: 0; padding-block: 24px 48px; }
   .track { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
   .card { width: min(78vw, 360px); scroll-snap-align: start; }

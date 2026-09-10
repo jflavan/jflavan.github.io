@@ -258,8 +258,6 @@ html.reveal-fallback .portrait .curtain, html.reveal-fallback .portrait img { tr
 .wm-fill { fill: var(--accent); }
 @media (hover: hover) and (pointer: fine) { .wordmark:hover .wm-outline { fill: var(--blanc); } }
 .wordmark.holding .wm-outline { fill: transparent; }
-.wm-hint { position: absolute; right: 0; top: -1.6em; font-size: var(--t-label); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); opacity: 0; transition: opacity 0.4s ease; }
-.wordmark:hover .wm-hint, .wordmark:focus-visible .wm-hint, .wordmark.holding .wm-hint { opacity: 1; }
 
 /* ===== THEMES (set by the wordmark Easter egg) ===== */
 body.theme-forest { --noir: #07130D; --noir-2: #0B1A12; --noir-3: #0F2118; --accent: #a9e5c8; }

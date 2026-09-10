@@ -343,7 +343,7 @@
   /* ===== WORDMARK: press and hold to charge, release at full to flip ===== */
   (function () {
     var wm = $('[data-wordmark]'); if (!wm) return;
-    var rect = $('[data-wm-clip]', wm), hint = $('[data-wm-hint]'), hintText = hint ? hint.textContent : '';
+    var rect = $('[data-wm-clip]', wm);
     var HOLD = 3000, H = 132, holding = false, start = 0, done = false, raf = null;
     function setCharge(p) { rect.setAttribute('y', String(H - H * p)); }
     function stormOn() {
@@ -364,24 +364,23 @@
       if (holding || flipping) return;
       if (e && e.preventDefault) e.preventDefault();
       holding = true; done = false; start = performance.now();
-      wm.classList.add('holding'); if (hint) hint.textContent = 'Keep holding';
+      wm.classList.add('holding');
       stormOn();
       raf = requestAnimationFrame(loop);
     }
     function cancel() {
       if (!holding || done) return;
       holding = false; cancelAnimationFrame(raf);
-      wm.classList.remove('holding'); if (hint) hint.textContent = hintText;
+      wm.classList.remove('holding');
       if (hasGsap) gsap.to(rect, { attr: { y: H }, duration: 0.5, ease: 'power4.out' }); else setCharge(0);
       stormOff();
     }
     function complete() {
       done = true; holding = false;
-      wm.classList.remove('holding'); if (hint) hint.textContent = '✦';
+      wm.classList.remove('holding');
       cycleTheme();
       setTimeout(function () {
         if (hasGsap) gsap.to(rect, { attr: { y: H }, duration: 0.8, ease: 'power4.inOut' }); else setCharge(0);
-        if (hint) hint.textContent = hintText;
         stormOff();
       }, 1400);
     }

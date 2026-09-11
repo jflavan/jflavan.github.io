@@ -1,6 +1,6 @@
 /* =============================================================================
    johnflavan.com — "Ink" behaviour
-   Order: environment · smooth scroll · clock · ink (WebGL) · intro · hero exit ·
+   Order: environment · smooth scroll · clock · sea (WebGL) · intro · hero exit ·
    word rolls · portrait curtain · focus panels · marquees · experience ribbon ·
    copy button · wordmark hold (theme Easter egg) · console
    Every effect degrades: no GSAP → static page; reduced motion → resolved states.
@@ -137,10 +137,10 @@
   var currentTheme = 'default';
   function hexToRgb01(hex) { var n = parseInt(hex.slice(1), 16); return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255]; }
 
-  /* ===== INK (WebGL fluid behind the hero) ===== */
+  /* ===== SEA (WebGL black water behind the hero; the handle is still called ink) ===== */
   var canvas = $('#ink'), ink = null, heroFade = 1, storming = false, settling = null;
-  if (canvas && !reduce && typeof Ink !== 'undefined') {
-    try { ink = Ink.create(canvas, { touch: touch, bg: hexToRgb01(THEMES.default.noir), ink: THEMES.default.ink, onLost: function () { html.classList.add('no-ink'); ink = null; } }); } catch (e) { ink = null; }
+  if (canvas && !reduce && typeof Sea !== 'undefined') {
+    try { ink = Sea.create(canvas, { touch: touch, bg: hexToRgb01(THEMES.default.noir), ink: THEMES.default.ink, onLost: function () { html.classList.add('no-ink'); ink = null; } }); } catch (e) { ink = null; }
   }
   if (!ink) html.classList.add('no-ink');
 

@@ -1,7 +1,7 @@
 /* =============================================================================
    johnflavan.com — "Ink"
    One grotesque, two colours, one motif (a bold word in a clipped box that
-   types in, rolls, or drops), one physical effect (the ink behind the hero).
+   types in, rolls, or drops), one physical effect (the black water behind the hero).
    Sections: tokens · fonts · base · motif · nav · hero · about · focus ·
    experience · skills · contact · footer · consent · themes · motion · responsive
    ============================================================================= */
@@ -96,7 +96,7 @@ main:focus { outline: none; }
 .line { display: block; overflow: hidden; clip-path: polygon(0 3%, 0 99%, 100% 99%, 100% 3%); }
 .line-in { display: block; }
 
-/* ===== INK CANVAS ===== */
+/* ===== SEA CANVAS (class names keep the old "ink" name) ===== */
 .ink { position: fixed; inset: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; }
 html.no-ink .ink { display: none; }
 .ink.on { opacity: 1; }

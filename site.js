@@ -51,12 +51,15 @@
     setTimeout(function () { tick(); setInterval(tick, 60000); }, (60 - new Date().getSeconds()) * 1000);
   })();
 
-  /* ===== LOGOTYPE: a ransom-note wordmark that settles into a fixed mix of voices ===== */
+  /* ===== LOGOTYPE: a ransom-note wordmark that cycles for six seconds, then settles into the nav's own sans ===== */
   var logotype = (function () {
     var el = $('[data-logotype]'); if (!el) return null;
     var VOICES = ['sans', 'serif', 'mono', 'light'];
-    // Resting voice per letter: J O H N / F L A V A N
-    var REST = [1, 0, 2, 3, 0, 1, 3, 2, 0, 1];
+    var SANS = 0;                                 // the voice the rest of the nav is set in — where the mark comes to rest
+    // Opening voice per letter: J O H N / F L A V A N
+    var OPEN = [1, 0, 2, 3, 0, 1, 3, 2, 0, 1];
+    var STAGES = 5;                               // voice changes per letter: once through the set, then home to the sans
+    var RUN = 6;                                  // the whole run is scaled to this many seconds
     var words = el.textContent.trim().split(/\s+/);
     el.textContent = '';
     var cells = [], idx = 0;
@@ -66,25 +69,29 @@
       word.split('').forEach(function (ch) {
         var cell = document.createElement('span'); cell.className = 'lt';
         VOICES.forEach(function (v) { var i = document.createElement('i'); i.className = 'v-' + v; i.textContent = ch; i.setAttribute('aria-hidden', 'true'); cell.appendChild(i); });
-        cells.push({ el: cell, faces: $$('i', cell), at: REST[idx % REST.length], rest: REST[idx % REST.length] });
+        cells.push({ el: cell, faces: $$('i', cell), at: animate ? OPEN[idx % OPEN.length] : SANS });
         idx++; w.appendChild(cell);
       });
       mask.appendChild(w); el.appendChild(mask);
     });
+    // Without motion the mark simply shows its resolved state: the whole name in the nav sans.
     cells.forEach(function (c) { c.faces[c.at].classList.add('on'); });
-    var busy = false, active = null, inView = true, looping = false;
-    function cycle(delay, onDone) {
-      if (!animate || busy) return;
+    var busy = false, active = null, inView = true;
+    // One finite run: every letter walks the set of voices, and the last change lands it on the sans.
+    function run(delay) {
+      if (!animate || busy) return null;
       busy = true;
       var cur = cells.map(function (c) { return c.at; }), t = 0;
       var tl = gsap.timeline({ delay: delay || 0, onComplete: function () {
         busy = false; active = null;
         cells.forEach(function (c) { c.faces.forEach(function (f, k) { gsap.set(f, { clearProps: 'clipPath,zIndex' }); f.classList.toggle('on', k === c.at); }); });
-        if (onDone) onDone();
       } });
-      for (var s = 0; s < VOICES.length; s++) {
+      for (var s = 0; s < STAGES; s++) {
+        var closing = s === STAGES - 1;
         cells.forEach(function (c, i) {
-          var from = c.faces[cur[i]], next = (cur[i] + 1) % VOICES.length, to = c.faces[next], at = t + i * 0.06;
+          var next = closing ? SANS : (cur[i] + 1) % VOICES.length;
+          if (next === cur[i]) return;            // already wearing the closing voice: let it hold
+          var from = c.faces[cur[i]], to = c.faces[next], at = t + i * 0.06;
           tl.set(to, { clipPath: 'inset(100% 0% 0% 0%)', zIndex: 2 }, at);
           tl.set(from, { clipPath: 'inset(0% 0% 0% 0%)', zIndex: 1 }, at);
           tl.to(to, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.35, ease: 'expo.inOut' }, at);
@@ -93,13 +100,10 @@
         });
         t += 0.35 + (cells.length - 1) * 0.06 + 0.25;
       }
+      cells.forEach(function (c, i) { c.at = cur[i]; });
+      tl.duration(RUN);                           // stretch or compress the stages to the six-second run
       active = tl;
       return tl;
-    }
-    // Runs for as long as the mark is on screen and the tab is visible
-    function loop() {
-      if (!animate || !looping || busy || !inView || document.hidden) return;
-      cycle(0.3, function () { setTimeout(loop, 0); });
     }
     function reveal() {
       if (!animate) return;
@@ -107,21 +111,21 @@
       gsap.set(ws[0], { yPercent: 130 }); if (ws[1]) gsap.set(ws[1], { yPercent: -130 });
       gsap.to(ws[0], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
       if (ws[1]) gsap.to(ws[1], { yPercent: 0, duration: 0.7, ease: 'power2.out', delay: 0.4 });
-      looping = true;
-      cycle(0.7, function () { setTimeout(loop, 0); });
+      run(0.7);
     }
+    // The six seconds are spent on screen: off-screen or in a hidden tab the run holds where it is.
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         inView = entries[0].isIntersecting;
-        if (active) { if (inView && !document.hidden) active.resume(); else active.pause(); }
-        else loop();
+        if (!active) return;
+        if (inView && !document.hidden) active.resume(); else active.pause();
       }).observe(el);
     }
     document.addEventListener('visibilitychange', function () {
-      if (active) { if (document.hidden) active.pause(); else if (inView) active.resume(); }
-      else if (!document.hidden) loop();
+      if (!active) return;
+      if (document.hidden) active.pause(); else if (inView) active.resume();
     });
-    return { reveal: reveal, cycle: cycle };
+    return { reveal: reveal };
   })();
 
   /* ===== THEMES ===== */

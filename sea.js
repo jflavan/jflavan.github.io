@@ -247,11 +247,27 @@
 
   /* ---------- WebGL plumbing ---------- */
 
+  // Firefox on Windows goes through ANGLE, and a picky driver can refuse the
+  // whole attribute set at once (EGL_NO_CONFIG -> "Exhausted GL driver
+  // options"). Ask for less until something says yes, rather than giving up on
+  // the first no: high-performance can pin a GPU that has no usable config, and
+  // an opaque drawing buffer is not offered by every config either.
   function getWebGLContext(canvas) {
-    var params = { alpha: false, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' };
-    var gl = canvas.getContext('webgl2', params);
-    var isWebGL2 = !!gl;
-    if (!isWebGL2) gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
+    var base = { depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
+    var ladder = [
+      { alpha: false, powerPreference: 'high-performance' },
+      { alpha: false },
+      { alpha: true },
+      null                                                  // last resort: the browser's defaults
+    ];
+    var gl = null, isWebGL2 = false;
+    for (var a = 0; a < ladder.length && !gl; a++) {
+      var params = null;
+      if (ladder[a]) { params = {}; for (var k in base) params[k] = base[k]; for (var k2 in ladder[a]) params[k2] = ladder[a][k2]; }
+      try { gl = canvas.getContext('webgl2', params); } catch (e) { gl = null; }
+      isWebGL2 = !!gl;
+      if (!gl) { try { gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params); } catch (e2) { gl = null; } }
+    }
     if (!gl) return null;
     var halfFloat, supportLinearFiltering;
     if (isWebGL2) {
